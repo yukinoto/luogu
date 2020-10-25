@@ -1,0 +1,8 @@
+已复制         1 个文件。
+正在比较文件 dij.out 和 DIJ2.OUT
+FC: 找不到差异
+
+code-1:47ms
+code-2:63ms
+
+
