@@ -24,13 +24,13 @@ int main()
         int lft=i-r+1,rgh=i-l+1;
         if(rgh<=0)
             continue;
+        f[i]=std::max(f[i],q[front]+v[i]);
         while(front<end&&p[front]<lft)
             front++;
         while(front<end&&q[end-1]<=f[rgh-1])
             end--;
         q[end]=f[rgh-1];
         p[end++]=rgh-1;
-        f[i]=std::max(f[i],q[front]+v[i]);
     }
     printf("%d\n",f[n]);
     return 0;
