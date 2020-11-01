@@ -23,7 +23,7 @@ int main()
     f[0]=v[0];
     q[end]=f[0];
     p[end++]=0;
-    for(int i=0;i<=n;i++)
+    for(int i=0;i<n;i++)
     {
         int lft=i-r+1,rgh=i-l+1;
         if(rgh<=0)
@@ -34,10 +34,12 @@ int main()
             end--;
         q[end]=f[rgh-1];
         p[end++]=rgh-1;
+        if(front>=end)
+            return -1;
         f[i]=std::max(f[i],q[front]+v[i]);
     }
     int ans=0x80000000;
-    for(int i=n-r;i<n;i++)
+    for(int i=n-r+1;i<n;i++)
     	ans=std::max(ans,f[i]);
     printf("%d\n",ans);
     return 0;
