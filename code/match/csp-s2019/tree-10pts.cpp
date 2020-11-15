@@ -55,7 +55,7 @@ inline void cpy(int *from,int *to,int len)
 	return;
 }
 
-void work()
+void work1()
 {
 	init();
 	int order[2010];
@@ -91,6 +91,6 @@ int main()
 	int t;
 	scanf("%d",&t);
 	for(int i=0;i<t;i++)
-		work();
+		work1();
 	return 0;
 }
