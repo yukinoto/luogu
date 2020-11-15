@@ -27,7 +27,11 @@ void init()
 	memset(mp,false,sizeof(mp));
 	scanf("%d",&n);
 	for(int i=1;i<=n;i++)
-		scanf("%d",weigh+i);
+	{
+		int x;
+		scanf("%d",&x);
+		weigh[x]=i;
+	}
 	for(int i=1;i<n;i++)
 	{
 		scanf("%d%d",&tr[i].x1,&tr[i].x2);
@@ -55,7 +59,7 @@ void work()
 {
 	init();
 	int order[2010];
-	int ans[2010],a[2010];
+	int ans[2010],a[2010],cache[2010];
 	for(int i=1;i<n;i++)
 	{
 		order[i]=i;
@@ -70,12 +74,15 @@ void work()
 			wor[order[j]]=j;
 		for(int j=1;j<n;j++)
 			swap(a[tr[wor[j]].x1],a[tr[wor[j]].x2]);
-		if(cmp(a,ans,n))
-			cpy(a,ans,n);
+		for(int j=1;j<=n;j++)
+			cache[a[j]]=j;
+		if(cmp(cache,ans,n))
+			cpy(cache,ans,n);
+		next_permutation(order+1,order+n);
 	}
 	for(int i=1;i<n;i++)
 		printf("%d ",ans[i]);
-	printf("%d\n",a[n]);
+	printf("%d\n",ans[n]);
 	return;
 }
 
