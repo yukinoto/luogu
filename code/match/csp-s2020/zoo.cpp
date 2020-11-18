@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-unsigned long long contBit(unsigned long long a,unsigned long long b,int k)
+int contBit(unsigned long long a,unsigned long long b,int k)
 {
-	unsigned long long ans=0;
+	int ans=0;
 	for(int i=0;i<k;i++)
 	{
 		bool f1=(a&(1ull<<i))==0,f2=(b&(1ull<<i))==0;
@@ -26,11 +26,11 @@ int main()
 	}
 	for(int i=0;i<m;i++)
 	{
-		unsigned long long p,q;
-		scanf("%llud%llud",&p,&q);
-		cond=cond|(1<<p);
+		int p,q;
+		scanf("%d%d",&p,&q);
+		cond=cond|(1ull<<p);
 	}
-	unsigned long long b=contBit(animal,cond,k);
-	printf("%llud\n",(1ull<<b)-n);
+	int b=contBit(animal,cond,k);
+	printf("%llu\n",(1ull<<b)-n);
 	return 0;
 }
