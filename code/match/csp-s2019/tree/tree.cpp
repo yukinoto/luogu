@@ -105,6 +105,13 @@ namespace work2_f{
 	};
 }
 
+namespace work3_f{
+	int findhead(int len)
+	{
+		
+	}
+}
+
 void work1()
 {
 	int ansp[15],np[15];
@@ -154,15 +161,14 @@ void work2()
 	}
 }
 
-void work3(){}
+void work3()
+{
+	int a[20010];
+	
+}
 
 void work()
 {
-	if(tre::n<=10)
-	{
-		work1();
-		return;
-	}
 	bool flag=true;
 	for(int i=1;i<=tre::n;i++)
 	{
@@ -179,6 +185,7 @@ void work()
 		work3();
 		return;
 	}
+	work1();
 }
 
 int main()
