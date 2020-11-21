@@ -4,6 +4,13 @@
 #include <algorithm>
 using namespace std;
 
+void fre()
+{
+	freopen("tree.in","r",stdin);
+	freopen("tree-ans.out","w",stdout);
+	return;
+}
+
 #define Inf 0x3fffffff
 
 int n;
@@ -88,6 +95,7 @@ void work1()
 
 int main()
 {
+	fre();
 	int t;
 	scanf("%d",&t);
 	for(int i=0;i<t;i++)
