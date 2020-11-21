@@ -163,8 +163,6 @@ void work2()
 
 void work3()
 {
-	int a[20010];
-	
 }
 
 void work()
