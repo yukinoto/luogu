@@ -1,22 +1,5 @@
 #include <cstdio>
 
-float sqrt(float x)
-{
-
-    float xhalf = 0.5f*x;
-    int i = *(int*)&x; 
-    
-    if(!x) return 0;
-    
-    i = 0x5f375a86- (i>>1); // beautiful number
-    x = *(float*)&i; 
-    x = x*(1.5f-xhalf*x*x); // 牛顿迭代法，提高精度
-    x = x*(1.5f-xhalf*x*x); // 牛顿迭代法，提高精度
-    x = x*(1.5f-xhalf*x*x); // 牛顿迭代法，提高精度
-
-    return 1/x;
-}
-
 inline long long min(const long long& x,const long long& y)
 {
 	return x>y?y:x;
