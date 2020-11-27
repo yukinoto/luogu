@@ -123,9 +123,9 @@ inline void init()
 {
 	scanf("%d%d%d",&n,&m,&mod);
 	for(int i=0;i<n;i++)
-		scanf("%d",a+i);
+		scanf("%d",xds::a+i);
 	xds::mkt(0,n,1);
-	return 0;
+	return;
 }
 
 inline void work()
