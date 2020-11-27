@@ -1,6 +1,16 @@
 #include <stdio.h>
 
 int n,m,mod;
+
+inline int min(const int &x,const int &y)
+{
+	return x>y?y:x;
+}
+inline int max(const int &x,const int &y)
+{
+	return x>y?x:y;
+}
+
 namespace xds{
 	struct node{
 		int l,r;
@@ -28,6 +38,7 @@ namespace xds{
 	}
 	void pshstg(int);
 	void pshctg(int);
+	int opts(int,int,int);
 	void add(int l,int r,int x,int root)
 	{
 		if(l>=r)
@@ -42,6 +53,7 @@ namespace xds{
 			return;
 		}
 		pshctg(root);
+		tr[root].sum+=x*(min(r,tr[root].r)-max(l,tr[root].l));
 		add(l,r,x,root<<1);
 		add(l,r,x,(root<<1)|1);
 		return;
@@ -57,24 +69,25 @@ namespace xds{
 			pshstg(root);
 			tr[root].type=true;
 			tr[root].tag*=x;
+			if(tr[root].tag==0&&x!=0)
+				tr[root].tag=x;
 			return;
 		}
 		pshstg(root);
 		c(l,r,x,root<<1);
 		c(l,r,x,(root<<1)|1);
+		tr[root].sum=opts(tr[root].l,(tr[root].l+tr[root].r)/2,root<<1)
+		+opts((tr[root].l+tr[root].r)/2,tr[root].r,(root<<1)|1);
 		return;
 	}
 	int opts(int l,int r,int root)
 	{
 		if(l>=r||tr[root].l>=r||tr[root].r<=l)
 			return 0;
+		pshstg(root);
+		pshctg(root);
 		if(tr[root].l>=l&&tr[root].r<=r)
-		{
-			if(tr[root].type)
-				return tr[root].sum*tr[root].tag;
-			else
-				return tr[root].sum+tr[root].tag*(tr[root].r-tr[root].l);
-		}
+			return tr[root].sum;
 		return opts(l,r,root<<1)
 		+opts(l,r,(root<<1)|1);
 	}
@@ -135,24 +148,33 @@ inline void work()
 	switch (f)
 	{
 	case 1:
-		int x,y,k;
-		scanf("%d%d%d",&x,&y,&k);
-		xds::c(x,y,k,1);
+		{
+			int x,y,k;
+			scanf("%d%d%d",&x,&y,&k);
+			xds::c(x-1,y,k,1);
+		}
 		break;
 	case 2:
-		int x,y,k;
-		scanf("%d%d%d",&x,&y,&k);
-		xds::add(x,y,k,1);
+		{
+			int x,y,k;
+			scanf("%d%d%d",&x,&y,&k);
+			xds::add(x-1,y,k,1);
+		}
 		break;
 	case 3:
-		int x,y;
-		scanf("%d%d",&x,&y);
-		printf("%d\n",xds::opts(x,y,1));
-	default:
+		{
+			int x,y;
+			scanf("%d%d",&x,&y);
+			printf("%d\n",xds::opts(x-1,y,1));
+		}
 		break;
 	}
 }
 
 int main()
 {
+	init();
+	for(int i=0;i<m;i++)
+		work();
+	return 0;
 }
