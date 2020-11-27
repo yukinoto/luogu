@@ -15,7 +15,7 @@ namespace xds{
 	struct node{
 		int l,r;
 		int sum,tag;
-		bool type;
+		int type;
 	};
 	node tr[400010];
 	int a[100010];
@@ -27,13 +27,13 @@ namespace xds{
 		tr[root].r=r;
 		if(l==r-1)
 		{
-			tr[root].sum=a[l];
+			tr[root].sum=a[l]%mod;
 			return;
 		}
 		int mid=(l+r)/2;
 		mkt(l,mid,root<<1);
 		mkt(mid,r,(root<<1)|1);
-		tr[root].sum=tr[root<<1].sum+tr[(root<<1)|1].sum;
+		tr[root].sum=(tr[root<<1].sum+tr[(root<<1)|1].sum)%mod;
 		return;
 	}
 	void pshstg(int);
@@ -48,12 +48,15 @@ namespace xds{
 		if(tr[root].l>=l&&tr[root].r<=r)
 		{
 			pshctg(root);
-			tr[root].type=false;
+			tr[root].type=0;
 			tr[root].tag+=x;
+			tr[root].tag%=mod;
 			return;
 		}
 		pshctg(root);
-		tr[root].sum+=x*(min(r,tr[root].r)-max(l,tr[root].l));
+		tr[root].type=0;
+		tr[root].sum+=x*(min(r,tr[root].r)-max(l,tr[root].l))%mod;
+		tr[root].sum%=mod;
 		add(l,r,x,root<<1);
 		add(l,r,x,(root<<1)|1);
 		return;
@@ -67,17 +70,18 @@ namespace xds{
 		if(tr[root].l>=l&&tr[root].r<=r)
 		{
 			pshstg(root);
-			tr[root].type=true;
 			tr[root].tag*=x;
-			if(tr[root].tag==0&&x!=0)
+			if(tr[root].tag==0&&x!=0&&tr[root].type==0)
 				tr[root].tag=x;
+			tr[root].type=1;
+			tr[root].tag%=mod;
 			return;
 		}
 		pshstg(root);
 		c(l,r,x,root<<1);
 		c(l,r,x,(root<<1)|1);
-		tr[root].sum=opts(tr[root].l,(tr[root].l+tr[root].r)/2,root<<1)
-		+opts((tr[root].l+tr[root].r)/2,tr[root].r,(root<<1)|1);
+		tr[root].sum=(opts(tr[root].l,(tr[root].l+tr[root].r)/2,root<<1)
+		+opts((tr[root].l+tr[root].r)/2,tr[root].r,(root<<1)|1))%mod;
 		return;
 	}
 	int opts(int l,int r,int root)
@@ -87,47 +91,53 @@ namespace xds{
 		pshstg(root);
 		pshctg(root);
 		if(tr[root].l>=l&&tr[root].r<=r)
-			return tr[root].sum;
-		return opts(l,r,root<<1)
-		+opts(l,r,(root<<1)|1);
+			return tr[root].sum%mod;
+		return (opts(l,r,root<<1)
+		+opts(l,r,(root<<1)|1))%mod;
 	}
 	void pshstg(int root)
 	{
 		if(tr[root].type||tr[root].tag==0)
 			return;
 		int lc=root<<1,rc=(root<<1)|1;
-		tr[root].sum+=tr[root].tag*(tr[root].r-tr[root].l);
-		if(tr[lc].type)
+		tr[root].tag%=mod;
+		tr[root].sum+=tr[root].tag*(tr[root].r-tr[root].l)%mod;
+		tr[root].sum%=mod;
+		if(tr[lc].type==1)
 		{
 			pshctg(lc);
-			tr[lc].type=false;
+			tr[lc].type=0;
 		}
-		if(tr[rc].type)
+		if(tr[rc].type==1)
 		{
 			pshctg(rc);
-			tr[rc].type=false;
+			tr[rc].type=0;
 		}
-		tr[lc].tag=tr[rc].tag=tr[root].tag;
+		tr[lc].tag+=tr[root].tag;
+		tr[rc].tag+=tr[root].tag;
 		tr[root].tag=0;
 		return;
 	}
 	void pshctg(int root)
 	{
-		if(!tr[root].type||tr[root].tag==0||tr[root].tag==1)
+		if(tr[root].type==0||tr[root].tag==1)
 			return;
+		tr[root].tag%=mod;
 		int lc=root<<1,rc=(root<<1)|1;
 		tr[root].sum*=tr[root].tag;
-		if(!tr[lc].type)
+		tr[root].sum%=mod;
+		if(tr[lc].type==0)
 		{
 			pshstg(lc);
-			tr[lc].type=true;
+			tr[lc].type=tr[lc].tag=1;
 		}
-		if(!tr[rc].type)
+		if(tr[rc].type==0)
 		{
 			pshstg(rc);
-			tr[rc].type=true;
+			tr[rc].type=tr[rc].tag=1;
 		}
-		tr[lc].tag=tr[rc].tag=tr[root].tag;
+		tr[lc].tag*=tr[root].tag;
+		tr[rc].tag*=tr[root].tag;
 		tr[root].tag=1;
 		return;
 	}
