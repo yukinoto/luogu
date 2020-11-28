@@ -26,8 +26,6 @@ inline bool cmp(const node &x,const node &y)
 node a[4010];
 int main()
 {
-	//freopen("p3800.in","r",stdin);
-	//freopen("wa.out","w",stdout);
 	scanf("%d%d%d%d",&n,&m,&k,&t);
 	for(node *i=a;i<a+k;i++)
 		scanf("%d%d%d",&(i->x),&(i->y),&(i->p));
