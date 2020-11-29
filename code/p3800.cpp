@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <algorithm>
 #include <set>
+#include <algorithm>
 using namespace std;
 
 int n,m,k,t;
