@@ -10,7 +10,7 @@ struct node{
 	}
 };
 node a[110];
-int f[110][110],ans=0;
+int f[140][140],ans=-1;
 int main()
 {
 	scanf("%d%d",&d,&g);
@@ -20,7 +20,7 @@ int main()
 		scanf("%d%d%d",&a[i].t,&a[i].f,&a[i].h);
 	std::sort(a+1,a+g+1);
 	for(int i=0;i<=g;i++)
-		for(int j=0;j<d;j++)
+		for(int j=0;j<=d;j++)
 			if(f[i][j]>=0)
 			{
 				if(j+a[i].h>=d)
