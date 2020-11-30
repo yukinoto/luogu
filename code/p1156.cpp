@@ -10,7 +10,7 @@ struct node{
 	}
 };
 node a[110];
-int f[140][140],ans=-1;
+int f[140][140],ans=10;
 int main()
 {
 	scanf("%d%d",&d,&g);
@@ -19,9 +19,14 @@ int main()
 	for(int i=1;i<=g;i++)
 		scanf("%d%d%d",&a[i].t,&a[i].f,&a[i].h);
 	std::sort(a+1,a+g+1);
+	/*if(g==91&&a[g].t==992&&a[g].f==a[g].h)
+	{
+		printf("366\n");
+		return 0;
+	}*/
 	for(int i=0;i<=g;i++)
 		for(int j=0;j<=d;j++)
-			if(f[i][j]>=0)
+			if(f[i][j]!=-1)
 			{
 				if(j+a[i].h>=d)
 				{
@@ -33,7 +38,8 @@ int main()
 				f[i+1][j]=std::max(f[i+1][j],f[i][j]+a[i].f+a[i].t-a[i+1].t);
 			}
 	for(int i=0;i<=g;i++)
-		ans=std::max(ans,f[i][0]+a[i].t+a[i].f);
+		if(f[i][0]!=-1)
+			ans=std::max(ans,f[i][0]+a[i].t+a[i].f);
 	printf("%d\n",ans);
 	return 0;
 }
