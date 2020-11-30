@@ -93,7 +93,7 @@ void init()
 
 bool ifPutable(int card,int type)
 {
-	
+
 }
 
 void runMP();
@@ -107,10 +107,10 @@ void run()
 		case MP:
 			runMP();
 			break;
-		case ZP;
+		case ZP:
 			runZP();
 			break;
-		case FM:
+		case FP:
 			runFP();
 			break;
 	}
