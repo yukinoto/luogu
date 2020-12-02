@@ -69,10 +69,12 @@ int main()
 		for(int j=(i+mod-t)%mod;j!=(i+mod-s+1)%mod;j=(j+1)%mod)
 		{
 			if(f[j]!=0)
+			{
 				if(f[i%mod]==0)
 					f[i%mod]=f[j]+rp;
 				else
 					f[i%mod]=min(f[i%mod],f[j]+rp);
+			}
 		}
 	}
 	int ans=0x7fffffff;
