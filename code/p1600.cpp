@@ -126,7 +126,6 @@ namespace lca{
 namespace work{
 	vector<int>* fuck_ccf(int root)
 	{
-		vector<int>*pt=new vector<int>;
 		
 	}
 }
