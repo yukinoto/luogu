@@ -27,15 +27,17 @@ class num{
 		num operator /(const int &x)
 		{
 			num ans;
-			ans.upper=this->upper;
-			ans.under=this->under*x;
-			return yue_fen(ans);
+			long long g=gcd(this->upper,x);
+			ans.upper=this->upper/g;
+			ans.under=this->under*(x/g);
+			return ans;
 		}
 		num operator +(const num &x)
 		{
 			num ans;
-			ans.upper=this->upper*x.under+this->under*x.upper;
-			ans.under=this->under*x.under;
+			long long g=gcd(this->under,x.under);
+			ans.under=this->under/g*x.under;
+			ans.upper=(x.under)/g*(this->upper)+(this->under)/g*(x.upper);
 			return yue_fen(ans);
 		}
 		void set(long long x)
@@ -96,8 +98,8 @@ num f[100010];
 
 int main()
 {
-	freopen("water.in","r",stdin);
-	freopen("water.out","w",stdout);
+	//freopen("water.in","r",stdin);
+	//freopen("water.out","w",stdout);
 	scanf("%d%*d",&n);
 	for(int i=1;i<=n;i++)
 	{
