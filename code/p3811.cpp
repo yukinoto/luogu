@@ -22,6 +22,17 @@ pair<T,T> ExE(T a,T b,const T &d)
 	pair<T,T> sol=ExE(b,a%b,d);
 	return make_pair(sol.y-a/b*sol.x,sol.x);
 }
+pair<int,int> ExE(int a,int b,const int &d)
+{
+	if(b==0)
+	{
+		printf("%d %d %d %d\n",a/d,b,a,b);
+		return make_pair(a/d,b);
+	}
+	pair<int,int> sol=ExE(b,a%b,d);
+	printf("%d %d %d %d\n",sol.y-a/b*sol.x,sol.x,a,b);
+	return make_pair(sol.y-a/b*sol.x,sol.x);
+}
 template <typename T>
 T eu(T a,T b)
 {
