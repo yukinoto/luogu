@@ -104,7 +104,7 @@ class tree{
 						tagType=jia;
 						tag=0;
 					}
-					if(left>=l&&right<=r)
+					if(left<=l&&right>=r)
 					{
 						tag+=x;
 						num+=x*(r-l);
@@ -132,7 +132,7 @@ class tree{
 						tagType=cheng;
 						tag=1;
 					}
-					if(left>=l&&right<=r)
+					if(left<=l&&right>=r)
 					{
 						tag*=x;
 						num*=x;
@@ -196,17 +196,17 @@ int main()
 		{
 			int l,r,x;
 			scanf("%d%d%d",&l,&r,&x);
-			tr->ch(l,r,x);
+			tr->ch(l-1,r,x);
 		}else if(f==2)
 		{
 			int l,r,x;
 			scanf("%d%d%d",&l,&r,&x);
-			tr->add(l,r,x);
+			tr->add(l-1,r,x);
 		}else if(f==3)
 		{
 			int l,r;
 			scanf("%d%d",&l,&r);
-			printf("%d\n",tr->quest(l,r));
+			printf("%d\n",tr->quest(l-1,r));
 		}
 	}
 	delete tr;
