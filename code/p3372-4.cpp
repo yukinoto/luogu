@@ -90,9 +90,9 @@ class tree{
 						return num;
 					inte ans=0;
 					if(lc!=nullptr)
-						ans+=lc->quest();
+						ans+=lc->quest(left,right);
 					if(rc!=nullptr)
-						ans+=rc->quest();
+						ans+=rc->quest(left,right);
 				}
 				void add(int left,int right,inte x)
 				{
@@ -154,7 +154,7 @@ class tree{
 		};
 		node *root;
 	public:
-		tree(const inte *base,left,right)
+		tree(const inte *base,int left,int right)
 		{
 			root=new node(base,left,right);
 			return;
@@ -211,5 +211,5 @@ int main()
 	}
 	delete tr;
 	delete[] a;
-	return;
+	return 0;
 }
