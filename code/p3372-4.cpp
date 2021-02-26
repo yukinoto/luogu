@@ -1,8 +1,40 @@
 #include <stdio.h>
+#include <iostream>
+using namespace std;
 
 #define nulltag 0
 #define jia 1
 #define cheng 2
+
+template <typename inte,inte mod>
+class it{
+	private:
+		inte x;
+	public:
+		void init()
+		{
+			cin>>x;
+			return;
+		}
+		void print()
+		{
+			cout<<x;
+			return;
+		}
+		inte operator + (const it<inte,mod> &a)const
+		{
+			return (this->x+a.x)%mod;
+		}
+		inte operator * (const it<inte,mod> &a)const
+		{
+			return (this->x*a.x)%mod;
+		}
+		void operator = (const int &a)
+		{
+			x=a;
+			return;
+		}
+};
 
 template <typename inte>
 class tree{
@@ -93,6 +125,7 @@ class tree{
 						ans+=lc->quest(left,right);
 					if(rc!=nullptr)
 						ans+=rc->quest(left,right);
+					return ans;
 				}
 				void add(int left,int right,inte x)
 				{
@@ -138,17 +171,26 @@ class tree{
 						num*=x;
 						return;
 					}
-					num=0;
 					if(lc!=nullptr)
-					{
 						lc->ch(left,right,x);
-						num+=lc->num;
+					if(rc!=nullptr)
+						rc->ch(left,right,x);
+					if(lc!=nullptr&&rc!=nullptr)
+					{
+						num=lc->num+rc->num;
+						return;
+					}
+					/*if(lc!=nullptr)
+					{
+						num=lc->num;
+						return;
 					}
 					if(rc!=nullptr)
 					{
-						rc->ch(left,right,x);
-						num+=rc->num;
-					}
+						num=rc->num;
+						return;
+					}*/
+					return;
 				}
 
 		};
