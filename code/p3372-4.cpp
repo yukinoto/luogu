@@ -1,40 +1,10 @@
 #include <stdio.h>
-#include <iostream>
-using namespace std;
 
 #define nulltag 0
 #define jia 1
 #define cheng 2
 
-template <typename inte,inte mod>
-class it{
-	private:
-		inte x;
-	public:
-		void init()
-		{
-			cin>>x;
-			return;
-		}
-		void print()
-		{
-			cout<<x;
-			return;
-		}
-		inte operator + (const it<inte,mod> &a)const
-		{
-			return (this->x+a.x)%mod;
-		}
-		inte operator * (const it<inte,mod> &a)const
-		{
-			return (this->x*a.x)%mod;
-		}
-		void operator = (const int &a)
-		{
-			x=a;
-			return;
-		}
-};
+int mod;
 
 template <typename inte>
 class tree{
@@ -85,6 +55,8 @@ class tree{
 							lc->tagType=jia;
 							lc->tag=tag;
 							lc->num+=(lc->r-lc->l)*lc->tag;
+							lc->tag%=mod;
+							lc->num%=mod;
 						}
 						if(rc!=nullptr)
 						{
@@ -92,6 +64,8 @@ class tree{
 							rc->tagType=jia;
 							rc->tag=tag;
 							rc->num+=(rc->r-rc->l)*rc->tag;
+							rc->tag%=mod;
+							rc->num%=mod;
 						}
 					}
 					if(tagType==cheng)
@@ -102,6 +76,8 @@ class tree{
 							lc->tagType=cheng;
 							lc->tag=tag;
 							lc->num*=lc->tag;
+							lc->tag%=mod;
+							lc->num%=mod;
 						}
 						if(rc!=nullptr)
 						{
@@ -109,6 +85,8 @@ class tree{
 							rc->tagType=cheng;
 							rc->tag=tag;
 							rc->num*=rc->tag;
+							rc->tag%=mod;
+							rc->num%=mod;
 						}
 					}
 					tagType=nulltag;
@@ -125,7 +103,7 @@ class tree{
 						ans+=lc->quest(left,right);
 					if(rc!=nullptr)
 						ans+=rc->quest(left,right);
-					return ans;
+					return ans%mod;;
 				}
 				void add(int left,int right,inte x)
 				{
@@ -141,19 +119,16 @@ class tree{
 					{
 						tag+=x;
 						num+=x*(r-l);
+						tag%=mod;
+						num%=mod;
 						return;
 					}
-					num=0;
 					if(lc!=nullptr)
-					{
 						lc->add(left,right,x);
-						num+=lc->num;
-					}
 					if(rc!=nullptr)
-					{
 						rc->add(left,right,x);
-						num+=rc->num;
-					}
+					if(lc!=nullptr&&rc!=nullptr)
+						num=(lc->num+rc->num)%mod;
 				}
 				void ch(int left,int right,inte x)
 				{
@@ -169,6 +144,8 @@ class tree{
 					{
 						tag*=x;
 						num*=x;
+						tag%=mod;
+						num%=mod;
 						return;
 					}
 					if(lc!=nullptr)
@@ -177,7 +154,7 @@ class tree{
 						rc->ch(left,right,x);
 					if(lc!=nullptr&&rc!=nullptr)
 					{
-						num=lc->num+rc->num;
+						num=(lc->num+rc->num)%mod;
 						return;
 					}
 					/*if(lc!=nullptr)
@@ -212,12 +189,12 @@ class tree{
 		}
 		void add(int left,int right,inte x)
 		{
-			root->add(left,right,x);
+			root->add(left,right,x%mod);
 			return;
 		}
 		void ch(int left,int right,inte x)
 		{
-			root->ch(left,right,x);
+			root->ch(left,right,x%mod);
 			return;
 		}
 };
@@ -225,11 +202,11 @@ class tree{
 int main()
 {
 	int n,m,p;
-	scanf("%d%d%*d",&n,&m);
-	long long *a=new long long [n];
+	scanf("%d%d%d",&n,&m,&mod);
+	int *a=new int [n];
 	for(int i=0;i<n;++i)
-		scanf("%lld",a+i);
-	auto* tr=new tree<long long>(a,0,n);
+		scanf("%d",a+i);
+	auto* tr=new tree<int>(a,0,n);
 	for(int i=0;i<m;++i)
 	{
 		static int f;
