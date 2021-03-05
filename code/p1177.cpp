@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+namespace algo{
+	
+}
 template <typename inte>
 void merge(inte *to,inte *f1,int len1,inte *f2,int len2)
 {
