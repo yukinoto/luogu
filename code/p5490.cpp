@@ -86,6 +86,8 @@ namespace tr{
 					}
 					int quest(int left,int right)
 					{
+						if(lc==nullptr)
+							return rpt==0?0:len;
 						if(left>=r||right<=l||(left>=right-1&&rpt==0))
 							return 0;
 						pushtag();
