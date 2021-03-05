@@ -135,6 +135,16 @@ namespace tr{
 	};
 }
 
+int sch(int x,int left,int right)
+{
+	if(left>=right-1)
+		return left;
+	if(tr::pt[(left+right)/2]>x)
+		return sch(x,left,(left+right)/2);
+	else
+		return sch(x,(left+right)/2,right);
+}
+
 int main()
 {
 	int n,m;
@@ -157,22 +167,13 @@ int main()
 	}
 	m=st->size();
 	delete st;
-	auto sch=[&](int x,int left,int right)->int
-	{
-		if(left>=right-1)
-			return left;
-		if(tr::pt[(left+right)/2]>x)
-			return sch(x,left,(left+right)/2);
-		else
-			return sch(x,(left+right)/2,right);
-	};
 	for(int i=0;i<n;i++)
 		a[i].first.x=sch(a[i].first.x,0,m),a[i].last.x=sch(a[i].last.x,0,m);
 	tr::tree *t=new tr::tree(0,m);
 	auto cmp=[](const data::line &a,const data::line &b)->bool const
 	{
 		return a.first.y<b.first.y;
-	}
+	};
 	sort(a,a+n,cmp);
 	t->add(a[0]);
 	long long ans=0l;
