@@ -19,6 +19,10 @@ class line{
 class squ{
 	public:
 		int x1,x2,y1,y2;
+		void get()
+		{
+			scanf("%d%d%d%d",&x1,&y1,&x2,&y2);
+		}
 };
 pair<line,line> gen1(const squ &x)
 {
@@ -31,4 +35,20 @@ pair<line,line> gen2(const squ &x)
 
 int main()
 {
+	int n;
+	scanf("%d",&n);
+	squ *pt=new squ[n];
+	for(int i=0;i<n;i++)
+		pt->get();
+	auto f=[&](decltype(gen1) gen)->void
+	{
+		line *x=new line[n<<1];
+		for(int i=0;i<n;i++)
+		{
+			auto ct=gen(pt[i]);
+			x[i<<1]=ct.first,x[(i<<1)^1]=ct.second;
+		}
+		sort(x,x+(n<<1));
+		
+	};
 }
