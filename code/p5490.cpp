@@ -53,7 +53,8 @@ namespace tr{
 				public:
 					node(int left,int right)
 					{
-						l=left,r=right,len=pt[right]-pt[left];
+						l=left,r=right;
+						len=0;
 						rpt=rpttag=0;
 						if(left>=right-1)
 						{
@@ -94,11 +95,11 @@ namespace tr{
 						if(left<=l&&right>=r)
 						{
 							if(rpt!=0)
-								return len;
+								return len=pt[r]-pt[l];
 							else
 								return lc->quest(left,right)+rc->quest(left,right);
 						}
-						return lc->quest(left,right)+rc->quest(left,right);
+						return len=lc->quest(left,right)+rc->quest(left,right);
 					}
 					void add(int left,int right,int x)
 					{
@@ -132,7 +133,7 @@ namespace tr{
 			}
 			int quest()
 			{
-				return root->quest(0,pt.size());
+				return root->quest(0,pt.size()-1);
 			}
 	};
 }
@@ -154,7 +155,7 @@ int main()
 	n<<=1;
 	data::line *a=new data::line[n];
 	auto *st=new set<int>;
-	for(int i=0;i<(n>>1);i++)
+	for(int i=0;i<n;i+=2)
 	{
 		data::node f,s;
 		f.get(),s.get();
@@ -171,7 +172,7 @@ int main()
 	delete st;
 	for(int i=0;i<n;i++)
 		a[i].first.x=sch(a[i].first.x,0,m),a[i].last.x=sch(a[i].last.x,0,m);
-	tr::tree *t=new tr::tree(0,m);
+	tr::tree *t=new tr::tree(0,m-1);
 	auto cmp=[](const data::line &a,const data::line &b)->bool const
 	{
 		return a.first.y<b.first.y;
