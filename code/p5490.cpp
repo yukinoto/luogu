@@ -7,12 +7,12 @@ using namespace std;
 namespace data{
 	class node{
 		public:
-			int x,y;
+			long long x,y;
 			void get()
 			{
-				scanf("%d%d",&x,&y);
+				scanf("%lld%lld",&x,&y);
 			}
-			void set(int _x,int _y)
+			void set(long long _x,long long _y)
 			{
 				x=_x,y=_y;
 			}
@@ -43,15 +43,15 @@ namespace data{
 }
 
 namespace tr{
-	vector<int> pt;
+	vector<long long> pt;
 	class tree{
 		private:
 			class node{
 				private:
-					int l,r,len,rpt,rpttag;
+					long long l,r,len,rpt,rpttag;
 					node *lc,*rc;
 				public:
-					node(int left,int right)
+					node(long long left,long long right)
 					{
 						l=left,r=right;
 						len=0;
@@ -61,7 +61,7 @@ namespace tr{
 							lc=rc=nullptr;
 							return;
 						}
-						int mid=(left+right)/2;
+						long long mid=(left+right)/2;
 						lc=new node(left,mid),rc=new node(mid,right);
 						return;
 					}
@@ -85,7 +85,7 @@ namespace tr{
 						rpttag=0;
 						return;
 					}
-					int quest(int left,int right)
+					long long quest(long long left,long long right)
 					{
 						if(lc==nullptr)
 							return rpt==0?0:len=pt[r]-pt[l];
@@ -101,7 +101,7 @@ namespace tr{
 						}
 						return len=lc->quest(left,right)+rc->quest(left,right);
 					}
-					void add(int left,int right,int x)
+					void add(long long left,long long right,long long x)
 					{
 						if(left>=r||right<=l)
 							return;
@@ -118,12 +118,12 @@ namespace tr{
 			};
 			node *root;
 		public:
-			tree(int left,int right)
+			tree(long long left,long long right)
 			{
 				root=new node(left,right);
 			}
 			~tree(){delete root;}
-			void add(int left,int right,int x)
+			void add(long long left,long long right,long long x)
 			{
 				root->add(left,right,x);
 			}
@@ -131,14 +131,14 @@ namespace tr{
 			{
 				root->add(x.first.x,x.last.x,x.type);
 			}
-			int quest()
+			long long quest()
 			{
 				return root->quest(0,pt.size()-1);
 			}
 	};
 }
 
-int sch(int x,int left,int right)
+long long sch(long long x,long long left,long long right)
 {
 	if(left>=right-1)
 		return left;
@@ -154,13 +154,13 @@ int main()
 	scanf("%d",&n);
 	n<<=1;
 	data::line *a=new data::line[n];
-	auto *st=new set<int>;
+	auto *st=new set<long long>;
 	for(int i=0;i<n;i+=2)
 	{
 		data::node f,s;
 		f.get(),s.get();
 		st->insert(f.x),st->insert(s.x);
-		auto mkn=[](int x,int y)->data::node{data::node ans;ans.set(x,y);return ans;};
+		auto mkn=[](long long x,long long y)->data::node{data::node ans;ans.set(x,y);return ans;};
 		a[i]=data::makeline(f,mkn(s.x,f.y),1);
 		a[i^1]=data::makeline(mkn(f.x,s.y),s,-1);
 	}
