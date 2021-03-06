@@ -88,7 +88,7 @@ namespace tr{
 					int quest(int left,int right)
 					{
 						if(lc==nullptr)
-							return rpt==0?0:len;
+							return rpt==0?0:len=pt[r]-pt[l];
 						if(left>=r||right<=l||(left>=right-1&&rpt==0))
 							return 0;
 						pushtag();
@@ -97,7 +97,7 @@ namespace tr{
 							if(rpt!=0)
 								return len=pt[r]-pt[l];
 							else
-								return lc->quest(left,right)+rc->quest(left,right);
+								return len=lc->quest(left,right)+rc->quest(left,right);
 						}
 						return len=lc->quest(left,right)+rc->quest(left,right);
 					}
@@ -182,8 +182,8 @@ int main()
 	long long ans=0l;
 	for(int i=1;i<n;i++)
 	{
-		t->add(a[i]);
 		ans+=(a[i].first.y-a[i-1].first.y)*t->quest();
+		t->add(a[i]);
 	}
 	printf("%lld\n",ans);
 	delete[] a;
