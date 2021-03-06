@@ -1,82 +1,34 @@
-#include <iostream>
+#include <stdio.h>
 #include <algorithm>
-#include <un>
+#include <utility>
 using namespace std;
 
-typedef int inte;
-
-class node{
-	public:
-		inte x,y;
-		node(){}
-		node(inte _x,inte _y)
-		{
-			x=_x,y=_y;
-		}
-		bool operator<(const node &a)const
-		{
-			return x==a.x?y<a.y:x<a.x;
-		}
-		bool operator==(const node &a)const
-		{
-			return x==a.x&&y==a.y;
-		}
-};
-node getnode()
-{
-	node ans;
-	cin>>ans.x>>ans.y;
-	return ans;
-}
 class line{
 	public:
-		node n1,n2;
-		line(){}
-		line(const node &_n1,const node &_n2)
+		int x1,x2,y;
+		int type;
+		bool operator<(const line&x)
 		{
-			n1=_n1,n2=_n2;
-			if(!(n1<n2)) swap(n1,n2);
-			return;
+			return y<x.y;
 		}
-		bool operator ==(const line &x)const
+		line(int _x1,int _x2,int _y,int _type)
 		{
-			return n1==x.n1&&n2==x.n2;
+			x1=_x1,x2=_x2,y=_y,type=_type;
 		}
 };
-line null(node(0,0),node(0,0));
-class square{
+class squ{
 	public:
-		line l,r,u,d;
-		void init()
-		{
-			node ld=getnode(),ru=getnode();
-			d=line(ld,node(ru.x,ld.y));
-			u=line(node(ld.x,ru.y),ru);
-			l=line(ld,node(ld.x,ru.y));
-			r=line(node(ru.x,ld.y),ru);
-		}
+		int x1,x2,y1,y2;
 };
-int ptosq(const node &f,const square &x)
+pair<line,line> gen1(const squ &x)
 {
-	if((f.x<x.d.n1.x&&f.y<x.d.n1.y)||
-	(f.x<x.u.n1.x&&f.y>x.u.n1.y)||
-	(f.x>x.d.n2.x&&f.y<x.d.n2.y)||
-	(f.x>x.d.n2.x&&f.y>x.d.n2.y))
-		return 0;
-	if(f.x<x.d.n1.x)
-		return 1;
-	if(f.y<x.d.n1.y)
-		return 2;
-	if(f.x>x.d.n2.x)
-		return 3;
-	if(f.y>x.u.n1.y)
-		return 4;
-	if((f.x==x.d.n1.x||f.x==x.d.n2.x)&&(f.y==x.l.n1.y||f.y==x.l.n2.y))
-		return 5;
-	return -1;
+	return make_pair(line(x.x1,x.x2,x.y1,1),line(x.x1,x.x2,x.y2,-1));
 }
-pair<line,line> cut(const line &f,const square &x)
+pair<line,line> gen2(const squ &x)
 {
-	if(ptosq(f.n1,x)==0||ptosq(f.n2,x)==0)
-		return make_pair(f,null);
+	return make_pair(line(x.y1,x.y2,x.x1,1),line(x.y1,x.y2,x.x2,-1));
+}
+
+int main()
+{
 }
