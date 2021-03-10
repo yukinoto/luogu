@@ -7,6 +7,7 @@ class line{
 	public:
 		int x1,x2,y;
 		int type;
+		line(){}
 		bool operator<(const line&x)
 		{
 			return y<x.y;
