@@ -18,6 +18,7 @@ class line{
 		{
 			x1=_x1,x2=_x2,y=_y,type=_type;
 		}
+		~line(){}
 };
 class squ{
 	public:
@@ -142,51 +143,54 @@ long long sch(long long x,long long left,long long right)
 		return sch(x,(left+right)/2,right);
 }
 
+int n;
+long long ans=0l;
+squ *pt;
+
+void f(decltype(gen1) gen)
+{
+	line x[10010];
+	for(int i=0;i<n;i++)
+	{
+		auto ct=gen(pt[i]);
+		x[i<<1]=ct.first,x[(i<<1)^1]=ct.second;
+	}
+	sort(x,x+(n<<1));
+	set<long long>nodes;
+	for(int i=0;i<(n<<1);i++)
+	{
+		nodes.insert(x[i].x1),
+		nodes.insert(x[i].x2);
+	}
+	tr::pt.clear();
+	for(auto it=nodes.begin();it!=nodes.end();++it)
+	{
+		tr::pt.push_back(*it);
+	}
+	for(int i=0;i<=(n<<1);i++)
+	{
+		x[i].x1=sch(x[i].x1,0,tr::pt.size());
+		x[i].x2=sch(x[i].x2,0,tr::pt.size());
+	}
+	tr::tree *t=new tr::tree(0,tr::pt.size());
+	long long bef=0l;
+	for(int i=0;i<(n<<1);i++)
+	{
+		t->add(x[i].x1,x[i].x2,x[i].type);
+		long long now=t->quest();
+		ans+=abs(bef-now);
+		bef=now;
+	}
+	delete t;
+};
+
 int main()
 {
-	int n;
 	scanf("%d",&n);
-	squ *pt=new squ[n];
+	pt=new squ[n];
 	for(int i=0;i<n;i++)
-		pt->get();
-	long long ans=0l;
-	auto f=[&](decltype(gen1) gen)->void
-	{
-		line *x=new line[n<<1];
-		for(int i=0;i<n;i++)
-		{
-			auto ct=gen(pt[i]);
-			x[i<<1]=ct.first,x[(i<<1)^1]=ct.second;
-		}
-		sort(x,x+(n<<1));
-		set<long long>nodes;
-		for(int i=0;i<(n<<1);i++)
-		{
-			nodes.insert(x[i].x1),
-			nodes.insert(x[i].x2);
-		}
-		tr::pt.clear();
-		for(auto it=nodes.begin();it!=nodes.end();++it)
-		{
-			tr::pt.push_back(*it);
-		}
-		for(int i=0;i<=(n<<1);i++)
-		{
-			x[i].x1=sch(x[i].x1,0,tr::pt.size());
-			x[i].x2=sch(x[i].x2,0,tr::pt.size());
-		}
-		tr::tree *t=new tr::tree(0,tr::pt.size());
-		long long bef=0l;
-		for(int i=0;i<=(n<<1);i++)
-		{
-			t->add(x[i].x1,x[i].x2,x[i].type);
-			long long now=t->quest();
-			ans+=abs(bef-now);
-			bef=now;
-		}
-		delete t;
-		delete[] x;
-	};
+		(pt+i)->get();
+	f(gen1),f(gen2);
 	printf("%lld",ans);
 	return 0;
 }
