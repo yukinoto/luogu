@@ -177,6 +177,8 @@ void f(decltype(gen1) gen)
 	for(int i=0;i<(n<<1);i++)
 	{
 		t->add(x[i].x1,x[i].x2,x[i].type);
+		while(i<((n<<1)-1)&&x[i+1].y==x[i].y)
+			t->add(x[++i].x1,x[i].x2,x[i].type);
 		long long now=t->quest();
 		ans+=abs(bef-now);
 		bef=now;
