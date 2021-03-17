@@ -43,13 +43,12 @@ namespace tr{
 		private:
 			class node{
 				private:
-					long long l,r,len,rpt,rpttag;
+					long long l,r,rpt,rpttag;
 					node *lc,*rc;
 				public:
 					node(long long left,long long right)
 					{
 						l=left,r=right;
-						len=0;
 						rpt=rpttag=0;
 						if(left>=right-1)
 						{
@@ -83,18 +82,18 @@ namespace tr{
 					long long quest(long long left,long long right)
 					{
 						if(lc==nullptr)
-							return rpt==0?0:len=pt[r]-pt[l];
+							return rpt==0?0:pt[r]-pt[l];
 						if(left>=r||right<=l||(left>=right-1&&rpt==0))
 							return 0;
 						pushtag();
 						if(left<=l&&right>=r)
 						{
 							if(rpt!=0)
-								return len=pt[r]-pt[l];
+								return pt[r]-pt[l];
 							else
-								return len=lc->quest(left,right)+rc->quest(left,right);
+								return lc->quest(left,right)+rc->quest(left,right);
 						}
-						return len=lc->quest(left,right)+rc->quest(left,right);
+						return lc->quest(left,right)+rc->quest(left,right);
 					}
 					void add(long long left,long long right,long long x)
 					{
@@ -191,6 +190,7 @@ void f(decltype(gen1) gen)
 					swap(x[j].x1,x[i].x2);
 			}
 		}
+		//printf("\n");
 	}
 	tr::tree *t=new tr::tree(0,tr::pt.size());
 	long long bef=0l;
@@ -201,6 +201,7 @@ void f(decltype(gen1) gen)
 		ans+=abs(bef-now);
 		bef=now;
 	}
+	//printf("%lld\n",t->quest());
 	delete t;
 };
 
@@ -212,6 +213,6 @@ int main()
 		(pt+i)->get();
 	f(gen1);
 	f(gen2);
-	printf("%lld",ans);
+	printf("%lld\n",ans);
 	return 0;
 }
