@@ -12,7 +12,7 @@ class line{
 		line(){}
 		bool operator<(const line&x)
 		{
-			return y==x.y?(x1==x.x1?x2<x.x2:x1<x.x1):y<x.y;
+			return y==x.y?(type==x.type?(x1==x.x1?x2<x.x2:x1<x.x1):type>x.type):y<x.y;
 		}
 		line(int _x1,int _x2,int _y,int _type)
 		{
@@ -170,26 +170,6 @@ void f(decltype(gen1) gen)
 	{
 		x[i].x1=sch(x[i].x1,0,tr::pt.size());
 		x[i].x2=sch(x[i].x2,0,tr::pt.size());
-		for(int j=i-1;j>=0&&x[i].y==x[j].y;j--)
-		{
-			if(x[j].type!=x[i].type&&x[j].x2>x[i].x1&&x[j].x1<x[i].x2)
-			{
-				int a[4]{x[i].x1,x[i].x2,x[j].x1,x[j].x2};
-				sort(a,a+4);
-				if(x[j].x1>=x[i].x1&&x[j].x2<=x[i].x2)
-				{
-					x[j].x1=a[0],x[j].x2=a[1],x[i].x1=a[2],x[i].x2=a[3];
-					x[j].type=x[i].type;
-				}else if(x[j].x1<=x[i].x1&&x[j].x2>=x[i].x2)
-				{
-					x[j].x1=a[0],x[j].x2=a[1],x[i].x1=a[2],x[i].x2=a[3];
-					x[i].type=x[j].type;
-				}else if(x[j].x1<=x[i].x1)
-					swap(x[i].x1,x[j].x2);
-				else
-					swap(x[j].x1,x[i].x2);
-			}
-		}
 		//printf("\n");
 	}
 	tr::tree *t=new tr::tree(0,tr::pt.size());
