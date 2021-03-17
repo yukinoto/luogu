@@ -128,7 +128,7 @@ namespace tr{
 			}
 			long long quest()
 			{
-				return root->quest(0,pt.size()-1);
+				return root->quest(0,pt.size());
 			}
 	};
 }
@@ -167,18 +167,36 @@ void f(decltype(gen1) gen)
 	{
 		tr::pt.push_back(*it);
 	}
-	for(int i=0;i<=(n<<1);i++)
+	for(int i=0;i<(n<<1);i++)
 	{
 		x[i].x1=sch(x[i].x1,0,tr::pt.size());
 		x[i].x2=sch(x[i].x2,0,tr::pt.size());
+		for(int j=i-1;j>=0&&x[i].y==x[j].y;j--)
+		{
+			if(x[j].type!=x[i].type&&x[j].x2>x[i].x1&&x[j].x1<x[i].x2)
+			{
+				int a[4]{x[i].x1,x[i].x2,x[j].x1,x[j].x2};
+				sort(a,a+4);
+				if(x[j].x1>=x[i].x1&&x[j].x2<=x[i].x2)
+				{
+					x[j].x1=a[0],x[j].x2=a[1],x[i].x1=a[2],x[i].x2=a[3];
+					x[j].type=x[i].type;
+				}else if(x[j].x1<=x[i].x1&&x[j].x2>=x[i].x2)
+				{
+					x[j].x1=a[0],x[j].x2=a[1],x[i].x1=a[2],x[i].x2=a[3];
+					x[i].type=x[j].type;
+				}else if(x[j].x1<=x[i].x1)
+					swap(x[i].x1,x[j].x2);
+				else
+					swap(x[j].x1,x[i].x2);
+			}
+		}
 	}
 	tr::tree *t=new tr::tree(0,tr::pt.size());
 	long long bef=0l;
 	for(int i=0;i<(n<<1);i++)
 	{
 		t->add(x[i].x1,x[i].x2,x[i].type);
-		/*while(i<((n<<1)-1)&&x[i+1].y==x[i].y)
-			t->add(x[++i].x1,x[i].x2,x[i].type);*/
 		long long now=t->quest();
 		ans+=abs(bef-now);
 		bef=now;
@@ -192,7 +210,8 @@ int main()
 	pt=new squ[n];
 	for(int i=0;i<n;i++)
 		(pt+i)->get();
-	f(gen1),f(gen2);
+	f(gen1);
+	f(gen2);
 	printf("%lld",ans);
 	return 0;
 }
