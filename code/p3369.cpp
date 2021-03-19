@@ -339,7 +339,10 @@ class treap{
 						if(rc==nullptr)
 							return num;
 						else
-							return rc->bef(x);
+						{
+							T as=rc->bef(x);
+							return as>=x?num:as;
+						}
 					else
 						if(lc==nullptr)
 							return 0x7fffffff;
@@ -354,12 +357,15 @@ class treap{
 						if(lc==nullptr)
 							return num;
 						else
-							return lc->nxt(x);
+						{
+							T as=lc->nxt(x);
+							return as>=x?num:as;
+						}
 					else
 						if(rc==nullptr)
-							return 0x7fffffff;
+							return 0x80000000;
 						else
-							return rc->nxt(x);
+							return rc->bef(x);
 				}
 		};
 		node *root;
@@ -444,7 +450,7 @@ void f6(treap<int> *tr)
 decltype(f1) *f[6]={f1,f2,f3,f4,f5,f6};
 int main()
 {
-	freopen("./code/p3369.in","r",stdin);
+	//freopen("./code/p3369.in","r",stdin);
 	int n;
 	scanf("%d",&n);
 	auto* tr=new treap<int>;
