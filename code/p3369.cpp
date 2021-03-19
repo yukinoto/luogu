@@ -167,7 +167,7 @@ class treap{
 					num=x;
 					key=getRand();
 					lc=rc=nullptr;
-					sons=0;
+					sons=1;
 				}
 				~node(){delete lc;delete rc;}
 				void add(const T &x)
