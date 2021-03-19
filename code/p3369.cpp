@@ -43,16 +43,16 @@ class treap{
 				}
 				void splay(bool type)
 				{
-					node *_fa=fa,*_lc=lc,*_rc=rc,*_lc_rc=lc->rc,*_rc_lc=rc->lc;
+					decltype(lc) fa_=fa,lc_=lc,rc_=rc,lc_rc_=lc->rc,rc_lc_=rc->lc;
 					if(type==LEFT_UP)
 					{
-						fa=_lc,lc=_lc_rc,_lc->rc=this,_lc->fa=_fa;
+						fa=lc_,lc=lc_rc_,lc_->rc=this,lc_->fa=fa_;
 					}
 					if(type=RIGHT_UP)
 					{
-						fa=_rc,rc=_rc_lc,_rc->lc=this,_rc->fa=_fa;
+						fa=rc_,rc=rc_lc_,rc_->lc=this,rc_->fa=fa_;
 					}
-					resetsons(fa);
+					fa->resetsons();
 				}
 				void mkHeap()
 				{
@@ -78,7 +78,8 @@ class treap{
 					return;
 				}
 			public:
-				*node get(const T &x)const
+				T get()const{return num;}
+				auto get(const T &x)->decltype(this)
 				{
 					if(num==x)
 						return this;
@@ -86,29 +87,29 @@ class treap{
 					{
 						if(lc==nullptr)
 							return nullptr;
-						return lc->get();
+						return lc->get(x);
 					}
 					else
 					{
 						if(rc==nullptr)
 							return nullptr;
-						return rc->get();
+						return rc->get(x);
 					}
 				}
-				node(const T &x,const node *_fa)
+				node(const T &x,decltype(lc) _fa)
 				{
 					fa=_fa;
 					num=x;
 					key=getRand();
 					lc=rc=nullptr;
-					rnk=1;
+					sons=0;
 				}
 				~node(){delete lc;delete rc;}
 				void add(const T &x)
 				{
 					if(x==num)
 					{
-						node *_lc=lc;
+						decltype(lc)_lc=lc;
 						lc=new node(x,this);
 						lc->lc=_lc;
 						lc->mkHeap();
@@ -140,6 +141,19 @@ class treap{
 					mkHeap();
 					return;
 				}
+				auto fdnth(int n,int bef)->decltype(lc)
+				{
+					if(bef+(lc==nullptr?0:lc->sons)==n-1)
+						return this;
+					if(lc==nullptr)
+						return rc->fdnth(n,bef+1);
+					if(rc==nullptr)
+						return lc->fdnth(n,bef);
+					if(bef+(lc==nullptr?0:lc->sons)>n-1)
+						return lc->fdnth(n,bef);
+					else
+						return rc->fdnth(n,bef+1+lc->sons);
+				}
 		};
 		node *root;
 		public:
@@ -157,4 +171,45 @@ class treap{
 				root->get(x)->del();
 				return;
 			}
+			T nth(int n)
+			{
+				return root->fdnth(n,0)->get();
+			}
 };
+
+void f1(treap<int> *tr)
+{
+	int x;
+	scanf("%d",&x);
+	tr->add(x);
+	return;
+}
+void f2(treap<int> *tr)
+{
+	int x;
+	scanf("%d",&x);
+	tr->del(x);
+	return;
+}
+
+void f4(treap<int> *tr)
+{
+	int x;
+	scanf("%d",&x);
+	printf("%d\n",tr->nth(x));
+}
+
+decltype(f1) *f[6]={f1,f2,nullptr,f4,nullptr,nullptr};
+int main()
+{
+	int n;
+	scanf("%d",&n);
+	auto* tr=new treap<int>;
+	for(int i=0;i<n;i++)
+	{
+		int x;
+		scanf("%d",&x);
+		f[x-1](tr);
+	}
+	return 0;
+}
