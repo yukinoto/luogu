@@ -1,5 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
+using namespace std;
 
 int getRand()
 {
@@ -333,39 +335,25 @@ class treap{
 				auto gtf()const ->decltype(fa){return fa;}
 				T bef(const T &x)const
 				{
+					if(this==nullptr)
+						return 0x80000000;
 					if(lc==nullptr&&rc==nullptr)
-						return num;
-					if(num<x)
-						if(rc==nullptr)
-							return num;
-						else
-						{
-							T as=rc->bef(x);
-							return as>=x?num:as;
-						}
-					else
-						if(lc==nullptr)
-							return 0x7fffffff;
-						else
-							return lc->bef(x);
+						return num<x?num:0x80000000;;
+					if(num>=x)
+						return lc->bef(x);
+					T la=lc->bef(x),ra=rc->bef(x);
+					return max(num>=x?int(0x80000000):num,max(la,ra));
 				}
 				T nxt(const T &x)const
 				{
+					if(this==nullptr)
+						return 0x7fffffff;
 					if(lc==nullptr&&rc==nullptr)
-						return num;
-					if(num>x)
-						if(lc==nullptr)
-							return num;
-						else
-						{
-							T as=lc->nxt(x);
-							return as>=x?num:as;
-						}
-					else
-						if(rc==nullptr)
-							return 0x80000000;
-						else
-							return rc->bef(x);
+						return num>x?num:0x7fffffff;
+					if(num<=x)
+						return rc->nxt(x);
+					T la=lc->nxt(x),ra=rc->nxt(x);
+					return min(num<=x?int(0x7fffffff):num,min(la,ra));
 				}
 		};
 		node *root;
@@ -450,7 +438,7 @@ void f6(treap<int> *tr)
 decltype(f1) *f[6]={f1,f2,f3,f4,f5,f6};
 int main()
 {
-	//freopen("./code/p3369.in","r",stdin);
+	freopen("./code/p3369.in","r",stdin);
 	int n;
 	scanf("%d",&n);
 	auto* tr=new treap<int>;
