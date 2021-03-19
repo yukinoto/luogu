@@ -201,6 +201,7 @@ class treap{
 						else
 							lc->add(x);
 					}
+					resetsons();
 				}
 				auto merge(decltype(lc) pt1,decltype(lc) pt2,decltype(lc) tf)->decltype(lc)
 				{
