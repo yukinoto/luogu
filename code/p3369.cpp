@@ -343,7 +343,7 @@ class treap{
 						return lc->bef(x);
 					T la=lc->bef(x),ra=rc->bef(x);
 					return max(num>=x?int(0x80000000):num,max(la,ra));
-				}
+				};
 				T nxt(const T &x)const
 				{
 					if(this==nullptr)
