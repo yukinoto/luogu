@@ -227,7 +227,7 @@ class treap{
 							{
 								pt1->fa=tf;
 								merge(pt1->rc,pt2,pt1);
-								pt1->resetsons();
+								pt2->resetsons();
 								return pt1;
 							}
 						}
@@ -244,7 +244,7 @@ class treap{
 							{
 								pt1->fa=tf;
 								merge(pt1->lc,pt2,pt1);
-								pt1->resetsons();
+								pt2->resetsons();
 								return pt1;
 							}
 						}
@@ -264,7 +264,7 @@ class treap{
 							{
 								pt2->fa=tf;
 								merge(pt2->rc,pt1,pt2);
-								pt2->resetsons();
+								pt1->resetsons();
 								return pt2;
 							}
 						}
@@ -281,7 +281,7 @@ class treap{
 							{
 								pt2->fa=tf;
 								merge(pt2->lc,pt1,pt2);
-								pt2->resetsons();
+								pt1->resetsons();
 								return pt2;
 							}
 						}
@@ -444,7 +444,7 @@ void f6(treap<int> *tr)
 decltype(f1) *f[6]={f1,f2,f3,f4,f5,f6};
 int main()
 {
-	//freopen("./code/p3369.in","r",stdin);
+	freopen("./code/p3369.in","r",stdin);
 	int n;
 	scanf("%d",&n);
 	auto* tr=new treap<int>;
