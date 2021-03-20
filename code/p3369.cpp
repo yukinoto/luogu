@@ -1,3 +1,4 @@
+//STreap-RE-60pts
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
@@ -16,9 +17,10 @@ class treap{
 		class node{
 			private:
 				T num;
-				int key,sons;
+				int key;
+				mutable int sons;
 				node *lc,*rc,*fa;
-				void resetsons()
+				void resetsons()const
 				{
 					sons=0;
 					if(lc!=nullptr)
@@ -44,6 +46,7 @@ class treap{
 					sons++;
 					if(fa!=nullptr)
 						fa->resetsons();
+					return;
 				}
 				void splay(bool type)
 				{
@@ -203,8 +206,14 @@ class treap{
 					}
 					resetsons();
 				}
-				auto merge(decltype(lc) pt1,decltype(lc) pt2,decltype(lc) tf)->decltype(lc)
+				friend auto merge(decltype(lc) pt1,decltype(lc) pt2,decltype(lc) tf)->decltype(lc)
 				{
+					if(pt1==nullptr&&pt2==nullptr) return nullptr;
+					if(pt1==pt2)
+					{
+						pt1->fa=tf;
+						return pt1;
+					}
 					if(pt1==nullptr)
 					{
 						pt2->fa=tf;
@@ -215,80 +224,38 @@ class treap{
 						pt1->fa=tf;
 						return pt1;
 					}
-					if(pt1->key<pt2->key)
+					if(pt1->key>pt2->key)
+						swap(pt1,pt2);
+					pt1->fa=tf;
+					if(pt1->num<pt2->num)
 					{
-						if(pt1->num<pt2->num)
+						if(pt1->rc==nullptr)
 						{
-							if(pt1->rc==nullptr)
-							{
-								pt1->rc=pt2;
-								pt1->fa=tf;
-								pt2->fa=pt1;
-								return pt1;
-							}
-							else
-							{
-								pt1->fa=tf;
-								merge(pt1->rc,pt2,pt1);
-								pt2->resetsons();
-								return pt1;
-							}
+							pt1->rc=pt2;
+							pt1->resetsons();
+							(pt2->fa)=pt1;
 						}
 						else
 						{
-							if(pt1->lc==nullptr)
-							{
-								pt1->lc=pt2;
-								pt1->fa=tf;
-								pt2->fa=pt1;
-								return pt1;
-							}
-							else
-							{
-								pt1->fa=tf;
-								merge(pt1->lc,pt2,pt1);
-								pt2->resetsons();
-								return pt1;
-							}
+							pt1->rc=merge(pt1->rc,pt2,pt1);
+							pt2->resetsons();
 						}
 					}
 					else
 					{
-						if(pt2->num<pt1->num)
+						if(pt1->lc==nullptr)
 						{
-							if(pt2->rc==nullptr)
-							{
-								pt2->rc=pt1;
-								pt2->fa=tf;
-								pt1->fa=pt2;
-								return pt2;
-							}
-							else
-							{
-								pt2->fa=tf;
-								merge(pt2->rc,pt1,pt2);
-								pt1->resetsons();
-								return pt2;
-							}
+							pt1->lc=pt2;
+							pt1->resetsons();
+							(pt2->fa)=pt1;
 						}
 						else
 						{
-							if(pt2->lc==nullptr)
-							{
-								pt2->lc=pt1;
-								pt2->fa=tf;
-								pt1->fa=pt2;
-								return pt2;
-							}
-							else
-							{
-								pt2->fa=tf;
-								merge(pt2->lc,pt1,pt2);
-								pt1->resetsons();
-								return pt2;
-							}
+							pt1->lc=merge(pt1->lc,pt2,pt1);
+							pt2->resetsons();
 						}
 					}
+					return pt1;
 				}
 				auto del()->decltype(lc)
 				{
