@@ -416,5 +416,6 @@ int main()
 		scanf("%d",&x);
 		f[x-1](tr);
 	}
+	delete tr;
 	return 0;
 }
