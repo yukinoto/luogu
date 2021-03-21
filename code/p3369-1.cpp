@@ -40,11 +40,17 @@ class tree{
 						return this;
 					return lc->findmin();
 				}
+				decltype(lc) findmax()
+				{
+					if(rc==nullptr)
+						return this;
+					return rc->findmax();
+				}
 				void update()
 				{
 					if(this==nullptr)
 						return;
-					size=lc->getsize()+rc->getsize()+1;
+					size=lc->getsize()+rc->getsize()+rpt;
 					return;
 				}
 				void addchild(node*pt,int type)
@@ -100,6 +106,14 @@ class tree{
 				{
 					if(this==nullptr)
 						return nullptr;
+					if(rpt>1)
+					{
+						rpt--;
+						update();
+						fa->update();
+						splay();
+						return this;
+					}
 					splay();
 					if(lc==nullptr&&rc==nullptr)
 					{
@@ -126,16 +140,18 @@ class tree{
 					if(rep->fa==this)
 					{
 						rep->fa=nullptr;
-						rep->lc=lc;
+						rep->addchild(lc,LEFT);
 						lc=rc=nullptr;
 						delete this;
+						rep->update();
 						return rep;
 					}
 					rep->fa->addchild(rep->rc,LEFT);
 					rep->fa=nullptr;
-					rep->lc=lc;rep->rc=rc;
+					rep->addchild(lc,LEFT),rep->addchild(rc,RIGHT);
 					lc=rc=nullptr;
 					delete this;
+					rep->update();
 					return rep;
 				}
 			public:
@@ -176,18 +192,18 @@ class tree{
 				int checkth(const T &x,int bef)const
 				{
 					if(num==x)
-						return bef+lc->getsize()+1;
+						return bef+lc->getsize()+rpt;
 					if(num<x)
-						return rc->checkth(x,bef+1+lc->getsize());
+						return rc->checkth(x,bef+rpt+lc->getsize());
 					else
 						return lc->checkth(x,bef);
 				}
 				T nth(const int &n,const int &bef)const
 				{
-					if(bef+lc->getsize()+1==n)
+					if(bef+lc->getsize()+rpt>=n&&bef+lc->getsize()<n)
 						return num;
-					if(bef+lc->getsize()+1<n)
-						return rc->nth(n,bef+lc->getsize()+1);
+					if(bef+lc->getsize()<n)
+						return rc->nth(n,bef+lc->getsize()+rpt);
 					else
 						return lc->nth(n,bef);
 				}
@@ -195,8 +211,18 @@ class tree{
 				{
 					return find(x)->nodedel();
 				}
-				T getlc()const{return lc->num;}
-				T getrc()const{return rc->num;}
+				T getlc()const
+				{
+					if(lc==nullptr||rpt>1)
+						return this->num;
+					return lc->findmax()->num;
+				}
+				T getrc()const
+				{
+					if(rc==nullptr||rpt>1)
+						return this->num;
+					return rc->findmin()->num;
+				}
 		};
 		node *root;
 	public:
