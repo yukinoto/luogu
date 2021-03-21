@@ -66,6 +66,7 @@ class tree{
 				}
 				void rotate()
 				{
+					//update();
 					if(this==nullptr||fa==nullptr)
 						return;
 					auto f=fa,ff=fa->fa;
@@ -77,6 +78,7 @@ class tree{
 				}
 				decltype(lc) splay()
 				{
+					//update();
 					if(this==nullptr)return nullptr;
 					if(fa==nullptr)
 						return this;
@@ -95,6 +97,7 @@ class tree{
 				}
 				decltype(lc) find(const T &x)
 				{
+					//update();
 					if(this==nullptr||num==x)
 						return this;
 					if(num<x)
@@ -104,6 +107,7 @@ class tree{
 				}
 				decltype(lc) nodedel()
 				{
+					//update();
 					if(this==nullptr)
 						return nullptr;
 					if(rpt>1)
@@ -126,7 +130,7 @@ class tree{
 						auto ans=rc;
 						rc=nullptr;
 						delete this;
-						return ans;
+						return ans->splay();
 					}
 					if(rc==nullptr)
 					{
@@ -134,25 +138,28 @@ class tree{
 						auto ans=lc;
 						lc=nullptr;
 						delete this;
-						return ans;
+						return ans->splay();
 					}
 					auto rep=rc->findmin();
 					if(rep->fa==this)
 					{
 						rep->fa=nullptr;
 						rep->addchild(lc,LEFT);
+						rep->update();
 						lc=rc=nullptr;
 						delete this;
-						rep->update();
-						return rep;
+						return rep->splay();
 					}
+					auto nr=rep->fa;
 					rep->fa->addchild(rep->rc,LEFT);
 					rep->fa=nullptr;
 					rep->addchild(lc,LEFT),rep->addchild(rc,RIGHT);
+					rep->update();
 					lc=rc=nullptr;
 					delete this;
-					rep->update();
-					return rep;
+					nr->update();
+					nr->fa->update();
+					return nr->splay();
 				}
 			public:
 				node(const T &x,node *_fa)
@@ -160,6 +167,7 @@ class tree{
 				~node(){delete lc,delete rc;}
 				decltype(lc) add(const T &x)
 				{
+					//update();
 					if(this->num==x)
 					{
 						rpt++;
@@ -189,17 +197,19 @@ class tree{
 							return lc->add(x);
 					}
 				}
-				int checkth(const T &x,int bef)const
+				int checkth(const T &x,int bef)
 				{
+					//update();
 					if(num==x)
-						return bef+lc->getsize()+rpt;
+						return bef+lc->getsize()+1;
 					if(num<x)
 						return rc->checkth(x,bef+rpt+lc->getsize());
 					else
 						return lc->checkth(x,bef);
 				}
-				T nth(const int &n,const int &bef)const
+				T nth(const int &n,const int &bef)
 				{
+					//update();
 					if(bef+lc->getsize()+rpt>=n&&bef+lc->getsize()<n)
 						return num;
 					if(bef+lc->getsize()<n)
@@ -209,17 +219,20 @@ class tree{
 				}
 				decltype(lc) del(const T &x)
 				{
+					//update();
 					return find(x)->nodedel();
 				}
-				T getlc()const
+				T getlc()
 				{
-					if(lc==nullptr||rpt>1)
+					//update();
+					if(lc==nullptr)
 						return this->num;
 					return lc->findmax()->num;
 				}
-				T getrc()const
+				T getrc()
 				{
-					if(rc==nullptr||rpt>1)
+					//update();
+					if(rc==nullptr)
 						return this->num;
 					return rc->findmin()->num;
 				}
@@ -242,11 +255,11 @@ class tree{
 		{
 			root=root->del(x);
 		}
-		int checkth(const T &x)const
+		int checkth(const T &x)
 		{
 			return root->checkth(x,0);
 		}
-		T nth(const int &x)const
+		T nth(const int &x)
 		{
 			return root->nth(x,0);
 		}
