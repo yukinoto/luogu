@@ -34,6 +34,12 @@ class tree{
 						return 0;
 					return size;
 				}
+				decltype(lc) findmin()
+				{
+					if(lc==nullptr)
+						return this;
+					return lc->findmin();
+				}
 				void update()
 				{
 					if(this==nullptr)
@@ -94,14 +100,43 @@ class tree{
 				{
 					if(this==nullptr)
 						return nullptr;
-					while(lc!=nullptr)
-						lc->splay();
-					while(rc!=nullptr)
-						rc->splay();
-					node* f=fa;
+					splay();
+					if(lc==nullptr&&rc==nullptr)
+					{
+						delete this;
+						return nullptr;
+					}
+					if(lc==nullptr)
+					{
+						rc->fa=nullptr;
+						auto ans=rc;
+						rc=nullptr;
+						delete this;
+						return ans;
+					}
+					if(rc==nullptr)
+					{
+						lc->fa=nullptr;
+						auto ans=lc;
+						lc=nullptr;
+						delete this;
+						return ans;
+					}
+					auto rep=rc->findmin();
+					if(rep->fa==this)
+					{
+						rep->fa=nullptr;
+						rep->lc=lc;
+						lc=rc=nullptr;
+						delete this;
+						return rep;
+					}
+					rep->fa->addchild(rep->rc,LEFT);
+					rep->fa=nullptr;
+					rep->lc=lc;rep->rc=rc;
+					lc=rc=nullptr;
 					delete this;
-					f->update();
-					return f->splay();
+					return rep;
 				}
 			public:
 				node(const T &x,node *_fa)
@@ -191,16 +226,16 @@ class tree{
 		}
 		T bef(const T &x)
 		{
-			root->add(x);
+			root=root->add(x);
 			T ans=root->getlc();
-			root->del(x);
+			root=root->del(x);
 			return ans;
 		}
 		T nxt(const T &x)
 		{
-			root->add(x);
+			root=root->add(x);
 			T ans=root->getrc();
-			root->del(x);
+			root=root->del(x);
 			return ans;
 		}
 };
