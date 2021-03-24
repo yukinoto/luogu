@@ -23,21 +23,16 @@ class tree{
 			public:
 				node(const int &left,const int &right,T *base)
 				{
-					for(auto &i:son)
-						i=nullptr;
 					if(left==right-1)
 					{
 						sum=base[left];
+						for(auto &i:son)
+							i=nullptr;
 						return;
 					}
-					int mid=(left+right)/2;
-					if(mid>left)
-						son[0]=new node(left,mid,base);
-					if(right>mid)
-						son[1]=new node(mid,right,base);
-					sum=0;
-					for(auto &i:son)
-						sum+=i->sum;
+					int mid=(left+right)>>1;
+					son[0]=new node(left,mid,base);
+					son[1]=new node(mid,right,base);
 					return;
 				}
 				~node()
@@ -54,14 +49,13 @@ class tree{
 						return sum;
 					T ans=0;
 					if(son[0]!=nullptr)
-						ans+=son[0]->ask(left,right,l,(l+r)/2);
+						ans+=son[0]->ask(left,right,l,(l+r)>>1);
 					if(son[1]!=nullptr)
-						ans+=son[1]->ask(left,right,(l+r)/2,r);
+						ans+=son[1]->ask(left,right,(l+r)>>1,r);
 					return ans;
 				}
 				node(int left,int right,node *from,int p,T x)
 				{
-					sum=0;
 					for(int i=0;i<2;i++)
 						son[i]=from->son[i];
 					if(left==right-1&&left==p)
@@ -69,14 +63,11 @@ class tree{
 						sum=x;
 						return;
 					}
-					int mid=(left+right)/2;
+					int mid=(left+right)>>1;
 					if(mid>left&&p<mid)
 						son[0]=new node(left,mid,son[0],p,x);
 					if(right>mid&&p>=mid)
 						son[1]=new node(mid,right,son[1],p,x);
-					for(auto i:son)
-						if(i!=nullptr)
-							sum+=i->sum;
 					return;
 				}
 		};
