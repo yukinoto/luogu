@@ -75,9 +75,9 @@ class tree{
 					}
 					int mid=(left+right)/2;
 					if(mid>left&&p<mid)
-						son[0]=new node(left,mid,this,p,x);
+						son[0]=new node(left,mid,son[0],p,x);
 					if(right>mid&&p>=mid)
-						son[1]=new node(mid,right,this,p,x);
+						son[1]=new node(mid,right,son[1],p,x);
 					for(auto i:son)
 						if(i!=nullptr)
 							sum+=i->sum;
