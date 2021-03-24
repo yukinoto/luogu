@@ -144,7 +144,7 @@ int main()
 	int *pt=new int[n];
 	for(int i=0;i<n;i++)
 		scanf("%d",pt+i);
-	auto *tr=new tree<int>(0,n,pt);
+	tree<int>* tr=new tree<int>(0,n,pt);
 	for(int i=0;i<m;i++)
 	{
 		static int version;
