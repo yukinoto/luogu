@@ -19,14 +19,12 @@ class tree{
 		class node{
 			private:
 				node *son[2];
-				int l,r;
 				T sum;
 			public:
-				node(int left,int right,T *base)
+				node(const int &left,const int &right,T *base)
 				{
 					for(auto &i:son)
 						i=nullptr;
-					l=left,r=right;
 					if(left==right-1)
 					{
 						sum=base[left];
@@ -48,26 +46,24 @@ class tree{
 						delete i;
 					return;
 				}
-				T ask(int left,int right)
+				T ask(const int &left,const int &right,const int &l,const int &r)
 				{
-					if(l>=left&&r<=right)
-						return sum;
 					if(l>=right||r<=left)
 						return 0;
+					if(l>=left&&r<=right)
+						return sum;
 					T ans=0;
-					for(auto i:son)
-						if(i!=nullptr)
-							ans+=i->ask(left,right);
+					if(son[0]!=nullptr)
+						ans+=son[0]->ask(left,right,l,(l+r)/2);
+					if(son[1]!=nullptr)
+						ans+=son[1]->ask(left,right,(l+r)/2,r);
 					return ans;
 				}
 				node(int left,int right,node *from,int p,T x)
 				{
 					sum=0;
-					if(p<left||p>=right)
-						return;
 					for(int i=0;i<2;i++)
 						son[i]=from->son[i];
-					l=left,r=right;
 					if(left==right-1&&left==p)
 					{
 						sum=x;
@@ -106,7 +102,7 @@ class tree{
 		T ask(int p,int version)
 		{
 			roots.push_back(roots[version]);
-			return roots[version]->ask(p,p+1);
+			return roots[version]->ask(p,p+1,l,r);
 		}
 };
 
