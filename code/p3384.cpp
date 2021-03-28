@@ -154,4 +154,9 @@ void dfs1(const int &p,const int &deepth,const int &fa)
 	return;
 }
 
+void dfs2(const int &p)
+{
+	
+}
+
 int main(){;}
