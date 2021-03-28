@@ -1,4 +1,6 @@
 #include <cstdio>
+#include <vector>
+using namespace std;
 
 template<typename T>//[)
 class xds{
@@ -129,3 +131,27 @@ class xds{
 	}
 	delete a;delete tr;
 }*/
+
+template<typename T>
+struct node{
+	T weight;
+	vector<int>sons;
+	int sig,heav,top,deepth,fa,size;
+};
+
+vector<node<long long> > nodes;
+
+void dfs1(const int &p,const int &deepth,const int &fa)
+{
+	nodes[p].deepth=deepth,nodes[p].fa=fa,nodes[p].size=1,nodes[p].heav=-1;
+	for(int i:nodes[p].sons)
+	{
+		dfs1(i,deepth+1,p);
+		nodes[p].size+=nodes[i].size;
+		if(nodes[p].heav==-1||nodes[i].size>nodes[nodes[p].heav].size)
+			nodes[p].heav=nodes[i].size;
+	}
+	return;
+}
+
+int main(){;}
