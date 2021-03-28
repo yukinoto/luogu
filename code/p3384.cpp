@@ -187,9 +187,9 @@ void mkt(int p)
 
 void buildtree()
 {
-	scanf("%lld%lld%lld%lld",n,m,r,p);
+	scanf("%lld%lld%lld%lld",&n,&m,&r,&p);
 	for(int i=0;i<n;i++)
-		scanf("%lld",&nodes[i].weight);
+		scanf("%lld",&(nodes[i].weight));
 	to=new vector<int>[n];
 	for(int i=0;i<n-1;i++)
 	{
