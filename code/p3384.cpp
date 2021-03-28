@@ -235,5 +235,41 @@ void crange(int x,int y,long long k)
 	xd->add(nodes[y].sig,nodes[x].sig+1,k);
 	return;
 }
+long long qsons(int r)
+{
+	return xd->quest(nodes[r].sig,nodes[r].sig+nodes[r].size);
+}
+void csons(int r,long long k)
+{
+	xd->add(nodes[r].sig,nodes[r].sig+nodes[r].size,k);
+}
 
-int main(){;}
+int main()
+{
+	buildtree();
+	for(int i=0;i<m;i++)
+	{
+		int f;
+		scanf("%d",&f);
+		long long x,y,z;
+		switch(f){
+			case 1:
+				scanf("%lld%lld&lld",&x,&y,&x);
+				crange(x,y,z);
+				break;
+			case 2:
+				scanf("%lld%lld",&x,&y);
+				printf("%lld\n",qrange(x,y));
+				break;
+			case 3:
+				scanf("%lld%lld",&x,&y);
+				csons(x,y);
+				break;
+			case 4:
+				scanf("%lld",&x);
+				printf("%lld\n",qsons(x));
+				break;
+		}
+	}
+	return 0;
+}
