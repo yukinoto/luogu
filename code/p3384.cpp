@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstring>
 #include <vector>
 using namespace std;
 
@@ -139,7 +140,11 @@ struct node{
 	int sig,heav,top,deepth,fa,size;
 };
 
+long long n,m,r,p;
+vector<int>*to;
 vector<node<long long> > nodes;
+long long int *a;
+xds<long long> xd;
 
 void dfs1(const int &p,const int &deepth,const int &fa)
 {
@@ -154,9 +159,51 @@ void dfs1(const int &p,const int &deepth,const int &fa)
 	return;
 }
 
-void dfs2(const int &p)
+void dfs2(const int &p,const int &top)
 {
-	
+	static int cnt=0;
+	nodes[p].sig=cnt++;
+	a[nodes[p].sig]=nodes[p].weight;
+	nodes[p].top=top;
+	dfs2(nodes[p].heav,top);
+	for(int i:nodes[p].sons)
+		if(i!=nodes[p].heav)
+			dfs2(i,i);
+}
+
+bool *taken;
+void mkt(int p)
+{
+	for(int i:to[p])
+		if(!taken[i])
+		{
+			taken[i]=true;
+			nodes[p].sons.push_back(i);
+			mkt(i);
+		}
+	return;
+}
+
+void buildtree()
+{
+	scanf("%lld%lld%lld%lld",n,m,r,p);
+	for(int i=0;i<n;i++)
+		scanf("%lld",&nodes[i].weight);
+	to=new vector<int>[n];
+	for(int i=0;i<n-1;i++)
+	{
+		int f,t;
+		scanf("%d%d",&f,&t);
+		to[f-1].push_back(t-1);
+		to[t-1].push_back(f-1);
+	}
+	taken=new bool[n];
+	memset(taken,false,n*sizeof(bool));
+	mkt(r);
+	delete[] taken;
+	delete[] to;
+	dfs1(r,1,r);
+	dfs2(r,r);
 }
 
 int main(){;}
