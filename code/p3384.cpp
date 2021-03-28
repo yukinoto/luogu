@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 template<typename T>//[)
@@ -144,7 +145,7 @@ long long n,m,r,p;
 vector<int>*to;
 vector<node<long long> > nodes;
 long long int *a;
-xds<long long> xd;
+xds<long long> *xd;
 
 void dfs1(const int &p,const int &deepth,const int &fa)
 {
@@ -203,7 +204,36 @@ void buildtree()
 	delete[] taken;
 	delete[] to;
 	dfs1(r,1,r);
+	a=new long long[n];
 	dfs2(r,r);
+	xd=new xds<long long>(a,0,n);
+	delete[] a;
+}
+
+long long qrange(int x,int y)
+{
+	long long ans=0ll;
+	while(nodes[x].top!=nodes[y].top)
+	{
+		if(x<y)	swap(x,y);
+		ans+=xd->quest(nodes[nodes[x].top].sig,nodes[x].sig+1);
+		x=nodes[nodes[x].top].fa;
+	}
+	if(x<y)	swap(x,y);
+	ans+=xd->quest(nodes[y].sig,nodes[x].sig+1);
+	return ans;
+}
+void crange(int x,int y,long long k)
+{
+	while(nodes[x].top!=nodes[y].top)
+	{
+		if(x<y)	swap(x,y);
+		xd->add(nodes[nodes[x].top].sig,nodes[x].sig+1,k);
+		x=nodes[nodes[x].top].fa;
+	}
+	if(x<y)	swap(x,y);
+	xd->add(nodes[y].sig,nodes[x].sig+1,k);
+	return;
 }
 
 int main(){;}
