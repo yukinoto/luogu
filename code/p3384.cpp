@@ -256,6 +256,8 @@ void csons(int r,long long k)
 
 int main()
 {
+	freopen("./code/p3384.in","r",stdin);
+	//freopen("./code/mas.out","w",stdout);
 	buildtree();
 	for(int i=0;i<m;i++)
 	{
