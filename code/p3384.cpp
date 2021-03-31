@@ -260,19 +260,19 @@ int main()
 		switch(f){
 			case 1:
 				cin>>x>>y>>z;
-				crange(x,y,z);
+				crange(x-1,y-1,z);
 				break;
 			case 2:
 				cin>>x>>y;
-				cout<<qrange(x,y)<<endl;
+				cout<<qrange(x-1,y-1)<<endl;
 				break;
 			case 3:
 				cin>>x>>y;
-				csons(x,y);
+				csons(x-1,y);
 				break;
 			case 4:
 				cin>>x;
-				cout<<qsons(x)<<endl;
+				cout<<qsons(x-1)<<endl;
 				break;
 		}
 	}
