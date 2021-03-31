@@ -225,10 +225,12 @@ long long qrange(int x,int y)
 	{
 		if(nodes[x].deepth<nodes[y].deepth)	swap(x,y);
 		ans+=xd->quest(nodes[nodes[x].top].sig,nodes[x].sig+1);
+		ans%=p;
 		x=nodes[nodes[x].top].fa;
 	}
 	if(nodes[x].deepth<nodes[y].deepth)	swap(x,y);
 	ans+=xd->quest(nodes[y].sig,nodes[x].sig+1);
+	ans%=p;
 	return ans;
 }
 void crange(int x,int y,long long k)
