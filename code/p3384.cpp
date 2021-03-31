@@ -223,11 +223,11 @@ long long qrange(int x,int y)
 	long long ans=0ll;
 	while(nodes[x].top!=nodes[y].top)
 	{
-		if(x<y)	swap(x,y);
+		if(nodes[x].deepth<nodes[y].deepth)	swap(x,y);
 		ans+=xd->quest(nodes[nodes[x].top].sig,nodes[x].sig+1);
 		x=nodes[nodes[x].top].fa;
 	}
-	if(x<y)	swap(x,y);
+	if(nodes[x].deepth<nodes[y].deepth)	swap(x,y);
 	ans+=xd->quest(nodes[y].sig,nodes[x].sig+1);
 	return ans;
 }
@@ -236,11 +236,11 @@ void crange(int x,int y,long long k)
 	k%=p;
 	while(nodes[x].top!=nodes[y].top)
 	{
-		if(x<y)	swap(x,y);
+		if(nodes[x].deepth<nodes[y].deepth)	swap(x,y);
 		xd->add(nodes[nodes[x].top].sig,nodes[x].sig+1,k);
 		x=nodes[nodes[x].top].fa;
 	}
-	if(x<y)	swap(x,y);
+	if(nodes[x].deepth<nodes[y].deepth)	swap(x,y);
 	xd->add(nodes[y].sig,nodes[x].sig+1,k);
 	return;
 }
