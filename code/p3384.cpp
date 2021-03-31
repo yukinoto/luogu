@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cstdio>
 #include <cstring>
 #include <vector>
@@ -187,14 +188,14 @@ void mkt(int p)
 
 void buildtree()
 {
-	scanf("%lld%lld%lld%lld",&n,&m,&r,&p);
+	cin>>n>>m>>r>>p;
 	for(int i=0;i<n;i++)
-		scanf("%lld",&(nodes[i].weight));//re
+		cin>>nodes[i].weight;
 	to=new vector<int>[n];
 	for(int i=0;i<n-1;i++)
 	{
 		int f,t;
-		scanf("%d%d",&f,&t);
+		cin>>f>>t;
 		to[f-1].push_back(t-1);
 		to[t-1].push_back(f-1);
 	}
@@ -250,24 +251,24 @@ int main()
 	for(int i=0;i<m;i++)
 	{
 		int f;
-		scanf("%d",&f);
+		cin>>f;
 		long long x,y,z;
 		switch(f){
 			case 1:
-				scanf("%lld%lld&lld",&x,&y,&x);
+				cin>>x>>y>>z;
 				crange(x,y,z);
 				break;
 			case 2:
-				scanf("%lld%lld",&x,&y);
-				printf("%lld\n",qrange(x,y));
+				cin>>x>>y;
+				cout<<qrange(x,y)<<endl;
 				break;
 			case 3:
-				scanf("%lld%lld",&x,&y);
+				cin>>x>>y;
 				csons(x,y);
 				break;
 			case 4:
-				scanf("%lld",&x);
-				printf("%lld\n",qsons(x));
+				cin>>x;
+				cout<<qsons(x)<<endl;
 				break;
 		}
 	}
