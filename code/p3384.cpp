@@ -144,7 +144,7 @@ struct node{
 
 long long n,m,r,p;
 vector<int>*to;
-vector<node<long long> > nodes;
+node<long long>*nodes;
 long long int *a;
 xds<long long> *xd;
 
@@ -189,6 +189,7 @@ void mkt(int p)
 void buildtree()
 {
 	cin>>n>>m>>r>>p;
+	nodes=new node<long long>[n];
 	for(int i=0;i<n;i++)
 		cin>>nodes[i].weight;
 	to=new vector<int>[n];
@@ -201,12 +202,13 @@ void buildtree()
 	}
 	taken=new bool[n];
 	memset(taken,false,n*sizeof(bool));
-	mkt(r);
+	taken[r-1]=true;
+	mkt(r-1);
 	delete[] taken;
 	delete[] to;
-	dfs1(r,1,r);
+	dfs1(r-1,1,r-1);
 	a=new long long[n];
-	dfs2(r,r);
+	dfs2(r-1,r-1);
 	xd=new xds<long long>(a,0,n);
 	delete[] a;
 }
