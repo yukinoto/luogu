@@ -156,13 +156,15 @@ void dfs1(const int &p,const int &deepth,const int &fa)
 		dfs1(i,deepth+1,p);
 		nodes[p].size+=nodes[i].size;
 		if(nodes[p].heav==-1||nodes[i].size>nodes[nodes[p].heav].size)
-			nodes[p].heav=nodes[i].size;
+			nodes[p].heav=i;
 	}
 	return;
 }
 
 void dfs2(const int &p,const int &top)
 {
+	if(p==-1)
+		return;
 	static int cnt=0;
 	nodes[p].sig=cnt++;
 	a[nodes[p].sig]=nodes[p].weight;
@@ -274,5 +276,6 @@ int main()
 				break;
 		}
 	}
+	delete xd;
 	return 0;
 }
