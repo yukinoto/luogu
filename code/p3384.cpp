@@ -5,6 +5,8 @@
 #include <algorithm>
 using namespace std;
 
+long long p;
+
 template<typename T>//[)
 class xds{
 	private:
@@ -20,7 +22,7 @@ class xds{
 				}
 				void refresh()
 				{
-					num=lc->getnum()+rc->getnum();
+					num=(lc->getnum()+rc->getnum())%p;
 					return;
 				}
 				void getup(const T &uptag,const int &left,const int &right)
@@ -29,6 +31,7 @@ class xds{
 						return;
 					tag+=uptag;
 					num+=(right-left)*uptag;
+					tag%=p,num%=p;
 					return;
 				}
 				void pushdown(const int &left,const int &right)
@@ -45,7 +48,7 @@ class xds{
 					lc=rc=nullptr;
 					if(left==right-1)
 					{
-						num=base[left];
+						num=base[left]%p;
 						return;
 					}
 					int mid=(left+right)/2;
@@ -65,7 +68,7 @@ class xds{
 					if(l>=right||r<=left)
 						return 0;
 					int mid=(left+right)/2;
-					return lc->quest(l,r,left,mid)+rc->quest(l,r,mid,right);
+					return (lc->quest(l,r,left,mid)+rc->quest(l,r,mid,right))%p;
 				}
 				void add(const int &l,const int &r,const T &x,const int &left,const int &right)
 				{
@@ -142,7 +145,7 @@ struct node{
 	int sig,heav,top,deepth,fa,size;
 };
 
-long long n,m,r,p;
+long long n,m,r;
 vector<int>*to;
 node<long long>*nodes;
 long long int *a;
@@ -230,6 +233,7 @@ long long qrange(int x,int y)
 }
 void crange(int x,int y,long long k)
 {
+	k%=p;
 	while(nodes[x].top!=nodes[y].top)
 	{
 		if(x<y)	swap(x,y);
@@ -246,6 +250,7 @@ long long qsons(int r)
 }
 void csons(int r,long long k)
 {
+	k%=p;
 	xd->add(nodes[r].sig,nodes[r].sig+nodes[r].size,k);
 }
 
