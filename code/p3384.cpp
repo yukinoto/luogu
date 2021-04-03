@@ -218,12 +218,12 @@ void buildtree()
 	delete[] a;
 }
 
-long long qrange(int x,int y)//maybe wrong
+long long qrange(int x,int y)
 {
 	long long ans=0ll;
 	while(nodes[x].top!=nodes[y].top)
 	{
-		if(nodes[x].deepth<nodes[y].deepth)	swap(x,y);
+		if(nodes[nodes[x].top].deepth<nodes[nodes[y].top].deepth)	swap(x,y);
 		ans+=xd->quest(nodes[nodes[x].top].sig,nodes[x].sig+1);
 		ans%=p;
 		x=nodes[nodes[x].top].fa;
@@ -233,12 +233,12 @@ long long qrange(int x,int y)//maybe wrong
 	ans%=p;
 	return ans;
 }
-void crange(int x,int y,long long k)//maybe wrong
+void crange(int x,int y,long long k)
 {
 	k%=p;
 	while(nodes[x].top!=nodes[y].top)
 	{
-		if(nodes[x].deepth<nodes[y].deepth)	swap(x,y);
+		if(nodes[nodes[x].top].deepth<nodes[nodes[y].top].deepth)	swap(x,y);
 		xd->add(nodes[nodes[x].top].sig,nodes[x].sig+1,k);
 		x=nodes[nodes[x].top].fa;
 	}
@@ -258,8 +258,6 @@ void csons(int r,long long k)
 
 int main()
 {
-	//freopen("./code/p3384.in","r",stdin);
-	//freopen("./code/mas.out","w",stdout);
 	buildtree();
 	for(int i=0;i<m;i++)
 	{
