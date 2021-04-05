@@ -76,6 +76,10 @@ class Complex{
 			printf("%f+%fi\n",real,img);
 			return;
 		}
+		double getreal()
+		{
+			return real;
+		}
 };
 Complex make_comp(const double &_real,const double &_img)
 {
@@ -174,6 +178,7 @@ int main()
 		cache1.push_back(a1[i]*a2[i]);
 	cache2=ifft(cache1,b);
 	for(int i=0;i<=m+n;i++)
-		printf("%d ",int(cache2[i].abs()+0.5));
+		printf("%d ",int(cache2[i].getreal()+0.5));
 	return 0;
 }
+//wa 丢精度？
