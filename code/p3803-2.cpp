@@ -93,7 +93,7 @@ Complex w(int k,int n)
 	return make_comp(cos(2*pi*k/n),sin(2*pi*k/n));
 }
 
-vector<Complex> fft(const vector<Complex>&fun,int n)
+/*vector<Complex> fft(const vector<Complex>&fun,int n)
 {
 	vector<Complex> ans;
 	if(n==1)
@@ -115,9 +115,9 @@ vector<Complex> fft(const vector<Complex>&fun,int n)
 	for(int i=n/2;i<n;i++)
 		ans.push_back(a1[i-n/2]+w(i,n)*a2[i-n/2]);
 	return ans;
-}
+}*/
 
-vector<Complex> _ifft(const vector<Complex>&fun,int n)
+/*vector<Complex> _ifft(const vector<Complex>&fun,int n)
 {
 	vector<Complex> ans;
 	if(n==1)
@@ -139,19 +139,43 @@ vector<Complex> _ifft(const vector<Complex>&fun,int n)
 	for(int i=n/2;i<n;i++)
 		ans.push_back((a1[i-n/2]+w(-i,n)*a2[i-n/2]));
 	return ans;
-}
+}*/
 
-vector<Complex> ifft(const vector<Complex>&fun,int n)
+/*vector<Complex> ifft(const vector<Complex>&fun,int n)
 {
 	vector<Complex> ans=_ifft(fun,n);
 	for(int i=0;i<ans.size();i++)
 		ans[i]/=n;
 	return ans;
+}*/
+
+int tex[2097152];
+int rev(int x,int bits)
+{
+	int ans=0;
+	for(int i=0;i<bits;i++)
+	{
+		ans=(ans<<1)|(x&1);
+		x>>=1;
+	}
+	return ans;
+}
+void maketex(const int &b)
+{
+	int bits=0;
+	for(;(1<<bits)<b;bits++);
+	for(int i=0;i<b;i++)
+		tex[i]=rev(i);
+	return;
+}
+void fft(vector<Complex> &f,int st,int n)
+{
+
 }
 
 int main()
 {
-	vector<Complex> cache1,cache2,a1,a2;
+	vector<Complex> cache1,cache2;
 	int n,m;
 	scanf("%d%d",&n,&m);
 	for(int i=0;i<=n;i++)
@@ -172,12 +196,12 @@ int main()
 		cache1.push_back(make_comp(0,0));
 	for(int i=m+1;i<b;i++)
 		cache2.push_back(make_comp(0,0));
-	a1=fft(cache1,b),a2=fft(cache2,b);
+	fft(cache1,b),fft(cache2,b);
 	cache1.clear();
 	for(int i=0;i<b;i++)
-		cache1.push_back(a1[i]*a2[i]);
-	cache2=ifft(cache1,b);
+		cache1[i]*=cache2[i];
+	ifft(cache1,b);
 	for(int i=0;i<=m+n;i++)
-		printf("%d ",int(cache2[i].getreal()+0.5));
+		printf("%d ",int(cache1[i].getreal()+0.5));
 	return 0;
 }
