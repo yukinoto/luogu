@@ -68,12 +68,12 @@ class Complex{
 
 		void input()
 		{
-			scanf("%f%f",&real,&img);
+			scanf("%lf%lf",&real,&img);
 			return;
 		}
 		void print()const
 		{
-			printf("%f+%fi\n",real,img);
+			printf("%lf+%lfi\n",real,img);
 			return;
 		}
 		double getreal()
@@ -167,7 +167,7 @@ int main()
 		cache2.push_back(make_comp(x,0));
 	}
 	int b=1;
-	for(;b<m+n;b<<=1);
+	while(b<=m+n) b<<=1;
 	for(int i=n+1;i<b;i++)
 		cache1.push_back(make_comp(0,0));
 	for(int i=m+1;i<b;i++)
@@ -181,4 +181,3 @@ int main()
 		printf("%d ",int(cache2[i].getreal()+0.5));
 	return 0;
 }
-//wa 丢精度？
