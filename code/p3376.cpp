@@ -3,8 +3,8 @@
 #include <queue>
 #include <algorithm>
 
-typedef int Int;
-Int Inf=0x7fffffff;
+typedef long long Int;
+Int Inf=0x7fffffffffffffffll;
 
 Int n,m,s,t;
 Int mp[210][210];
@@ -20,7 +20,7 @@ void bfs(Int r)
 	{
 		r=q.front();
 		q.pop();
-		for(int i=0;i<n;i++)
+		for(int i=0;i<=n;i++)
 			if(deepth[i]==-1&&mp[r][i]>0)
 			{
 				deepth[i]=deepth[r]+1;
@@ -34,12 +34,13 @@ Int dfs(Int r,Int bef)
 	if(r==t)
 		return bef;
 	Int as=0;
-	for(int i=0;i<n;i++)
+	for(int i=0;i<=n;i++)
 		if(deepth[i]==deepth[r]+1&&mp[r][i]>0)
 		{
-			int ts=dfs(i,std::min(bef,mp[r][i]));
+			Int ts=dfs(i,std::min(bef,mp[r][i]));
 			as+=ts;
 			mp[r][i]-=ts;
+			mp[i][r]+=ts;
 			bef-=ts;
 		}
 	return as;
@@ -56,7 +57,7 @@ void init()
 }
 void work()
 {
-	int ts=0;
+	Int ts=0;
 	do
 	{
 		bfs(s);
