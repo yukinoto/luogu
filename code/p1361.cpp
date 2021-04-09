@@ -34,7 +34,7 @@ void bfs(Int r)
 Int now[3010];
 Int dfs(Int r,Int bef)
 {
-	if(r==t)
+	if(r==t||bef==0)
 		return bef;
 	Int as=0;
 	for(int i=now[r];i<=n;i++)
