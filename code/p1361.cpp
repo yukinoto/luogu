@@ -58,6 +58,7 @@ void init()
 	{
 		scanf("%d",&mp[0][i]);
 		sum+=mp[0][i];
+		now[i]=x+1;
 	}
 	for(int i=1;i<=x;i++)
 	{
