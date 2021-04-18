@@ -4,7 +4,9 @@
 using namespace std;
 
 vector<int> prim;
-bitset<50000001> p;
+unsigned char p[(50000001>>3)+1];
+
+const unsigned char b[8]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
 
 inline int read()
 {
@@ -22,21 +24,15 @@ inline int read()
 
 void pre(int n)
 {
-	p[0]=1;
+	p[0]|=b[0];
 	prim.push_back(2);
-	for(int j=0;j<prim.size()&&prim[j]*2<=n;j++)
-	{
-		p[prim[j]*2]=1;
-		if(2%prim[j]==0)
-			break;
-	}
 	for(int i=3;i<=n;i+=2)
 	{
-		if(!p[i>>1])
+		if(!(p[i>>2]&b[(i<<1)&0x07]))
 			prim.push_back(i);
 		for(int j=1;j<prim.size()&&prim[j]*i<=n;j++)
 		{
-			p[(prim[j]*i)>>1]=1;
+			p[(prim[j]*i)>>4]|=b[(((prim[j]*i)>>1)&0x07-1)];
 			if(i%prim[j]==0)
 				break;
 		}
