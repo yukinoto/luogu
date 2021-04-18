@@ -46,8 +46,8 @@ void pre(int n)
 
 int main()
 {
-	int n=read(),q=read();
-	pre(n);
+	pre(read());
+	int q=read();
 	for(int i=0;i<q;i++)
 		printf("%d\n",prim[read()-1]);
 	return 0;
