@@ -4,18 +4,39 @@
 using namespace std;
 
 vector<int> prim;
-bitset<100000001> p;
+bitset<50000001> p;
+
+inline int read()
+{
+	int ans=0;
+	char x=getchar();
+	while((x&0xf0)!=0x30)
+		x=getchar();
+	while((x&0xf0)==0x30)
+	{
+		ans=(ans<<3)+(ans<<1)+(x&0x0f);
+		x=getchar();
+	}
+	return ans;
+}
 
 void pre(int n)
 {
-	p[0]=p[1]=1;
-	for(int i=2;i<=n;i++)
+	p[0]=1;
+	prim.push_back(2);
+	for(int j=0;j<prim.size()&&prim[j]*2<=n;j++)
 	{
-		if(!p[i])
+		p[prim[j]*2]=1;
+		if(2%prim[j]==0)
+			break;
+	}
+	for(int i=3;i<=n;i+=2)
+	{
+		if(!p[i>>1])
 			prim.push_back(i);
-		for(int j=0;j<prim.size()&&prim[j]*i<=n;j++)
+		for(int j=1;j<prim.size()&&prim[j]*i<=n;j++)
 		{
-			p[prim[j]*i]=1;
+			p[(prim[j]*i)>>1]=1;
 			if(i%prim[j]==0)
 				break;
 		}
@@ -25,14 +46,9 @@ void pre(int n)
 
 int main()
 {
-	int n,q;
-	scanf("%d%d",&n,&q);
+	int n=read(),q=read();
 	pre(n);
 	for(int i=0;i<q;i++)
-	{
-		int x;
-		scanf("%d",&x);
-		printf("%d\n",prim[x-1]);
-	}
+		printf("%d\n",prim[read()-1]);
 	return 0;
 }
