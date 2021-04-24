@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 #include <cstring>
 #include <queue>
 #include <algorithm>
@@ -7,9 +7,9 @@ typedef int Int;
 Int Inf=0x7fffffff;
 
 Int n,m,s,t;
-Int mp[610][610];
-Int deepth[610];
-Int ans=0;
+Int mp[3010][3010];
+Int deepth[3010];
+Int ans=0,sum=0;
 void bfs(Int r)
 {
 	memset(deepth,-1,sizeof(deepth));
@@ -25,16 +25,19 @@ void bfs(Int r)
 			{
 				deepth[i]=deepth[r]+1;
 				q.push(i);
+				if(i==t)
+					return;
 			}
 	}
 	return;
 }
+Int now[3010];
 Int dfs(Int r,Int bef)
 {
-	if(r==t)
+	if(r==t||bef==0)
 		return bef;
 	Int as=0;
-	for(int i=0;i<=n;i++)
+	for(int i=now[r];i<=n;i++)
 		if(deepth[i]==deepth[r]+1&&mp[r][i]>0)
 		{
 			Int ts=dfs(i,std::min(bef,mp[r][i]));
@@ -42,36 +45,41 @@ Int dfs(Int r,Int bef)
 			mp[r][i]-=ts;
 			mp[i][r]+=ts;
 			bef-=ts;
+			if(i==now[r]&&mp[r][i]==0)
+				now[r]++;
 		}
 	return as;
 }
 void init()
 {
-	Int x,p,q;
-	std::cin>>x>>p>>q;
+	Int x,y;
+	scanf("%d",&x);
 	for(int i=1;i<=x;i++)
 	{
-		for(int j=1;j<=p;j++)
-		{
-			Int f;
-			std::cin>>f;
-			if(f==1)
-				mp[0][j]=mp[j][j+p]=mp[j+p][p*2+i]=1;
-		}
+		scanf("%d",&mp[0][i]);
+		sum+=mp[0][i];
+		now[i]=x+1;
 	}
-	for(int i=p*2+x+1;i<=p*2+x*2;i++)
+	for(int i=1;i<=x;i++)
 	{
-		mp[i-x][i]=1;
-		for(int j=(x+p)*2+1;j<=(x+p)*2+q;j++)
+		scanf("%d",&mp[i][x+1]);
+		sum+=mp[i][x+1];
+	}
+	scanf("%d",&y);
+	for(int i=1;i<=y;i++)
+	{
+		Int k;
+		scanf("%d%d%d",&k,&mp[0][x+(i<<1)],&mp[x+(i<<1)+1][x+1]);
+		sum+=mp[0][x+(i<<1)]+mp[x+(i<<1)+1][x+1];
+		for(int j=0;j<k;j++)
 		{
-			Int f;
-			std::cin>>f;
-			if(f==1)
-				mp[i][j]=mp[j][j+q]=mp[j+q][(x+p+q)*2+1]=1;
+			Int p;
+			scanf("%d",&p);
+			mp[x+(i<<1)][p]=mp[p][x+(i<<1)+1]=Inf;
 		}
 	}
-	s=0,t=(x+p+q)*2+1;
-	n=(x+p+q)*2+1;
+	n=x+y*2+1;
+	s=0,t=x+1;
 }
 void work()
 {
@@ -82,7 +90,7 @@ void work()
 		ts=dfs(s,Inf);
 		ans+=ts;
 	}while(ts!=0);
-	std::cout<<ans<<std::endl;
+	printf("%d\n",sum-ans);
 }
 int main()
 {

@@ -19,27 +19,20 @@ class tree{
 		class node{
 			private:
 				node *son[2];
-				int l,r;
 				T sum;
 			public:
-				node(int left,int right,T *base)
+				node(const int &left,const int &right,T *base)
 				{
-					for(auto &i:son)
-						i=nullptr;
-					l=left,r=right;
 					if(left==right-1)
 					{
 						sum=base[left];
+						for(auto &i:son)
+							i=nullptr;
 						return;
 					}
-					int mid=(left+right)/2;
-					if(mid>left)
-						son[0]=new node(left,mid,base);
-					if(right>mid)
-						son[1]=new node(mid,right,base);
-					sum=0;
-					for(auto &i:son)
-						sum+=i->sum;
+					int mid=(left+right)>>1;
+					son[0]=new node(left,mid,base);
+					son[1]=new node(mid,right,base);
 					return;
 				}
 				~node()
@@ -48,39 +41,33 @@ class tree{
 						delete i;
 					return;
 				}
-				T ask(int left,int right)
+				T ask(const int &left,const int &right,const int &l,const int &r)
 				{
-					if(l>=left&&r<=right)
-						return sum;
 					if(l>=right||r<=left)
 						return 0;
+					if(l>=left&&r<=right)
+						return sum;
 					T ans=0;
-					for(auto i:son)
-						if(i!=nullptr)
-							ans+=i->ask(left,right);
+					if(son[0]!=nullptr)
+						ans+=son[0]->ask(left,right,l,(l+r)>>1);
+					if(son[1]!=nullptr)
+						ans+=son[1]->ask(left,right,(l+r)>>1,r);
 					return ans;
 				}
 				node(int left,int right,node *from,int p,T x)
 				{
-					sum=0;
-					if(p<left||p>=right)
-						return;
 					for(int i=0;i<2;i++)
 						son[i]=from->son[i];
-					l=left,r=right;
 					if(left==right-1&&left==p)
 					{
 						sum=x;
 						return;
 					}
-					int mid=(left+right)/2;
+					int mid=(left+right)>>1;
 					if(mid>left&&p<mid)
-						son[0]=new node(left,mid,this,p,x);
+						son[0]=new node(left,mid,son[0],p,x);
 					if(right>mid&&p>=mid)
-						son[1]=new node(mid,right,this,p,x);
-					for(auto i:son)
-						if(i!=nullptr)
-							sum+=i->sum;
+						son[1]=new node(mid,right,son[1],p,x);
 					return;
 				}
 		};
@@ -106,7 +93,7 @@ class tree{
 		T ask(int p,int version)
 		{
 			roots.push_back(roots[version]);
-			return roots[version]->ask(p,p+1);
+			return roots[version]->ask(p,p+1,l,r);
 		}
 };
 
@@ -144,7 +131,7 @@ int main()
 	int *pt=new int[n];
 	for(int i=0;i<n;i++)
 		scanf("%d",pt+i);
-	auto *tr=new tree<int>(0,n,pt);
+	tree<int>* tr=new tree<int>(0,n,pt);
 	for(int i=0;i<m;i++)
 	{
 		static int version;

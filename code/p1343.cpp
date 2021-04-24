@@ -3,12 +3,12 @@
 #include <queue>
 #include <algorithm>
 
-typedef int Int;
-Int Inf=0x7fffffff;
+typedef long long Int;
+Int Inf=0x7fffffffffffffffll;
 
-Int n,m,s,t;
-Int mp[610][610];
-Int deepth[610];
+Int n,m,s,t,p;
+Int mp[210][210];
+Int deepth[210];
 Int ans=0;
 void bfs(Int r)
 {
@@ -47,31 +47,14 @@ Int dfs(Int r,Int bef)
 }
 void init()
 {
-	Int x,p,q;
-	std::cin>>x>>p>>q;
-	for(int i=1;i<=x;i++)
+	std::cin>>n>>m>>p;
+	s=1,t=n;
+	for(int i=0;i<m;i++)
 	{
-		for(int j=1;j<=p;j++)
-		{
-			Int f;
-			std::cin>>f;
-			if(f==1)
-				mp[0][j]=mp[j][j+p]=mp[j+p][p*2+i]=1;
-		}
+		Int f,t,w;
+		std::cin>>f>>t>>w;
+		mp[f][t]+=w;
 	}
-	for(int i=p*2+x+1;i<=p*2+x*2;i++)
-	{
-		mp[i-x][i]=1;
-		for(int j=(x+p)*2+1;j<=(x+p)*2+q;j++)
-		{
-			Int f;
-			std::cin>>f;
-			if(f==1)
-				mp[i][j]=mp[j][j+q]=mp[j+q][(x+p+q)*2+1]=1;
-		}
-	}
-	s=0,t=(x+p+q)*2+1;
-	n=(x+p+q)*2+1;
 }
 void work()
 {
@@ -82,7 +65,10 @@ void work()
 		ts=dfs(s,Inf);
 		ans+=ts;
 	}while(ts!=0);
-	std::cout<<ans<<std::endl;
+	if(ans!=0)
+		std::cout<<ans<<" "<<(p-1)/ans+1<<std::endl;
+	else
+		std::cout<<"Orz Ni Jinan Saint Cow!"<<std::endl;
 }
 int main()
 {
