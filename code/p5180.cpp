@@ -79,7 +79,7 @@ void tj()
 		{
 			int f=str.edge[tmp][j];
 			cst(f);
-			if(tmp==semi[wei[tmp]])
+			if(tmp==semi[wei[f]])
 				idom[f]=tmp;
 			else
 				idom[f]=wei[f];
