@@ -19,6 +19,7 @@ int dfn[200001],p[200001];
 
 void init()
 {
+	ios::sync_with_stdio(false);
 	cin>>n>>m;
 	for(int i=0;i<m;i++)
 	{
