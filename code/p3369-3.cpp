@@ -162,5 +162,42 @@ class treap{
 		int rank(const T &x)const
 		{
 			node *p=root;
+			int cnt=0;
+			while(p->value!=x)
+			{
+				if(p->value>x)
+					p=p->rc;
+				if(p->value<x)
+				{
+					cnt+=p->lc->size;
+					cnt+=p->cnt;
+					p=p->rc;
+				}
+			}
+			return cnt+1;
+		}
+		T bef(const T &x)const
+		{
+			node *p=fnd(x);
+			if(p->lc!=nullptr)
+			{
+				p=p->lc;
+				while(p->rc!=nullptr)
+					p=p->rc;
+				return p;
+			}
+			return p->fa;
+		}
+		T aft(const T &x)const
+		{
+			node *p=fnd(x);
+			if(p->rc!=nullptr)
+			{
+				p=p->rc;
+				while(p->lc!=nullptr)
+					p=p->lc;
+				return p;
+			}
+			return p->fa;
 		}
 };
