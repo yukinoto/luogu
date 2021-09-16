@@ -200,4 +200,30 @@ class treap{
 			}
 			return p->fa;
 		}
+		~treap()
+		{
+			delete root;
+			return;
+		}
 };
+
+int main()
+{
+	int n;
+	cin>>n;
+	treap<int> t;
+	for(int i=0;i<n;i++)
+	{
+		int f,x;
+		cin>>f>>x;;
+		if(f==1)
+			t.insert(x);
+		if(f==2)
+			t.erase(x);
+		if(f==3)
+			cout<<t.rank(x)<<endl;
+		if(f==4)
+			cout<<t.bef(x)<<endl;
+		
+	}
+}
