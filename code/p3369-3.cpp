@@ -66,7 +66,7 @@ class treap{
 						break;
 					p=p->rc;
 				}
-				if(x<p->value)
+				else if(x<p->value)
 				{
 					if(p->lc==nullptr)
 						break;
@@ -79,6 +79,10 @@ class treap{
 		{
 			node *r=p->rc;
 			r->fa=p->fa;
+			if(r->fa->lc==p)
+				r->fa->lc=r;
+			else if(r->fa->rc==p)
+				r->fa->rc=r;
 			p->fa=r;
 			p->rc=r->lc;
 			if(p->rc!=nullptr)
@@ -91,6 +95,10 @@ class treap{
 		{
 			node *l=p->lc;
 			l->fa=p->fa;
+			if(l->fa->lc==p)
+				l->fa->lc=l;
+			else if(l->fa->rc==p)
+				l->fa->rc=l;
 			p->fa=l;
 			p->lc=l->rc;
 			if(p->lc!=nullptr)
@@ -103,11 +111,11 @@ class treap{
 		{
 			while(true)
 			{
-				if(p->lc==p->rc&&p->lc==nullptr)
+				if(p->lc==nullptr&&p->rc==nullptr)
 					return;
 				if(p->lc==nullptr||p->rc->key<p->lc->key)
 					roll_right_up(p);
-				if(p->rc==nullptr||p->rc->key>p->lc->key)
+				else if(p->rc==nullptr||p->rc->key>p->lc->key)
 					roll_left_up(p);
 			}
 			return;
@@ -118,7 +126,7 @@ class treap{
 			{
 				if(p->fa->lc==p)
 					roll_left_up(p->fa);
-				if(p->fa->rc==p)
+				else if(p->fa->rc==p)
 					roll_right_up(p->fa);
 			}
 			return;
@@ -165,7 +173,7 @@ class treap{
 				p->update();
 				if(p->fa->lc==p)
 					p->fa->lc=nullptr;
-				if(p->fa->rc==p)
+				else if(p->fa->rc==p)
 					p->fa->rc=nullptr;
 				delete p;
 			}
@@ -176,10 +184,10 @@ class treap{
 			node *p=root;
 			int cnt=0;
 			if(p->lc!=nullptr)
-				cnt+=lc->size;
+				cnt+=p->lc->size;
 			while(p->value!=x)
 			{
-				if(x>p->value)
+				if(x<p->value)
 				{
 					p=p->lc;
 					cnt-=1;
@@ -231,12 +239,22 @@ class treap{
 			if(p->value>=x)
 			{
 				if(p->lc==nullptr)
-					return p->fa->value;
-				p=p->lc;
+					if(p->fa->rc==p)
+						return p->fa->value;
+					else
+					{
+						while(p->fa->rc!=p)
+							p=p->fa;
+						p=p->fa;
+						return p->value;
+					}
+				else
+					p=p->lc;
 				while(p->rc!=nullptr)
 					p=p->rc;
 				return p->value;
 			}
+			return p->value;
 		}
 		T aft(const T &x)
 		{
@@ -246,12 +264,22 @@ class treap{
 			if(p->value<=x)
 			{
 				if(p->rc==nullptr)
-					return p->fa->value;
-				p=p->rc;
+					if(p->fa->lc==p)
+						return p->fa->value;
+					else
+					{
+						while(p->fa->lc!=p)
+							p=p->fa;
+						p=p->fa;
+						return p->value;
+					}
+				else
+					p=p->rc;
 				while(p->lc!=nullptr)
 					p=p->lc;
 				return p->value;
 			}
+			return p->value;
 		}
 		~treap()
 		{
