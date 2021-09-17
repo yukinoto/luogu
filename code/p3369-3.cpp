@@ -2,11 +2,6 @@
 #include <cstdlib>
 using namespace std;
 
-int randint()
-{
-	return (rand()<<16)|rand();
-}
-
 template <typename T>
 class treap{
 	private:
@@ -25,7 +20,7 @@ class treap{
 				node(const T &x)
 				{
 					value=x;
-					key=randint();
+					key=rand();
 					cnt=1;
 					lc=rc=fa=nullptr;
 					size=1;
@@ -179,7 +174,7 @@ class treap{
 			}
 			return;
 		}
-		int rank(const T &x)const
+		int rank(const T &x)
 		{
 			node *p=root;
 			int cnt=0;
