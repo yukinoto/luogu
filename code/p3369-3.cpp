@@ -62,15 +62,15 @@ class treap{
 			{
 				if(x>p->value)
 				{
-					if(p->lc==nullptr)
-						break;
-					p=p->lc;
-				}
-				if(x<p->value)
-				{
 					if(p->rc==nullptr)
 						break;
 					p=p->rc;
+				}
+				if(x<p->value)
+				{
+					if(p->lc==nullptr)
+						break;
+					p=p->lc;
 				}
 			}
 			return p;
@@ -81,7 +81,8 @@ class treap{
 			r->fa=p->fa;
 			p->fa=r;
 			p->rc=r->lc;
-			p->rc->fa=p;
+			if(p->rc!=nullptr)
+				p->rc->fa=p;
 			r->lc=p;
 			p->reset();
 			r->reset();
@@ -92,7 +93,8 @@ class treap{
 			l->fa=p->fa;
 			p->fa=l;
 			p->lc=l->rc;
-			p->lc->fa=p;
+			if(p->lc!=nullptr)
+				p->lc->fa=p;
 			l->rc=p;
 			p->reset();
 			l->reset();
@@ -186,29 +188,62 @@ class treap{
 			}
 			return cnt+1;
 		}
+		T nst(const int n)
+		{
+			node *p=root;
+			int cnt;
+			if(p->lc==nullptr)
+				cnt=0;
+			else
+				cnt=p->lc->size;
+			while(cnt+1!=n)
+			{
+				if(cnt+1>n)
+				{
+					p=p->lc;
+					cnt-=1;
+					if(p->rc!=nullptr)
+						cnt-=p->rc->size;
+				}
+				else
+				{
+					p=p->rc;
+					cnt+=1;
+					if(p->lc!=nullptr)
+						cnt+=p->lc->size;
+				}
+			}
+			return p->value;
+		}
 		T bef(const T &x)
 		{
 			const node *p=fnd(x);
-			if(p->lc!=nullptr)
+			if(p->value<x)
+				return p->value;
+			if(p->value>=x)
 			{
+				if(p->lc==nullptr)
+					return p->fa->value;
 				p=p->lc;
 				while(p->rc!=nullptr)
 					p=p->rc;
 				return p->value;
 			}
-			return p->fa->value;
 		}
 		T aft(const T &x)
 		{
 			const node *p=fnd(x);
-			if(p->rc!=nullptr)
+			if(p->value>x)
+				return p->value;
+			if(p->value<=x)
 			{
+				if(p->rc==nullptr)
+					return p->fa->value;
 				p=p->rc;
 				while(p->lc!=nullptr)
 					p=p->lc;
 				return p->value;
 			}
-			return p->fa->value;
 		}
 		~treap()
 		{
@@ -232,6 +267,8 @@ int main()
 			t.erase(x);
 		if(f==3)
 			cout<<t.rank(x)<<endl;
+		if(f==4)
+			cout<<t.nst(x)<<endl;
 		if(f==5)
 			cout<<t.bef(x)<<endl;
 		if(f==6)
