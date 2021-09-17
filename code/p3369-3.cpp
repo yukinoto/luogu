@@ -55,7 +55,7 @@ class treap{
 			root=nullptr;
 			return;
 		}
-		node * fnd(const T &x)
+		node *fnd(const T &x)
 		{
 			node *p=root;
 			while(p->value!=x)
@@ -175,15 +175,23 @@ class treap{
 		{
 			node *p=root;
 			int cnt=0;
+			if(p->lc!=nullptr)
+				cnt+=lc->size;
 			while(p->value!=x)
 			{
-				if(p->value>x)
-					p=p->rc;
-				if(p->value<x)
+				if(x>p->value)
 				{
-					cnt+=p->lc->size;
-					cnt+=p->cnt;
+					p=p->lc;
+					cnt-=1;
+					if(p->rc!=nullptr)
+						cnt-=p->rc->size;
+				}
+				else
+				{
 					p=p->rc;
+					cnt+=1;
+					if(p->lc!=nullptr)
+						cnt+=p->lc->size;
 				}
 			}
 			return cnt+1;
