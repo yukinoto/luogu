@@ -50,6 +50,11 @@ class treap{
 		};
 		node *root;
 	public:
+		treap()
+		{
+			root=nullptr;
+			return;
+		}
 		node * fnd(const T &x)
 		{
 			node *p=root;
@@ -118,6 +123,11 @@ class treap{
 		}
 		void insert(const T &x)
 		{
+			if(root==nullptr)
+			{
+				root=new node(x);
+				return;
+			}
 			node *p=fnd(x);
 			if(x==p->value)
 			{
@@ -176,29 +186,29 @@ class treap{
 			}
 			return cnt+1;
 		}
-		T bef(const T &x)const
+		T bef(const T &x)
 		{
-			node *p=fnd(x);
+			const node *p=fnd(x);
 			if(p->lc!=nullptr)
 			{
 				p=p->lc;
 				while(p->rc!=nullptr)
 					p=p->rc;
-				return p;
+				return p->value;
 			}
-			return p->fa;
+			return p->fa->value;
 		}
-		T aft(const T &x)const
+		T aft(const T &x)
 		{
-			node *p=fnd(x);
+			const node *p=fnd(x);
 			if(p->rc!=nullptr)
 			{
 				p=p->rc;
 				while(p->lc!=nullptr)
 					p=p->lc;
-				return p;
+				return p->value;
 			}
-			return p->fa;
+			return p->fa->value;
 		}
 		~treap()
 		{
@@ -222,8 +232,10 @@ int main()
 			t.erase(x);
 		if(f==3)
 			cout<<t.rank(x)<<endl;
-		if(f==4)
+		if(f==5)
 			cout<<t.bef(x)<<endl;
-		
+		if(f==6)
+			cout<<t.aft(x)<<endl;
 	}
+	return 0;
 }
