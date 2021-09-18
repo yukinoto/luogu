@@ -223,7 +223,7 @@ class treap{
 				cnt=0;
 			else
 				cnt=p->lc->size;
-			while(cnt+1>n||cnt+p->cnt+1<n)
+			while(cnt+1>n||cnt+p->cnt<n)
 			{
 				if(cnt+1>n)
 				{
@@ -299,8 +299,12 @@ class treap{
 		}
 };
 
+
 int main()
 {
+#ifndef ONLINE_JUDGE
+	freopen("P3369_3.in","r",stdin);
+#endif
 	int n;
 	cin>>n;
 	treap<int> t;
