@@ -223,9 +223,9 @@ class treap{
 				cnt=0;
 			else
 				cnt=p->lc->size;
-			while(cnt+1<n||cnt>=n+p->cnt)
+			while(cnt+1>n||cnt+p->cnt+1<n)
 			{
-				if(cnt>=n+p->cnt)
+				if(cnt+1>n)
 				{
 					p=p->lc;
 					cnt-=p->cnt;
