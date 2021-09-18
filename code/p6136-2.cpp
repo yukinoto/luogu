@@ -297,9 +297,9 @@ int main()
 		int f,x;
 		cin>>f>>x;;
 		if(f==1)
-			t.insert(x);
+			t.insert(x^bef);
 		if(f==2)
-			t.erase(x);
+			t.erase(x^bef);
 		if(f==3)
 			bef=t.rank(x^bef);
 		if(f==4)
