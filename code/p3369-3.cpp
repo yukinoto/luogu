@@ -45,11 +45,6 @@ class treap{
 		};
 		node *root;
 	public:
-		treap()
-		{
-			root=nullptr;
-			return;
-		}
 		node *fnd(const T &x)
 		{
 			node *p=root;
@@ -200,23 +195,28 @@ class treap{
 			{
 				if(x<p->value)
 				{
+					if(p->lc==nullptr)
+						break;
 					p=p->lc;
-					cnt-=1;
+					cnt-=p->cnt;
 					if(p->rc!=nullptr)
 						cnt-=p->rc->size;
 				}
 				else
 				{
+					cnt+=p->cnt;
+					if(p->rc==nullptr)
+						break;
 					p=p->rc;
-					cnt+=1;
 					if(p->lc!=nullptr)
 						cnt+=p->lc->size;
 				}
 			}
-			return cnt+1;
+			return cnt;
 		}
-		T nst(const int n)
+		T nst(int n)
 		{
+			n++;
 			node *p=root;
 			int cnt;
 			if(p->lc==nullptr)
@@ -292,6 +292,13 @@ class treap{
 			}
 			return p->value;
 		}
+		treap(T inf)
+		{
+			root=nullptr;
+			insert(inf);
+			insert(-inf);
+			return;
+		}
 		~treap()
 		{
 			delete root;
@@ -303,11 +310,11 @@ class treap{
 int main()
 {
 #ifndef ONLINE_JUDGE
-	freopen("P3369_3.in","r",stdin);
+	//freopen("P3369_3.in","r",stdin);
 #endif
 	int n;
 	cin>>n;
-	treap<int> t;
+	treap<int> t(0x7fffffff);
 	for(int i=0;i<n;i++)
 	{
 		int f,x;
