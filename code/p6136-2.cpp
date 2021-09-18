@@ -251,50 +251,14 @@ class treap{
 		T bef(const T &x)
 		{
 			insert(x);
-			T ans;
-			const node *p=fnd(x);
-			if(p->lc==nullptr)
-				if(p->fa->rc==p)
-					ans=p->fa->value;
-				else
-				{
-					while(p->fa->rc!=p)
-						p=p->fa;
-					p=p->fa;
-					ans=p->value;
-				}
-			else
-			{
-				p=p->lc;
-				while(p->rc!=nullptr)
-					p=p->rc;
-				ans=p->value;
-			}
+			T ans=nst(rank(x)-1);
 			erase(x);
 			return ans;
 		}
 		T aft(const T &x)
 		{
 			insert(x);
-			T ans;
-			const node *p=fnd(x);
-			if(p->rc==nullptr)
-				if(p->fa->lc==p)
-					ans=p->fa->value;
-				else
-				{
-					while(p->fa->lc!=p)
-						p=p->fa;
-					p=p->fa;
-					ans=p->value;
-				}
-			else
-			{
-				p=p->rc;
-				while(p->lc!=nullptr)
-					p=p->lc;
-				ans=p->value;
-			}
+			T ans=nst(rank(x)+fnd(x)->cnt);
 			erase(x);
 			return ans;
 		}

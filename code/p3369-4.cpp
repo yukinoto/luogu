@@ -189,15 +189,15 @@ class treap{
 		{
 			node *p=root;
 			int cnt=0;
-			//insert(x);
+			insert(x);
 			if(p->lc!=nullptr)
 				cnt+=p->lc->size;
 			while(p->value!=x)
 			{
 				if(x<p->value)
 				{
-					if(p->lc==nullptr)
-						break;
+				//	if(p->lc==nullptr)
+				//		break;
 					p=p->lc;
 					cnt-=p->cnt;
 					if(p->rc!=nullptr)
@@ -206,14 +206,14 @@ class treap{
 				else
 				{
 					cnt+=p->cnt;
-					if(p->rc==nullptr)
-						break;
+				//	if(p->rc==nullptr)
+				//		break;
 					p=p->rc;
 					if(p->lc!=nullptr)
 						cnt+=p->lc->size;
 				}
 			}
-			//erase(x);
+			erase(x);
 			return cnt;
 		}
 		T nst(int n)
@@ -280,7 +280,7 @@ class treap{
 int main()
 {
 #ifndef ONLINE_JUDGE
-	//freopen("P3369_3.in","r",stdin);
+	freopen("P3369_3.in","r",stdin);
 #endif
 	int n;
 	cin>>n;
