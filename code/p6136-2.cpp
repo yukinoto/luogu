@@ -250,53 +250,53 @@ class treap{
 		}
 		T bef(const T &x)
 		{
+			insert(x);
+			T ans;
 			const node *p=fnd(x);
-			if(p->value<x)
-				return p->value;
-			if(p->value>=x)
-			{
-				if(p->lc==nullptr)
-					if(p->fa->rc==p)
-						return p->fa->value;
-					else
-					{
-						while(p->fa->rc!=p)
-							p=p->fa;
-						p=p->fa;
-						return p->value;
-					}
+			if(p->lc==nullptr)
+				if(p->fa->rc==p)
+					ans=p->fa->value;
 				else
-					p=p->lc;
+				{
+					while(p->fa->rc!=p)
+						p=p->fa;
+					p=p->fa;
+					ans=p->value;
+				}
+			else
+			{
+				p=p->lc;
 				while(p->rc!=nullptr)
 					p=p->rc;
-				return p->value;
+				ans=p->value;
 			}
-			return p->value;
+			erase(x);
+			return ans;
 		}
 		T aft(const T &x)
 		{
+			insert(x);
+			T ans;
 			const node *p=fnd(x);
-			if(p->value>x)
-				return p->value;
-			if(p->value<=x)
-			{
-				if(p->rc==nullptr)
-					if(p->fa->lc==p)
-						return p->fa->value;
-					else
-					{
-						while(p->fa->lc!=p)
-							p=p->fa;
-						p=p->fa;
-						return p->value;
-					}
+			if(p->rc==nullptr)
+				if(p->fa->lc==p)
+					ans=p->fa->value;
 				else
-					p=p->rc;
+				{
+					while(p->fa->lc!=p)
+						p=p->fa;
+					p=p->fa;
+					ans=p->value;
+				}
+			else
+			{
+				p=p->rc;
 				while(p->lc!=nullptr)
 					p=p->lc;
-				return p->value;
+				ans=p->value;
 			}
-			return p->value;
+			erase(x);
+			return ans;
 		}
 		treap(T inf)
 		{
