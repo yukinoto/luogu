@@ -108,10 +108,14 @@ class treap{
 			{
 				if(p->lc==nullptr&&p->rc==nullptr)
 					return;
-				if(p->lc==nullptr||p->rc->key<p->lc->key)
+				if(p->lc==nullptr)
 					roll_right_up(p);
-				else if(p->rc==nullptr||p->rc->key>p->lc->key)
+				else if(p->rc==nullptr)
 					roll_left_up(p);
+				else if(p->lc->key<p->rc->key)
+					roll_left_up(p);
+				else
+					roll_right_up(p);
 			}
 			return;
 		}
