@@ -121,8 +121,10 @@ class treap{
 		}
 		void rise(node *p)
 		{
-			while(p->fa!=nullptr&&p->key<p->fa->key)
+			while(p->fa!=nullptr)
 			{
+				if(p->key>=p->fa->key)
+					return;
 				if(p->fa->lc==p)
 					roll_left_up(p->fa);
 				else if(p->fa->rc==p)
