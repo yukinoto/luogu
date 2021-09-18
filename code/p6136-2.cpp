@@ -189,7 +189,7 @@ class treap{
 		{
 			node *p=root;
 			int cnt=0;
-            insert(x);
+			//insert(x);
 			if(p->lc!=nullptr)
 				cnt+=p->lc->size;
 			while(p->value!=x)
@@ -213,7 +213,7 @@ class treap{
 						cnt+=p->lc->size;
 				}
 			}
-            erase(x);
+			//erase(x);
 			return cnt;
 		}
 		T nst(int n)
@@ -317,13 +317,13 @@ int main()
 	int n,m;
 	cin>>n>>m;
 	treap<int> t(0x7fffffff);
-    for(int i=0;i<n;i++)
-    {
-        int x;
-        cin>>x;
-        t.insert(x);
-    }
-    int bef=0,ans=0;
+	for(int i=0;i<n;i++)
+	{
+		int x;
+		cin>>x;
+		t.insert(x);
+	}
+	int bef=0,ans=0;
 	for(int i=0;i<m;i++)
 	{
 		int f,x;
@@ -340,9 +340,9 @@ int main()
 			bef=t.bef(x^bef);
 		if(f==6)
 			bef=t.aft(x^bef);
-        if(f>=3)
-            ans^=bef;
+		if(f>=3)
+			ans^=bef;
 	}
-    cout<<ans<<endl;
+	cout<<ans<<endl;
 	return 0;
 }
