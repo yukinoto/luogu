@@ -311,9 +311,6 @@ class treap{
 
 int main()
 {
-#ifndef ONLINE_JUDGE
-	//freopen("P3369_3.in","r",stdin);
-#endif
 	int n,m;
 	cin>>n>>m;
 	treap<int> t(0x7fffffff);
