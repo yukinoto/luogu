@@ -81,6 +81,8 @@ class treap{
 				else if(p->fa->rc==p)
 					p->fa->rc=r;
 			}
+			else
+				root=r;
 			p->fa=r;
 			p->rc=r->lc;
 			if(p->rc!=nullptr)
@@ -100,6 +102,8 @@ class treap{
 				else if(p->fa->rc==p)
 					p->fa->rc=l;
 			}
+			else
+				root=l;
 			p->fa=l;
 			p->lc=l->rc;
 			if(p->lc!=nullptr)
