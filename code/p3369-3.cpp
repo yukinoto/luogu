@@ -74,10 +74,11 @@ class treap{
 		{
 			node *r=p->rc;
 			r->fa=p->fa;
-			if(r->fa->lc==p)
-				r->fa->lc=r;
-			else if(r->fa->rc==p)
-				r->fa->rc=r;
+			if(p->fa!=nullptr)
+				if(p->fa->lc==p)
+					p->fa->lc=r;
+				else if(p->fa->rc==p)
+					p->fa->rc=r;
 			p->fa=r;
 			p->rc=r->lc;
 			if(p->rc!=nullptr)
@@ -90,10 +91,11 @@ class treap{
 		{
 			node *l=p->lc;
 			l->fa=p->fa;
-			if(l->fa->lc==p)
-				l->fa->lc=l;
-			else if(l->fa->rc==p)
-				l->fa->rc=l;
+			if(p->fa!=nullptr)
+				if(p->fa->lc==p)
+					p->fa->lc=l;
+				else if(p->fa->rc==p)
+					p->fa->rc=l;
 			p->fa=l;
 			p->lc=l->rc;
 			if(p->lc!=nullptr)
@@ -124,7 +126,7 @@ class treap{
 			while(p->fa!=nullptr)
 			{
 				if(p->key>=p->fa->key)
-					return;
+					break;
 				if(p->fa->lc==p)
 					roll_left_up(p->fa);
 				else if(p->fa->rc==p)
