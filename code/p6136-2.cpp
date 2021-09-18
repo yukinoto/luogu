@@ -189,6 +189,7 @@ class treap{
 		{
 			node *p=root;
 			int cnt=0;
+			//insert(x);
 			if(p->lc!=nullptr)
 				cnt+=p->lc->size;
 			while(p->value!=x)
@@ -212,6 +213,7 @@ class treap{
 						cnt+=p->lc->size;
 				}
 			}
+			//erase(x);
 			return cnt;
 		}
 		T nst(int n)
@@ -227,6 +229,8 @@ class treap{
 			{
 				if(cnt+1>n)
 				{
+					//if(p->lc==nullptr)
+					//	break;
 					p=p->lc;
 					cnt-=p->cnt;
 					if(p->rc!=nullptr)
@@ -235,6 +239,8 @@ class treap{
 				else
 				{
 					cnt+=p->cnt;
+					//if(p->rc==nullptr)
+					//	break;
 					p=p->rc;
 					if(p->lc!=nullptr)
 						cnt+=p->lc->size;
@@ -310,18 +316,18 @@ class treap{
 int main()
 {
 #ifndef ONLINE_JUDGE
-	//freopen("P3369_3.in","r",stdin);
+	freopen("P6136_2.in","r",stdin);
 #endif
 	int n,m;
 	cin>>n>>m;
 	treap<int> t(0x7fffffff);
-    for(int i=0;i<n;i++)
-    {
-        int x;
-        cin>>x;
-        t.insert(x);
-    }
-    int bef=0,ans=0;
+	for(int i=0;i<n;i++)
+	{
+		int x;
+		cin>>x;
+		t.insert(x);
+	}
+	int bef=0,ans=0;
 	for(int i=0;i<m;i++)
 	{
 		int f,x;
@@ -338,9 +344,9 @@ int main()
 			bef=t.bef(x^bef);
 		if(f==6)
 			bef=t.aft(x^bef);
-        if(f>=3)
-            ans^=bef;
+		if(f>=3)
+			ans^=bef;
 	}
-    cout<<ans<<endl;
+	cout<<ans<<endl;
 	return 0;
 }
