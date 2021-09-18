@@ -223,19 +223,19 @@ class treap{
 				cnt=0;
 			else
 				cnt=p->lc->size;
-			while(cnt+1!=n)
+			while(cnt+1<n||cnt>=n+p->cnt)
 			{
-				if(cnt+1>n)
+				if(cnt>=n+p->cnt)
 				{
 					p=p->lc;
-					cnt-=1;
+					cnt-=p->cnt;
 					if(p->rc!=nullptr)
 						cnt-=p->rc->size;
 				}
 				else
 				{
+					cnt+=p->cnt;
 					p=p->rc;
-					cnt+=1;
 					if(p->lc!=nullptr)
 						cnt+=p->lc->size;
 				}
