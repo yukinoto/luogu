@@ -75,10 +75,12 @@ class treap{
 			node *r=p->rc;
 			r->fa=p->fa;
 			if(p->fa!=nullptr)
+			{
 				if(p->fa->lc==p)
 					p->fa->lc=r;
 				else if(p->fa->rc==p)
 					p->fa->rc=r;
+			}
 			p->fa=r;
 			p->rc=r->lc;
 			if(p->rc!=nullptr)
@@ -92,10 +94,12 @@ class treap{
 			node *l=p->lc;
 			l->fa=p->fa;
 			if(p->fa!=nullptr)
+			{
 				if(p->fa->lc==p)
 					p->fa->lc=l;
 				else if(p->fa->rc==p)
 					p->fa->rc=l;
+			}
 			p->fa=l;
 			p->lc=l->rc;
 			if(p->lc!=nullptr)
