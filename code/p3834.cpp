@@ -108,6 +108,8 @@ map<int,int> mp1,mp2;
 
 int main()
 {
+	cin.sync_with_stdio(false);
+	cout.sync_with_stdio(false);
 	int n,m;
 	cin>>n>>m;
 	for(int i=0;i<n;i++)
