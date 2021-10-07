@@ -1,4 +1,3 @@
-//wa #4
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -37,7 +36,7 @@ const vector<double>& operator +=(vector<double> &x,const vector<double> &y)
 
 int main()
 {
-	vector<double> *a[50];
+	vector<double> *a[100];
 	int n;
 	cin>>n;
 	for(int i=0;i<n;i++)
@@ -71,18 +70,18 @@ int main()
 			else
 			{
 				flag=-1;
-				cout<<-1<<endl;
+				cout<<"No Solution"<<endl;
 				break;
 			}
 		else
 			ans.push_back((*a[i])[n]/(*a[i])[i]+0.0000001);
 	if(flag==0)
-		cout<<0<<endl;
+		cout<<"No Solution"<<endl;
 	if(flag==1)
 	{
 		cout<<fixed<<setprecision(2);
 		for(int i=0;i<n;i++)
-			cout<<'x'<<i+1<<'='<<ans[i]<<endl;
+			cout<<ans[i]<<endl;
 	}
 	for(int i=0;i<n;i++)
 		delete a[i];
