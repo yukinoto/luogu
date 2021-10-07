@@ -6,10 +6,10 @@ using namespace std;
 
 bool equal(double a,double b)
 {
-	return abs(a-b)<=0.00001;
+	return abs(a-b)<=0.0001;
 }
 
-vector<double> operator *(const vector<double> &x,int k)
+vector<double> operator *(const vector<double> &x,double k)
 {
 	vector<double> ans;
 	for(auto i:x)
@@ -17,7 +17,7 @@ vector<double> operator *(const vector<double> &x,int k)
 	return ans;
 }
 
-vector<double> operator *(int k,const vector<double> &x)
+vector<double> operator *(double k,const vector<double> &x)
 {
 	vector<double> ans;
 	for(auto i:x)
@@ -74,7 +74,7 @@ int main()
 				break;
 			}
 		else
-			ans.push_back((*a[i])[n]/(*a[i])[i]);
+			ans.push_back((*a[i])[n]/(*a[i])[i]+0.00001);
 	if(flag==0)
 		cout<<0<<endl;
 	if(flag==1)
