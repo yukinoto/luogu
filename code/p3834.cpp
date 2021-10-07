@@ -123,7 +123,7 @@ int main()
 	}
 	tree T(0,n);
 	for(int i=0;i<n;i++)
-		T.add(mp2[b[i]],mp2[b[i]]+1,1,i);
+		T.add(mp2[a[i]],mp2[a[i]]+1,1,i);
 	for(int i=0;i<m;i++)
 	{
 		int l,r,k;
