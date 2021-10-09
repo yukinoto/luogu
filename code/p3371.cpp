@@ -70,6 +70,7 @@ void print()
 
 int main()
 {
+	cin.sync_with_stdio(false),cout.sync_with_stdio(false);
 	init();
 	spfa();
 	print();
