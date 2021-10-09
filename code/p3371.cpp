@@ -14,6 +14,7 @@ int k[10010],dis[10010];
 void init()
 {
 	cin>>n>>m>>s;
+	s--;
 	for(int i=0;i<m;i++)
 	{
 		int f,t,w;
@@ -38,9 +39,9 @@ void spfa()
 		st.pop();
 		for(auto i:mp[p])
 		{
-			if(dis[i.first]>dis[p]+dis[i.second])
+			if(dis[i.first]>dis[p]+i.second)
 			{
-				dis[i.first]=dis[p]+dis[i.second];
+				dis[i.first]=dis[p]+i.second;
 				if(!ist[i.first])
 				{
 					st.push(i.first);
@@ -59,9 +60,10 @@ void print()
 {
 	for(int i=0;i<n;i++)
 		if(dis[i]==0x3f3f3f3f)
-			cout<<0x7fffffff<<endl;
+			cout<<0x7fffffff<<' ';
 		else
-			cout<<dis[i]<<endl;
+			cout<<dis[i]<<' ';
+	cout<<endl;
 	return;
 }
 
