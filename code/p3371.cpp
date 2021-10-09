@@ -1,13 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <stack>
+#include <queue>
 #include <cstring>
 #include <utility>
 using namespace std;
 
 int n,m,s;
 vector<pair<int,int>> mp[10010];
-stack<int> st;
+queue<int> st;
 bool ist[10010];
 int k[10010],dis[10010];
 
@@ -35,8 +35,9 @@ void spfa()
 	dis[s]=0;
 	while(!st.empty())
 	{
-		int p=st.top();
+		int p=st.front();
 		st.pop();
+		ist[p]=false;
 		for(auto i:mp[p])
 		{
 			if(dis[i.first]>dis[p]+i.second)
