@@ -100,16 +100,9 @@ int e=0;
 long long fnd(int s)
 {
 	auto f=[&](int i){return q[i].y+q[i].x*2*(l-s);};
-	int l=q.first,r=q.last;
-	while(l<r-1)
-	{
-		int mid=(l+r)/2;
-		if(f(mid)>=f(mid-1))
-			r=mid;
-		else
-			l=mid;
-	}
-	return f(l);
+	while(e!=q.last-1&&f(e+1)<f(e))
+		e++;
+	return f(e);
 }
 
 int main()
@@ -130,7 +123,8 @@ int main()
 			if(double(a.y-b.y)/(a.x-b.x)>=double(b.y-y)/(b.x-x))
 			{
 				q.popback();
-				
+				if(e==q.last)
+					e--;
 			}
 			else
 				break;
