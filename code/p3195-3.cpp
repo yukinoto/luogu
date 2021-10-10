@@ -13,6 +13,8 @@ void del()
 
 void init()
 {
+	cin.sync_with_stdio(false);
+	cout.sync_with_stdio(false);
 	cin>>n>>l;
 	++l;
 	c=new long long[n];
