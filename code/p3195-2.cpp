@@ -115,9 +115,11 @@ int main()
 	init();
 	for(int i=0;i<n;i++)
 	{
-		f[i]=fnd(s[i]);
 		if(i>0)
+		{
+			f[i]=fnd(s[i]);
 			f[i]+=(s[i]-l)*(s[i]-l);
+		}
 		f[i]=min(f[i],(s[i]-l+1)*(s[i]-l+1));
 		long long x=s[i],y=f[i]+s[i]*s[i];
 		while(q.last-q.first>1)
