@@ -38,6 +38,49 @@ void init()
 	return;
 }
 
+template<typename T>
+class queue
+{
+	private:
+		T x[50010];
+		int first,last;
+	public:
+		queue()
+		{
+			first=last=0;
+		}
+		T front()
+		{
+			return x[first];
+		}
+		T end()
+		{
+			return x[last];
+		}
+		bool empty()
+		{
+			return first==last;
+		}
+		void pop()
+		{
+			if(first>=last)
+				throw "fuckccf";
+			first++;
+			return;
+		}
+		void push(const T &a)
+		{
+			x[last++]=a;
+			return;
+		}
+		T& operator[](int p)
+		{
+			return &x[p];
+		}
+};
+
+struct pt{int x,y;};
+queue<pt> q;
 int main()
 {
 	init();
