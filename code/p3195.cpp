@@ -14,7 +14,7 @@ void del()
 void init()
 {
 	cin>>n>>l;
-	--l;
+	++l;
 	c=new long long[n];
 	p=new long long[n];
 	s=new long long[n];
@@ -41,17 +41,14 @@ void init()
 int main()
 {
 	init();
-	long long ans=0x7fffffffffffffff;
 	for(int i=0;i<n;i++)
 	{
 		for(int j=0;j<i;j++)
 			f[i]=min(f[i],f[j]+s[j]*s[j]-2*s[j]*(s[i]-l));
 		if(i>0)
 			f[i]+=(s[i]-l)*(s[i]-l);
-		else
-			f[i]=(s[i]-l-1)*(s[i]-l-1);
-		ans=min(ans,f[i]);
+		f[i]=min(f[i],(s[i]-l+1)*(s[i]-l+1));
 	}
-	cout<<ans<<endl;
+	cout<<f[n-1]<<endl;
 	return 0;
 }
