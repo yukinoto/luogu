@@ -94,6 +94,7 @@ pt makept(long long _x,long long _y)
 	a.x=_x,a.y=_y;
 	return a;
 }
+
 int main()
 {
 	init();
