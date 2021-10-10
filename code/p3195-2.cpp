@@ -95,13 +95,27 @@ pt makept(long long _x,long long _y)
 	return a;
 }
 
+long long fnd(int s)
+{
+	auto f=[&](int i){return q[i].y+q[i].x*2*(l-s);};
+	int l=q.first,r=q.last;
+	while(l<r-1)
+	{
+		int mid=(l+r)/2;
+		if(f(mid)>=f(mid-1))
+			r=mid;
+		else
+			l=mid;
+	}
+	return f(l);
+}
+
 int main()
 {
 	init();
 	for(int i=0;i<n;i++)
 	{
-		for(int j=0;j<i;j++)
-			f[i]=min(f[i],f[j]+s[j]*s[j]-2*s[j]*(s[i]-l));
+		f[i]=fnd(s[i]);
 		if(i>0)
 			f[i]+=(s[i]-l)*(s[i]-l);
 		f[i]=min(f[i],(s[i]-l+1)*(s[i]-l+1));
