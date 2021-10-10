@@ -43,8 +43,8 @@ class queue
 {
 	private:
 		T x[50010];
-		int first,last;
 	public:
+		int first,last;
 		queue()
 		{
 			first=last=0;
@@ -68,6 +68,13 @@ class queue
 			first++;
 			return;
 		}
+		void popback()
+		{
+			if(first>=last)
+				throw "fuckccf";
+			last--;
+			return;
+		}
 		void push(const T &a)
 		{
 			x[last++]=a;
@@ -75,12 +82,18 @@ class queue
 		}
 		T& operator[](int p)
 		{
-			return &x[p];
+			return x[p];
 		}
 };
 
-struct pt{int x,y;};
+struct pt{long long x,y;};
 queue<pt> q;
+pt makept(long long _x,long long _y)
+{
+	pt a;
+	a.x=_x,a.y=_y;
+	return a;
+}
 int main()
 {
 	init();
@@ -91,6 +104,16 @@ int main()
 		if(i>0)
 			f[i]+=(s[i]-l)*(s[i]-l);
 		f[i]=min(f[i],(s[i]-l+1)*(s[i]-l+1));
+		long long x=s[i],y=f[i]+s[i]*s[i];
+		while(q.last-q.first>1)
+		{
+			pt a=q[q.last-2],b=q[q.last-1];
+			if(double(a.y-b.y)/(a.x-b.x)>=double(b.y-y)/(b.x-x))
+				q.popback();
+			else
+				break;
+		}
+		q.push(makept(x,y));
 	}
 	cout<<f[n-1]<<endl;
 	return 0;
