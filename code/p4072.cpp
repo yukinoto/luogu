@@ -12,7 +12,8 @@ const Int inf=0x3fffffff;
 void del()
 {
 	delete[]p;
-	delete[]f[0],f[1];
+	delete[]f[0];
+	delete[]f[1];
 	delete[]f;
 	return;
 }
@@ -38,19 +39,27 @@ void init()
 
 void work()
 {
-	for(int i=0;i<m;i++)
+	for(int j=0;j<n;j++)
+		f[0][j]=p[j]*p[j];
+	for(int i=1;i<m;i++)
 	{
-		for(int j=0;j<n;j++)
+		for(int j=i;j<n;j++)
 		{
-			f[i&1][j]=f[(i&1)^1][j];
+			f[i&1][j]=inf;
 			for(int k=0;k<j;k++)
 			{
-				f[i&1][j]=min(f[i&1][j],f[(i&1)^1][k]+p[j]*p[j]-2*p[i]*p[j]);
+				if(f[(i&1)^1][k]!=inf)
+				{
+					f[i&1][j]=min(f[i&1][j],f[(i&1)^1][k]+p[k]*p[k]-2*p[k]*p[j]);
+				}
 			}
-			f[i&1][j]=min(f[i&1][j],p[j]*p[j]);
+			if(f[i&1][j]!=inf)
+			{
+				f[i&1][j]+=p[j]*p[j];
+			}
 		}
 	}
-	cout<<f[(m-1)&1][n-1]<<endl;
+	cout<<f[(m&1)^1][n-1]*m-p[n-1]*m<<endl;
 	return;
 }
 
