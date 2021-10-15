@@ -4,11 +4,11 @@
 using namespace std;
 
 long long n,l;
-long long *c,*p,*s,*f;
+long long *s,*f;
 
 void del()
 {
-	delete[]c,p,s,f;
+	delete[]s,f;
 }
 
 void init()
@@ -19,23 +19,16 @@ void init()
     cout.tie(nullptr);
 	cin>>n>>l;
 	++l;
-	c=new long long[n];
-	p=new long long[n];
 	s=new long long[n];
 	f=new long long[n];
 	for(int i=0;i<n;i++)
 	{
-		cin>>c[i];
+        long long x;
+        cin>>x;
 		if(i==0)
-		{
-			p[i]=c[i];
-			s[i]=p[i]+i;
-		}
+			s[i]=x;
 		else
-		{
-			p[i]=p[i-1]+c[i];
-			s[i]=p[i]+i;
-		}
+			s[i]=s[i-1]+1+x;
 		f[i]=0x3fffffffffffffffull;
 	}
 	atexit(del);
@@ -67,15 +60,15 @@ class queue
 		}
 		void pop()
 		{
-			if(first>=last)
-				throw "fuckccf";
+			//if(first>=last)
+			//	throw "fuckccf";
 			first++;
 			return;
 		}
 		void popback()
 		{
-			if(first>=last)
-				throw "fuckccf";
+			//if(first>=last)
+			//	throw "fuckccf";
 			last--;
 			return;
 		}
