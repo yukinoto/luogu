@@ -20,6 +20,10 @@ void del()
 
 void init()
 {
+	//cin.sync_with_stdio(false);
+	//cout.sync_with_stdio(false);
+	//cin.tie(nullptr);
+	//cout.tie(nullptr);
 	cin>>n>>m;
 	p=new Int[n];
 	f=new Int*[2];
@@ -59,7 +63,7 @@ void work()
 			}
 		}
 	}
-	cout<<f[(m&1)^1][n-1]*m-p[n-1]*m<<endl;
+	cout<<f[(m&1)^1][n-1]*m-p[n-1]*p[n-1]<<endl;
 	return;
 }
 
