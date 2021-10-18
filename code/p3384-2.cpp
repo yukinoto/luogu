@@ -28,7 +28,7 @@ class xds{
 					int mid=(l+r)/2;
 					lc=new node(l,mid,a);
 					rc=new node(mid,r,a);
-					num=lc->num+rc->num%p;
+					num=(lc->num+rc->num)%p;
 					return;
 				}
 				~node()
@@ -131,7 +131,7 @@ class tree{
 						if(!tb[i])
 						{
 							sons.push_back(i);
-							tb[i]=false;
+							tb[i]=true;;
 						}
 					}
 					son=top=dfn=dep=0;
@@ -152,25 +152,28 @@ class tree{
 					a[r].son=i;
 				a[r].size+=a[i].size;
 			}
-			a[r].sons.erase(lower_bound(a[r].sons.begin(),a[r].sons.end(),a[r].son));
 		}
 		void dfs(int top,int root)
 		{
 			static int cnt=0;
 			a[root].dfn=++cnt;
-			rnk[cnt]=cnt;
+			rnk[cnt]=root;
 			a[root].top=top;
-			dfs(top,a[root].son);
+			if(a[root].son!=0)
+				dfs(top,a[root].son);
 			for(int i:a[root].sons)
-				dfs(i,i);
+				if(i!=a[root].son)
+					dfs(i,i);
 		}
 	public:
 		void init(int n,int r,vector<int>*mp,bool* tb,T *vl)
 		{
 			a=new node[n+1];
+			tb[r]=true;
+			rnk=new int[n+1];
 			build(r,r,mp,tb,vl);
 			dfs(r,r);
-			dt=new xds<T>(1,n,[&](int x){return a[rnk[x]].value;});
+			dt=new xds<T>(1,n+1,[&](int x){return a[rnk[x]].value;});
 			return;
 		}
 		void a_l(int x,int y,T v)
@@ -179,8 +182,38 @@ class tree{
 			{
 				if(a[a[x].top].dep<a[a[y].top].dep)
 					swap(x,y);
-				dt->add()
+				dt->add(a[a[x].top].dfn,a[x].dfn+1,v);
+				x=a[a[x].top].fa;
 			}
+			if(a[a[x].top].dep<a[a[y].top].dep)
+				swap(x,y);
+			dt->add(a[y].dfn,a[x].dfn+1,v);
+		}
+		T q_l(int x,int y)
+		{
+			T ans=0;
+			while(a[x].top!=a[y].top)
+			{
+				if(a[a[x].top].dep<a[a[y].top].dep)
+					swap(x,y);
+				ans+=dt->quest(a[a[x].top].dfn,a[x].dfn+1);
+				ans%=p;
+				x=a[a[x].top].fa;
+			}
+			if(a[a[x].top].dep<a[a[y].top].dep)
+				swap(x,y);
+			ans+=dt->quest(a[y].dfn,a[x].dfn+1);
+			ans%=p;
+			return ans;
+		}
+		void a_t(int x,T v)
+		{
+			dt->add(a[x].dfn,a[x].dfn+a[x].size,v);
+			return;
+		}
+		T q_t(int x)
+		{
+			return dt->quest(a[x].dfn,a[x].dfn+a[x].size);
 		}
 		tree(){;}
 		~tree()
@@ -204,7 +237,7 @@ void init()
 		cin>>vl[i];
 		tb[i]=false;
 	}
-	for(int i=0;i<m;i++)
+	for(int i=1;i<n;i++)
 	{
 		int x,y;
 		cin>>x>>y;
@@ -214,4 +247,43 @@ void init()
 	delete[]mp;
 	delete[]tb;
 	delete[]vl;
+	return;
+}
+
+void work()
+{
+	for(int i=0;i<m;i++)
+	{
+		int f,x,y;
+		long long z;
+		cin>>f;
+		if(f==1)
+		{
+			cin>>x>>y>>z;
+			tr.a_l(x,y,z);
+		}
+		if(f==2)
+		{
+			cin>>x>>y;
+			cout<<tr.q_l(x,y)<<endl;
+		}
+		if(f==3)
+		{
+			cin>>x>>z;
+			tr.a_t(x,z);
+		}
+		if(f==4)
+		{
+			cin>>x;
+			cout<<tr.q_t(x)<<endl;
+		}
+	}
+	return;
+}
+
+int main()
+{
+	init();
+	work();
+	return 0;
 }
