@@ -185,7 +185,7 @@ class tree{
 				dt->add(a[a[x].top].dfn,a[x].dfn+1,v);
 				x=a[a[x].top].fa;
 			}
-			if(a[a[x].top].dep<a[a[y].top].dep)
+			if(a[x].dep<a[y].dep)
 				swap(x,y);
 			dt->add(a[y].dfn,a[x].dfn+1,v);
 		}
@@ -200,7 +200,7 @@ class tree{
 				ans%=p;
 				x=a[a[x].top].fa;
 			}
-			if(a[a[x].top].dep<a[a[y].top].dep)
+			if(a[x].dep<a[y].dep)
 				swap(x,y);
 			ans+=dt->quest(a[y].dfn,a[x].dfn+1);
 			ans%=p;
