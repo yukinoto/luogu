@@ -166,9 +166,17 @@ class bigInteger{
 			cnt--;
 			while(cnt>=0)
 			{
-				if(*this>=tmp)
+				while(*this>=tmp)
 					(*this)-=tmp;
+				tmp>>=1;
+				cnt--;
 			}
+			return *this;
+		}
+		bigInteger operator %(const bigInteger&x)const
+		{
+			bigInteger ans(*this);
+			return ans%=x;
 		}
 		friend istream& operator >>(istream&,bigInteger&);
 		friend ostream& operator <<(ostream&,const bigInteger&);
@@ -222,13 +230,10 @@ ostream& operator <<(ostream &ous,const bigInteger&x)
 }
 
 //debug
-/*int main()
+int main()
 {
 	bigInteger a,b;
 	cin>>a>>b;
-	if(a>=b)
-	    cout<<a-b<<endl;
-	else
-	    cout<<'-'<<b-a<<endl;
+	cout<<a%b<<endl;
 	return 0;
-}*/
+}
