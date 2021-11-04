@@ -234,6 +234,11 @@ int main()
 {
 	bigInteger a,b;
 	cin>>a>>b;
-	cout<<a%b<<endl;
+	cout<<a+b<<endl;
+	if(a>=b)
+		cout<<a-b<<endl;
+	else
+		cout<<'-'<<b-a<<endl;
+	cout<<a*b<<endl;
 	return 0;
 }
