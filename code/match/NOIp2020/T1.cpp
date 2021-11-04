@@ -178,6 +178,29 @@ class bigInteger{
 			bigInteger ans(*this);
 			return ans%=x;
 		}
+		bigInteger operator /(const bigInteger&x)const
+		{
+			int cnt=0;
+			bigInteger tmp1(*this),tmp(x),ans(0);
+			while(*this>=tmp)
+			{
+				tmp<<=1;
+				cnt++;
+			}
+			tmp>>=1;
+			cnt--;
+			while(cnt>=0)
+			{
+				while(tmp1>=tmp)
+				{
+					tmp1-=tmp;
+					ans.a[cnt]++;
+				}
+				tmp>>=1;
+				cnt--;
+			}
+			return *this;
+		}
 		friend istream& operator >>(istream&,bigInteger&);
 		friend ostream& operator <<(ostream&,const bigInteger&);
 		operator int()const
