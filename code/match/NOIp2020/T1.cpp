@@ -4,8 +4,8 @@
 #include <queue>
 using namespace std;
 
-const int MAXL=23;
-const unsigned MOD=10;
+/*const int MAXL=12;
+const unsigned MOD=100,BITS=2,PW[BITS]={1,10};
 
 class bigInteger{
 	private:
@@ -277,33 +277,43 @@ istream& operator >>(istream &ins,bigInteger &x)
 		ins.get(i);
 	}
 	int cnt=0;
+	static int cache[MAXL*BITS];
 	do
 	{
-		x.a[cnt]=i-'0';
+		cache[cnt]=i-'0';
 		cnt++;
 	}while(ins.get(i)&&isdigit(i));
-	reverse(x.a,x.a+cnt);
+	reverse(cache,cache+cnt);
+	for(int i=0;i<=(cnt-1)/BITS;i++)
+		for(int j=min(BITS,cnt-BITS*i)-1;j>=0;j--)
+		{
+			x.a[i]*=10;
+			x.a[i]+=cache[i*BITS+j];
+		}
 	return ins;
 }
 ostream& operator <<(ostream &ous,const bigInteger&x)
 {
-	int p=MAXL-1;
-	while(p>=0&&x.a[p]==0)
-		--p;
-	if(p<0)
+	static char cache[BITS*MAXL+1];
+	for(int i=0;i<MAXL;i++)
 	{
-		ous<<'0';
-	}
-	else
-	{
-		while(p>=0)
+		for(int j=0;j<BITS;j++)
 		{
-			ous<<x.a[p];
-			--p;
+			cache[i*BITS+j]=x.a[i]/PW[j]%10+'0';
 		}
 	}
+	int p=MAXL*BITS-1;
+	while(p>=0&&cache[p]=='0')
+		--p;
+	++p;
+	reverse(cache,cache+p);
+	cache[p]='\0';
+	if(p!=0)
+		ous<<cache;
+	else
+		ous<<'0';
 	return ous;
-}
+}*/
 
 //debug
 /*int main()
@@ -321,20 +331,48 @@ ostream& operator <<(ostream &ous,const bigInteger&x)
 	return 0;
 }*/
 
+istream& operator>>(istream&ins,__int128_t &p)
+{
+	char x=ins.get();
+	while(isspace(x))
+		x=ins.get();
+	p=0;
+	while(isdigit(x))
+	{
+		p*=10;
+		p+=x-'0';
+	}
+	return ins;
+}
+ostream& operator<<(ostream &ous,const __int128_t &p)
+{
+	char cache[32];
+	int cnt=0;
+	__int128_t x=p;
+	while(x!=0)
+	{
+		cache[cnt++]=x%10+'0';
+		x/=10;
+	}
+	reverse(cache,cache+cnt);
+	cache[cnt]='\0';
+	return ous<<cache;
+}
+
 template<typename Int>
 Int gcd(Int x,Int y)
 {
 	static Int zero(0),z;
-	z=Int(0);
-	while(y!=zero)
+	z=x%y;
+	while(z!=zero)
 	{
-		z=x%y;
 		x=y,y=z;
+		z=x%y;
 	}
-	return x;
+	return y;
 }
 
-typedef bigInteger Integer;
+typedef __int128_t Integer;
 
 class Frac{
 	private:
