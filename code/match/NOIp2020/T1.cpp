@@ -447,7 +447,7 @@ ostream& operator <<(ostream &ous,const Frac &x)
 
 vector<int> toe[100010];
 int idg[100010];
-Frac wt[100010];
+Frac *wt=new Frac[100010];
 int n,m;
 
 void init()
@@ -509,5 +509,6 @@ int main()
 	ios::sync_with_stdio(false);
 	init();
 	work();
+	delete[] wt;
 	return 0;
 }
