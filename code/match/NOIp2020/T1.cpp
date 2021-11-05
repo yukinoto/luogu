@@ -59,6 +59,8 @@ class bigInteger{
 		}
 		bigInteger& operator =(const bigInteger&x)
 		{
+			if(a==nullptr)
+				a=new unsigned int[MAXL+1];
 			for(int i=0;i<=MAXL;i++)
 				a[i]=x.a[i];
 			return *this;
@@ -322,7 +324,8 @@ ostream& operator <<(ostream &ous,const bigInteger&x)
 template<typename Int>
 Int gcd(Int x,Int y)
 {
-	Int zero(0),z;
+	static Int zero(0),z;
+	z=Int(0);
 	while(y!=zero)
 	{
 		z=x%y;
@@ -350,6 +353,11 @@ class Frac{
 			up=x,low=1;
 			return;
 		}
+		Frac(const Integer &&x)
+		{
+			up=move(x),low=1;
+			return;
+		}
 		Frac(){;}
 		Frac(const Frac &x)
 		{
@@ -371,13 +379,13 @@ class Frac{
 			up=move(x.up),low=move(x.low);
 			return *this;
 		}
-		Frac operator +(const Frac &x)const
+		Frac&& operator +(const Frac &x)const
 		{
-			Frac ans;
-			ans.up=up*x.low+low*up;
+			static Frac ans;
+			ans=Frac(up*x.low+low*up);
 			ans.low=low*x.low;
 			ans.chk();
-			return ans;
+			return move(ans);
 		}
 		Frac& operator +=(const Frac &x)
 		{
@@ -394,10 +402,11 @@ class Frac{
 			up*=x/g;
 			return *this;
 		}
-		Frac operator *(const Integer &x)const
+		Frac&& operator *(const Integer &x)const
 		{
-			Frac ans=*this;
-			return ans*=x;
+			Frac ans;
+			ans=*this;
+			return move(ans*=x);
 		}
 		Frac& operator *=(const Frac &x)
 		{
@@ -405,10 +414,11 @@ class Frac{
 			chk();
 			return *this;
 		}
-		Frac operator *(const Frac &x)const
+		Frac&& operator *(const Frac &x)const
 		{
-			Frac ans=*this;
-			return ans*=x;
+			static Frac ans;
+			ans=*this;
+			return move(ans*=x);
 		}
 		Frac& operator /=(const Frac &x)
 		{
@@ -416,22 +426,25 @@ class Frac{
 			chk();
 			return *this;
 		}
-		Frac operator /(const Frac &x)const
+		Frac&& operator /(const Frac &x)const
 		{
-			Frac ans=*this;
-			return ans/=x;
+			static Frac ans;
+			ans=*this;
+			return move(ans/=x);
 		}
 		Frac& operator /=(const Integer &x)
 		{
-			Integer g=gcd(up,x);
+			static Integer g;
+			g=gcd(up,x);
 			up/=g;
 			low*=x/g;
 			return *this;
 		}
-		Frac operator /(const Integer &x)const
+		Frac&& operator /(const Integer &x)const
 		{
-			Frac ans=*this;
-			return ans/=x;
+			static Frac ans;
+			ans=*this;
+			return move(ans/=x);
 		}
 };
 istream& operator >>(istream &ins,Frac &x)
