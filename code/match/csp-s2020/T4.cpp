@@ -86,6 +86,7 @@ void work()
 
 int main()
 {
+	ios::sync_with_stdio(false);
 	init1();
 	work();
 	for(int i=2;i<=t;i++)
