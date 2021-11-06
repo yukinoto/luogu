@@ -21,7 +21,7 @@ void init1()
 	{
 		cho[i]=-1;
 		otm[i]=-1;
-	}	
+	}
 	return;
 }
 istream& operator >>(istream&ins,pair<int,int>&x)
