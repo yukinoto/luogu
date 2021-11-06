@@ -1,20 +1,12 @@
 #include <iostream>
-#include <set>
+#include <list>
 #include <vector>
 #include <algorithm>
 using namespace std;
 
-template<typename T>
-struct node{
-	T value;
-	node *next,*bef;
-};
-
 int t,n;
 int a[1000010];
-node<pair<int,int>> snk[2000010];
-node<pair<int,int>> *front,*back;
-int top;
+list<pair<int,int>> snk;
 vector<int> ots;
 int cho[1000010],otm[1000010];
 
@@ -24,19 +16,12 @@ void init1()
 	for(int i=1;i<=n;i++)
 		cin>>a[i];
 	for(int i=1;i<=n;i++)
-	{
-		snk[top].value=make_pair(a[i],i);
-		snk[top].next=snk+top-1;
-		snk[top].bef=snk+top+1;
-		++top;
-	}
-	front=snk,back=snk+top-1;
-	front->next=nullptr,back->bef=nullptr;
+		snk.push_back(make_pair(a[i],i));
 	for(int i=1;i<=n;i++)
 	{
 		cho[i]=-1;
 		otm[i]=-1;
-	}
+	}	
 	return;
 }
 istream& operator >>(istream&ins,pair<int,int>&x)
@@ -45,7 +30,7 @@ istream& operator >>(istream&ins,pair<int,int>&x)
 }
 void init2()
 {
-	top=0;
+	snk.clear();
 	ots.clear();
 	for(int i=1;i<=n;i++)
 	{
@@ -61,64 +46,38 @@ void init2()
 		a[x.first]=x.second;
 	}
 	for(int i=1;i<=n;i++)
-	{
-		snk[top].value=make_pair(a[i],i);
-		snk[top].next=snk+top-1;
-		snk[top].bef=snk+top+1;
-		++top;
-	}
-	front=snk,back=snk+top-1;
-	front->next=nullptr,back->bef=nullptr;
+		snk.push_back(make_pair(a[i],i));
 }
 
 void work()
 {
-	int size=top;
-	node<pair<int,int>> *now=back;
-	while(front!=back)
+	int size=n;
+	auto now=--snk.end();
+	while(size>1)
 	{
-		/*auto etn=*snk.begin(),etr=*snk.rbegin();
-		cho[etr.second]=snk.size();
-		ots.push_back(etn.second);
-		otm[etn.second]=snk.size();
-		snk.erase(snk.begin());
-		snk.erase(etr);
-		snk.insert(make_pair(etr.first-etn.first,etr.second));*/
-		auto etn=front->value,etr=back->value;
+		auto etn=*snk.begin(),etr=snk.back();
 		cho[etr.second]=size;
 		ots.push_back(etn.second);
-		otm[etn.second]=size;
-		size--;
-		if(now==front)
-			now=back;
-		front=front->bef;
-		front->next=nullptr;
-		if(front!=back)
+		otm[etn.second]=size--;
+		if(size>1)
 		{
+			if(now==snk.begin())
+				++now;
+			snk.erase(snk.begin());
+			if(now==--snk.end())
+				now--;
+			snk.erase(--snk.end());
 			auto x=make_pair(etr.first-etn.first,etr.second);
-			back=back->next;
-			back->bef=nullptr;
-			while(now->next!=nullptr&&now->value>=x)
-				now=now->next;
-			if(now->value<x)
-			{
-				if(now->bef!=nullptr)
-					now->bef->next=snk+top;
-				else
-					back=snk+top;
-				snk[top].value=x;
-				snk[top].bef=now->bef;
-				snk[top].next=now;
-				now->bef=snk+top;
-			}
-			else
-			{
-				front->next=snk+top;
-				snk[top].value=x;
-				snk[top].bef=front;
-				snk[top].next=nullptr;
-				front=snk+top;
-			}
+			while(*now>=x&&now!=snk.begin())
+				--now;
+			if(*now<x&&now!=snk.end())
+				++now;
+			now=snk.insert(now,x);
+		}
+		else
+		{
+			snk.clear();
+			snk.push_back(make_pair(etr.first-etn.first,etr.second));
 		}
 	}
 	int ans=1,oas=1;
@@ -146,7 +105,6 @@ void work()
 
 int main()
 {
-	ios::sync_with_stdio(false);
 	init1();
 	work();
 	for(int i=2;i<=t;i++)
