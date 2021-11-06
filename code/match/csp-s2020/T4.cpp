@@ -51,26 +51,47 @@ void init2()
 
 void work()
 {
-	while(snk.rbegin()->first>snk.begin()->first)
+	while(snk.size()>1)
 	{
 		auto etn=*snk.begin(),etr=*snk.rbegin();
 		cho[etr.second]=snk.size();
-		ots.push_back(etn.first);
-		otm[etn.first]=snk.size();
+		ots.push_back(etn.second);
+		otm[etn.second]=snk.size();
 		snk.erase(snk.begin());
 		snk.erase(etr);
 		snk.insert(make_pair(etr.first-etn.first,etr.second));
 	}
-	int ans=1;
+	int ans=1,oas=1;
 	for(int i=ots.size()-1;i>=0;i--)
 	{
 		if(cho[ots[i]]!=-1)
 		{
-			if(ans>otm[ots[i]])
+			if(otm[ots[i]]>oas)
 			{
-				ans=otm[ots[i]];
-				
+				oas=otm[ots[i]];
+				if(ans<oas)
+					ans=cho[ots[i]];
+				else
+					ans=min(ans,cho[ots[i]]);
+			}
+			else
+			{
+				if(cho[ots[i]]>=oas)
+					ans=min(ans,cho[ots[i]]);
 			}
 		}
 	}
+	cout<<ans<<endl;
+}
+
+int main()
+{
+	init1();
+	work();
+	for(int i=2;i<=t;i++)
+	{
+		init2();
+		work();
+	}
+	return 0;
 }
