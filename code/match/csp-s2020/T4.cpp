@@ -4,9 +4,17 @@
 #include <algorithm>
 using namespace std;
 
+template<typename T>
+struct node{
+	T value;
+	node *next,*bef;
+};
+
 int t,n;
 int a[1000010];
-set<pair<int,int>> snk;//value,nth
+node<pair<int,int>> snk[2000010];
+node<pair<int,int>> *front,*back;
+int top;
 vector<int> ots;
 int cho[1000010],otm[1000010];
 
@@ -16,7 +24,14 @@ void init1()
 	for(int i=1;i<=n;i++)
 		cin>>a[i];
 	for(int i=1;i<=n;i++)
-		snk.insert(make_pair(a[i],i));
+	{
+		snk[top].value=make_pair(a[i],i);
+		snk[top].next=snk+top-1;
+		snk[top].bef=snk+top+1;
+		++top;
+	}
+	front=snk,back=snk+top-1;
+	front->next=nullptr,back->bef=nullptr;
 	for(int i=1;i<=n;i++)
 	{
 		cho[i]=-1;
@@ -30,7 +45,7 @@ istream& operator >>(istream&ins,pair<int,int>&x)
 }
 void init2()
 {
-	snk.clear();
+	top=0;
 	ots.clear();
 	for(int i=1;i<=n;i++)
 	{
@@ -46,20 +61,65 @@ void init2()
 		a[x.first]=x.second;
 	}
 	for(int i=1;i<=n;i++)
-		snk.insert(make_pair(a[i],i));
+	{
+		snk[top].value=make_pair(a[i],i);
+		snk[top].next=snk+top-1;
+		snk[top].bef=snk+top+1;
+		++top;
+	}
+	front=snk,back=snk+top-1;
+	front->next=nullptr,back->bef=nullptr;
 }
 
 void work()
 {
-	while(snk.size()>1)
+	int size=top;
+	node<pair<int,int>> *now=back;
+	while(front!=back)
 	{
-		auto etn=*snk.begin(),etr=*snk.rbegin();
+		/*auto etn=*snk.begin(),etr=*snk.rbegin();
 		cho[etr.second]=snk.size();
 		ots.push_back(etn.second);
 		otm[etn.second]=snk.size();
 		snk.erase(snk.begin());
 		snk.erase(etr);
-		snk.insert(make_pair(etr.first-etn.first,etr.second));
+		snk.insert(make_pair(etr.first-etn.first,etr.second));*/
+		auto etn=front->value,etr=back->value;
+		cho[etr.second]=size;
+		ots.push_back(etn.second);
+		otm[etn.second]=size;
+		size--;
+		if(now==front)
+			now=back;
+		front=front->bef;
+		front->next=nullptr;
+		if(front!=back)
+		{
+			auto x=make_pair(etr.first-etn.first,etr.second);
+			back=back->next;
+			back->bef=nullptr;
+			while(now->next!=nullptr&&now->value>=x)
+				now=now->next;
+			if(now->value<x)
+			{
+				if(now->bef!=nullptr)
+					now->bef->next=snk+top;
+				else
+					back=snk+top;
+				snk[top].value=x;
+				snk[top].bef=now->bef;
+				snk[top].next=now;
+				now->bef=snk+top;
+			}
+			else
+			{
+				front->next=snk+top;
+				snk[top].value=x;
+				snk[top].bef=front;
+				snk[top].next=nullptr;
+				front=snk+top;
+			}
+		}
 	}
 	int ans=1,oas=1;
 	for(int i=ots.size()-1;i>=0;i--)
