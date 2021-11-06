@@ -131,7 +131,7 @@ void tp2()
 			add[p[pt]]+=dms[pt]*v[pt];
 		if(type[pt]==3)
 		{
-			tag=modint(1);
+			tag=dms[pt];
 			for(auto it=c[pt].rbegin();it!=c[pt].rend();it++)
 			{
 				dms[*it]+=tag;
