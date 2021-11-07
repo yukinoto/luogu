@@ -29,7 +29,6 @@ namespace part{
 	}
 	void init()
 	{
-		cin>>n>>m;
 		for(int i=0;i<m;i++)
 		{
 			int x,y;
@@ -59,26 +58,23 @@ namespace part{
 }
 
 namespace rol{
-	pair<int,int> ro;
+	pair<int,int> del;
 	void build(int root)
 	{
-		taken[root]=true;
+		tr[root].sons.clear();
 		for(auto i:edge[root])
 		{
-			if(i!=tr[root].fa&&!taken[i])
+			if(i!=tr[root].fa&&del!=make_pair(root,i)&&del!=make_pair(i,root))
 			{
 				tr[i].fa=root;
 				tr[root].sons.push_back(i);
 				build(i);
 			}
-			if(i!=tr[root].fa&&taken[i])
-				ro=make_pair(i,root);
 		}
 		return;
 	}
 	void init()
 	{
-		cin>>n>>m;
 		for(int i=0;i<m;i++)
 		{
 			int x,y;
@@ -87,48 +83,83 @@ namespace rol{
 			edge[y].push_back(x);
 		}
 		tr[1].fa=-1;
-		build(1);
 	}
-	bool check(int root)
+	int ans[5010]={0x7fffffff},fsk[5010];
+	int top=0;
+	void work(int root)
 	{
-		int p=ro.second;
-		while(p!=ro.first&&p!=root)
-			p=tr[p].fa;
-		return p==root;
-	}
-	bool vst[5010];
-	void work(int root,int jmp=-1)
-	{
-		vst[root]=true;
-		cout<<root<<' ';
+		fsk[top++]=root;
 		sort(tr[root].sons.begin(),tr[root].sons.end());
-		if(root!=ro.first)
+		for(auto i:tr[root].sons)
 		{
-			for(auto i:tr[root].sons)
-			{
-				work(i);
-			}
-			if(!vst[tr[root].fa])
-			{
-				
-			}
+			work(i);
 		}
-		else
+		return;
+	}
+	bool cmp()
+	{
+		for(int i=0;i<n;i++)
+			if(ans[i]!=fsk[i])
+				return ans[i]>fsk[i];
+		return false;
+	}
+	void cpr()
+	{
+		if(cmp())
+			for(int i=0;i<n;i++)
+				ans[i]=fsk[i];
+		return;
+	}
+	bool vis[5010];
+	vector<pair<int,int>> eg;
+	void fr(int root)
+	{
+		vis[root]=true;
+		for(auto i:edge[root])
 		{
-			if()
+			if(eg.empty()&&vis[i]&&i!=tr[root].fa)
+			{
+				eg.push_back(make_pair(root,i));
+				while(root!=i)
+				{
+					eg.push_back(make_pair(root,tr[root].fa));
+					root=tr[root].fa;
+				}
+				return;
+			}
+			if(!vis[i])
+			{
+				tr[i].fa=root;
+				tr[root].sons.push_back(i);
+				fr(i);
+			}
 		}
 		return;
 	}
 	void main()
 	{
 		init();
-		work(1);
+		fr(1);
+		for(auto i:eg)
+		{
+			top=0;
+			del=i;
+			build(1);
+			work(1);
+			cpr();
+		}
+		for(int i=0;i<n;i++)
+			cout<<ans[i]<<' ';
+		cout<<endl;
 		return;
 	}
 }
-
 int main()
 {
-	part::main();
+	cin>>n>>m;
+	if(m==n-1)
+		part::main();
+	else
+		rol::main();
 	return 0;
 }
