@@ -2,7 +2,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-#include <deque>
+#include <set>
 using namespace std;
 
 int n,m;
@@ -43,7 +43,6 @@ void init()
 		ma+=l;
 		mi=min(mi,l);
 	}
-	ma=ma/m+2;
 	tr[1].fa=make_pair(-1,0);
 	bdt::build(1);
 	return;
@@ -59,62 +58,47 @@ pair<int,int> cst(int root,int l)
 			return make_pair(0,tr[root].fa.second);
 	}
 	int ans=0;
-	vector<int> lth;
+	multiset<int>lth;
 	for(auto i:tr[root].sons)
 	{
 		auto x=cst(i.first,l);
 		ans+=x.first;
 		if(x.second!=0)
-			lth.push_back(x.second);
+			lth.insert(x.second);
 	}
-	if(lth.size()==1)
+	vector<int>asq;
+	while(lth.size()>1)
 	{
-		if(lth[0]+tr[root].fa.second<l)
-			return make_pair(ans,lth[0]+tr[root].fa.second);
-		else
-			return make_pair(ans+1,0);
-	}
-	sort(lth.begin(),lth.end());
-	deque<int> wst;
-	int fnt=0,bac=lth.size()-1;
-	for(;fnt<bac;fnt++)
-	{
-		if(lth[fnt]+lth[bac]<l&&(wst.empty()||lth[fnt]+wst.back()<l))
+		decltype(lth.begin()) i;
+		for(i=lth.begin();i!=lth.end();i++)
 		{
-			wst.push_front(lth[fnt]);
-		}
-		else
-		{
-			if(lth[fnt]+lth[bac]>=l)
+			auto it=lth.lower_bound(l-*i);
+			if(it==i)
+				it++;
+			if(it==lth.end())
 			{
-				while(bac-1>fnt&&lth[bac-1]+lth[fnt]>=l)
-					bac--;
-				ans++;
-				bac--;
+				asq.push_back(*i);
 			}
 			else
 			{
 				ans++;
-				wst.pop_back();
+				int tmp=*it;
+				lth.erase(lth.begin(),++i);
+				lth.erase(lth.find(tmp));
+				break;
 			}
 		}
+		if(i==lth.end())
+			lth.clear();
 	}
-	if(fnt==bac)
+	while(!lth.empty())
 	{
-		if(!wst.empty()&&lth[fnt]+wst.back()>=l)
-		{
-			ans++;
-			wst.pop_back();
-		}
-		else
-			wst.push_front(lth[fnt++]);
+		asq.push_back(*lth.begin());
+		lth.erase(lth.begin());
 	}
 	int ap=0;
-	while(!wst.empty())
-	{
-		ap=max(ap,wst.back());
-		wst.pop_back();
-	}
+	for(int i:asq)
+		ap=max(ap,i);
 	if(ap+tr[root].fa.second>=l)
 		return make_pair(ans+1,0);
 	else
@@ -140,6 +124,6 @@ int work(int left,int right)
 int main()
 {
 	init();
-	cout<<work(mi,ma)<<endl;
+	cout<<work(mi,ma+2)<<endl;
 	return 0;
 }
