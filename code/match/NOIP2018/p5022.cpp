@@ -96,18 +96,26 @@ namespace rol{
 			p=tr[p].fa;
 		return p==root;
 	}
-	void work(int root)
+	bool vst[5010];
+	void work(int root,int jmp=-1)
 	{
+		vst[root]=true;
 		cout<<root<<' ';
 		sort(tr[root].sons.begin(),tr[root].sons.end());
 		if(root!=ro.first)
+		{
 			for(auto i:tr[root].sons)
 			{
 				work(i);
 			}
+			if(!vst[tr[root].fa])
+			{
+				
+			}
+		}
 		else
 		{
-			
+			if()
 		}
 		return;
 	}
