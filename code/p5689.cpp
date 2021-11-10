@@ -33,5 +33,36 @@ void patpeng(int n)
 		pret[i]=pret[i-1]*peng[i]%mod;
 	}
 	pretat[n]=quickpow(pret[n],mod-2);
-	
+	for(int i=n-1;i>=0;i--)
+	{
+		pretat[i]=pretat[i+1]*peng[i+1]%mod;;
+	}
+	for(int i=n;i>0;i--)
+	{
+		atpeng[i]=pretat[i]*pret[i-1]%mod;
+	}
+	atpeng[0]=1;
+	return;
+}
+
+long long cnm(long long n,long long m)
+{
+	return peng[n]*atpeng[m]%mod*atpeng[n-m]%mod;
+}
+
+
+
+int main()
+{
+	int n;
+	cin>>n;
+	ppeng(n);
+	patpeng(n);
+	/*for(int i=0;i<=n;i++)
+	{
+		for(int j=0;j<=i;j++)
+			cout<<cnm(i,j)<<' ';
+		cout<<endl;
+	}*/
+	return 0;
 }
