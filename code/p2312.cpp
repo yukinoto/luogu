@@ -1,27 +1,27 @@
-#include <iostream>
-using namespace std;
+#include <cstdio>
+#include <cctype>
 
 long long *a;
 int n,m;
 
-long long getn(istream &ins,long long mod=303700003)
+long long getn(long long mod=303700003)
 {
-	char c=ins.get();
+	char c=getchar();
 	long long ans=0;
 	bool flag=false;
 	while(isspace(c))
-		c=ins.get();
+		c=getchar();
 	if(c=='-')
 	{
 		flag=true;
-		c=ins.get();
+		c=getchar();
 	}
 	while(isdigit(c))
 	{
 		ans=(ans*10+c-'0');
 		if(ans>=mod)
 			ans%=mod;
-		c=ins.get();
+		c=getchar();
 	}
 	if(flag)
 		ans=mod-ans;
@@ -44,18 +44,18 @@ bool check(long long x,long long mod=303700003)
 
 int main()
 {
-	ios::sync_with_stdio(false);
-	cin>>n>>m;
+	//ios::sync_with_stdio(false);
+	scanf("%d%d",&n,&m);
 	a=new long long[n+1];
 	for(int i=0;i<=n;i++)
-		a[i]=getn(cin);
+		a[i]=getn();
 	int cnt=0,*as=new int[m];
 	for(int i=1;i<=m;i++)
 		if(check(i))
 			as[cnt++]=i;
-	cout<<cnt<<endl;
+	printf("%d\n",cnt);
 	for(int i=0;i<cnt;i++)
-		cout<<as[i]<<endl;
+		printf("%d\n",as[i]);
 	delete[] a;
 	delete[] as;
 	return 0;
