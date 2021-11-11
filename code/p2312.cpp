@@ -1,10 +1,12 @@
 #include <cstdio>
 #include <cctype>
 
-long long *a;
+int *a;
 int n,m;
 
-long long getn(long long mod=303700003)
+const int mod=303700003;
+
+int getn()
 {
 	char c=getchar();
 	long long ans=0;
@@ -28,25 +30,20 @@ long long getn(long long mod=303700003)
 	return ans;
 }
 
-bool check(long long x,long long mod=303700003)
+bool check(int x)
 {
-	long long p=1;
-	long long ans=0;
-	for(int i=0;i<=n;i++)
-	{
-		ans+=p*a[i];
-		p=p*x;
-		if(p>=mod)
-			p%=mod;
-	}
-	return ans%mod==0;
+	int *pt=a+n-1;
+	long long res=a[n];
+	for(int i=n-1;i>=0;i--,pt--)
+		res=(res*x+*pt)%mod;
+	return res==0;
 }
 
 int main()
 {
 	//ios::sync_with_stdio(false);
 	scanf("%d%d",&n,&m);
-	a=new long long[n+1];
+	a=new int[n+1];
 	for(int i=0;i<=n;i++)
 		a[i]=getn();
 	int cnt=0,*as=new int[m];
