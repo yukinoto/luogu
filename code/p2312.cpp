@@ -4,7 +4,7 @@ using namespace std;
 long long *a;
 int n,m;
 
-long long getn(istream &ins,long long mod=1000000007)
+long long getn(istream &ins,long long mod=303700003)
 {
 	char c=ins.get();
 	long long ans=0;
@@ -18,7 +18,9 @@ long long getn(istream &ins,long long mod=1000000007)
 	}
 	while(isdigit(c))
 	{
-		ans=(ans*10+c-'0')%mod;
+		ans=(ans*10+c-'0');
+		if(ans>=mod)
+			ans%=mod;
 		c=ins.get();
 	}
 	if(flag)
@@ -26,16 +28,18 @@ long long getn(istream &ins,long long mod=1000000007)
 	return ans;
 }
 
-bool check(long long x,long long mod=1000000007)
+bool check(long long x,long long mod=303700003)
 {
 	long long p=1;
 	long long ans=0;
 	for(int i=0;i<=n;i++)
 	{
-		ans=(ans+p*a[i])%mod;
-		p=p*x%mod;
+		ans+=p*a[i];
+		p=p*x;
+		if(p>=mod)
+			p%=mod;
 	}
-	return ans==0;
+	return ans%mod==0;
 }
 
 int main()
