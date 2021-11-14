@@ -15,12 +15,12 @@ void grey(int n,int *a)
 	return;
 }
 
-int gcd(int a,int b)
+/*int gcd(int a,int b)
 {
 	if(b==0)
 		return a;
 	return gcd(b,a%b);
-}
+}*/
 
 int main()
 {
