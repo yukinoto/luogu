@@ -38,6 +38,7 @@ int main()
 		}
 	}
 	for(int i=0;i<n;i++)
-		cout<<p[i].first*tx+dx<<' '<<p[i].second*ty+dy<<endl;
+		cout<<p[i].first*tx+dx<<' '<<p[i].second*ty+dy<<'\n';
+	cout.flush();
 	return 0;
 }
