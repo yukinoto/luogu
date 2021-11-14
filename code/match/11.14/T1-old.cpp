@@ -187,6 +187,7 @@ int main()
 		}
 	}
 	for(int i=0;i<n;i++)
-		cout<<p->quest(i,i+1)<<' '<<q->quest(i,i+1)<<endl;
+		cout<<p->quest(i,i+1)<<' '<<q->quest(i,i+1)<<'\n';
+	cout.flush();
 	return 0;
 }
