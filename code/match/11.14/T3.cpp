@@ -14,11 +14,11 @@ int rol(int n,int p)
 	return n/cnt;
 }
 
+long long a[200000];
 int main()
 {
 	int n,m;
 	cin>>n>>m;
-	long long a[n];
 	for(int i=0;i<n;i++)
 		cin>>a[i];
 	sort(a,a+n);

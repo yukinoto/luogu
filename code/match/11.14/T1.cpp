@@ -150,18 +150,20 @@ class xds{
 	return 0;
 }*/
 
+xds<int>*p,*q;
+int x[500000],y[500000];
+char f[500000];
+int v1[500000],v2[500000];
+
 int main()
 {
 	int n,m;
 	cin>>n>>m;
-	int x[n],y[n];
 	for(int i=0;i<n;i++)
 	{
 		cin>>x[i]>>y[i];
 	}
-	xds<int> p(0,n,x),q(0,n,y);
-	char f[m];
-	int v1[m],v2[m];
+	p=new xds<int>(0,n,x),q=new xds<int>(0,n,y);
 	for(int i=0;i<m;i++)
 	{
 		cin>>f[i];
@@ -172,18 +174,18 @@ int main()
 	{
 		if(f[i]=='m')
 		{
-			p.add(0,n,v1[i]),q.add(0,n,v2[i]);
+			p->add(0,n,v1[i]),q->add(0,n,v2[i]);
 		}
 		if(f[i]=='x')
 		{
-			p.times(0,n,-1);
+			p->times(0,n,-1);
 		}
 		if(f[i]=='y')
 		{
-			q.times(0,n,-1);
+			q->times(0,n,-1);
 		}
 	}
 	for(int i=0;i<n;i++)
-		cout<<p.quest(i,i+1)<<' '<<q.quest(i,i+1)<<endl;
+		cout<<p->quest(i,i+1)<<' '<<q->quest(i,i+1)<<endl;
 	return 0;
 }

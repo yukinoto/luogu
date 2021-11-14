@@ -112,14 +112,16 @@ class odt{
 		}
 };
 
+odt *tr;
+long long a[100000];
+
 int main()
 {
 	int n;
 	cin>>n;
-	long long a[n];
 	for(int i=0;i<n;i++)
 		cin>>a[i];
-	odt tr(0,n,a);
+	tr=new odt(0,n,a);
 	int m;
 	cin>>m;
 	for(int i=0;i<m;i++)
@@ -130,9 +132,9 @@ int main()
 			swap(l,r);
 		--l;
 		if(f==0)
-			tr.sq(l,r);
+			tr->sq(l,r);
 		if(f==1)
-			cout<<tr.quest(l,r)<<endl;
+			cout<<tr->quest(l,r)<<endl;
 	}
 	return 0;
 }
