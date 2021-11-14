@@ -2,6 +2,18 @@
 #include <algorithm>
 using namespace std;
 
+int rol(int n,int p)
+{
+	bool tb[n];
+	int cnt=0;
+	for(int i=0;!tb[i];i=(i+p)%n)
+	{
+		tb[i]=true;
+		++cnt;
+	}
+	return n/cnt;
+}
+
 int main()
 {
 	int n,m;
@@ -13,31 +25,31 @@ int main()
 	for(int i=0;i<m;i++)
 	{
 		int k;
+		long long ans=0;
 		cin>>k;
-		if(k==1)
+		int r=rol(n,k),c=n/r;
+		for(int j=0;j<r;j++)
 		{
-			long long bf=a[n-1],ed=a[n-1];
-			long long ans=0;
-			for(int i=n-2;i>0;i--)
+			long long bf=a[n-1-c*j],ed=a[n-1-c*j];
+			for(int l=n-2-c*j;l>n-c*(j+1);l--)
+			{
 				if(bf>ed)
 				{
-					ans+=a[i]*bf;
-					bf=a[i];
+					ans+=bf*a[l];
+					bf=a[l];
 				}
 				else
 				{
-					ans+=a[i]*ed;
-					ed=a[i];
+					ans+=ed*a[l];
+					ed=a[l];
 				}
-			ans+=a[0]*(bf+ed);
-			cout<<ans<<endl;
+			}
+			ans+=(bf+ed)*a[n-c*(j+1)];
 		}
 		if(k==0)
-		{
-			long long ans=0;
-			for(int i=0;i<n;i++)
-				ans+=a[i]*a[i];
+			cout<<ans/2<<endl;
+		else
 			cout<<ans<<endl;
-		}
 	}
+	return 0;
 }
