@@ -17,6 +17,7 @@ int rol(int n,int p)
 long long a[200000];
 int main()
 {
+	ios::sync_with_stdio(false);
 	int n,m;
 	cin>>n>>m;
 	for(int i=0;i<n;i++)
