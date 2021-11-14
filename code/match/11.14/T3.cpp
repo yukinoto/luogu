@@ -9,13 +9,15 @@ int gcd(int a,int b)
 	return gcd(b,a%b);
 }
 
-long long a[200000];
-long long rem[200000];
+long long a[200010];
+long long rem[200010];
 int main()
 {
 	ios::sync_with_stdio(false);
 	int n,m;
 	cin>>n>>m;
+	if(n>200000||m>200000)
+		throw;
 	for(int i=0;i<n;i++)
 		cin>>a[i];
 	sort(a,a+n);
