@@ -129,6 +129,7 @@ pair<int,int> grg(int a,int b,int c)
 
 int n,top=1;
 pair<int,int> rng[100001];
+bool jd[100001];
 xds t(-inf,inf);
 
 int main()
@@ -144,13 +145,18 @@ int main()
 			cin>>a>>b>>c;
 			rng[top]=grg(a,b,c);
 			t.add(rng[top].first,rng[top].second,1);
+			jd[top]=true;
 			++top;
 		}
 		if(f=="Del")
 		{
 			int p;
 			cin>>p;
-			t.add(rng[p].first,rng[p].second,-1);
+			if(jd[p])
+			{
+				t.add(rng[p].first,rng[p].second,-1);
+				jd[p]=false;
+			}
 		}
 		if(f=="Query")
 		{
