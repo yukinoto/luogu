@@ -18,7 +18,9 @@ struct pt{
 struct node{
 	pt fa;
 	vector<pt> sons;
+	vector<int>leaf;
 	pt wf[17];
+	int dep;
 };
 
 node tr[50001];
@@ -150,15 +152,23 @@ void del()
 int dfn[50001],rnk[50001],siz[50001];
 void dfs1(int root)
 {
-	static int cnt=0;
+	static int cnt=1;
 	siz[root]=1;
+	dfn[root]=1;
+	rnk[1]=1;
 	for(auto i:tr[root].sons)
 	{
 		dfn[i.to]=++cnt;
 		rnk[cnt]=i.to;
 		dfs1(i.to);
 		siz[root]+=siz[i.to];
+		for(auto j:tr[i.to].leaf)
+		{
+			tr[root].leaf.push_back(j);
+		}
 	}
+	if(siz[root]==1)
+		tr[root].leaf.push_back(root);
 	return;
 }
 
@@ -214,7 +224,12 @@ void sett(int root,bool x)
 }
 bool questt(int root)
 {
-	return stp->quest(rnk[root],rnk[root]+siz[root]);
+	for(auto i:tr[root].leaf)
+	{
+		if(!stp->quest(rnk[i],rnk[i]+1))
+			return false;
+	}
+	return true;
 }
 
 pt p[50001];
@@ -257,16 +272,14 @@ bool check(long long w)
 			while(npt<che.size()&&che[npt]<i.w)
 				npt++;
 			if(npt==che.size())
-				return false;
+				break;;
 			sett(i.to,true);
 			npt++;
 		}
 	}
-	for(auto i:tr[1].sons)
-	{
-		if(!questt(i.to))
+	for(int i=1;i<=n;i++)
+		if(tr[i].sons.size()==0&&!questt(i))
 			return false;
-	}
 	return true;
 }
 
@@ -289,6 +302,7 @@ int main()
 		cout<<-1<<endl;
 		return 0;
 	}
+	//cout<<check(8)<<endl;
 	cout<<fnd(0,50000000000001ll)+1<<endl;
 	return 0;
 }
