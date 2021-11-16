@@ -202,6 +202,17 @@ void del()
 	delete ctr;
 }
 int arm[50001];
+
+void sett(int root,bool x)
+{
+	ctr->set(dfn[root],dfn[root]+siz[root],x);
+	return;
+}
+
+bool questt(int root)
+{
+	return ctr->quest(dfn[root],dfn[root]+siz[root]);
+}
 void init()
 {
 	cin>>n;
@@ -219,21 +230,17 @@ void init()
 	atexit(del);
 	cin>>m;
 	for(int i=0;i<m;i++)
+	{
 		cin>>arm[i];
+		sett(arm[i],true);
+	}
+	if(questt(1))
+	{
+		cout<<0<<endl;
+		exit(0);
+	}
 	sort(tr[1].sons.begin(),tr[1].sons.end(),cmp2);
 	return;
-}
-
-
-void sett(int root,bool x)
-{
-	ctr->set(dfn[root],dfn[root]+siz[root],x);
-	return;
-}
-
-bool questt(int root)
-{
-	return ctr->quest(dfn[root],dfn[root]+siz[root]);
 }
 
 bool check(long long w)

@@ -13,7 +13,7 @@ while True:
 	io=IO("test.in")
 	io.input_writeln(n)
 	io.input_writeln(t)
-	m=randint(n//2,n*2)
+	m=randint(int(n*0.1+1),int(n*0.9))
 	io.input_writeln(m)
 	x=[]
 	for i in range(0,m):
