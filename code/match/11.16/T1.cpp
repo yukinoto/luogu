@@ -127,22 +127,25 @@ bool bfs(int s,int t)
 	return dep[t]!=-1;
 }
 
+int now[100001];
+
 int dfs(int root,int t,int flow)
 {
 	if(root==t)
 		return flow;
 	int anf=0;
-	for(auto &i:mmp[root])
+	for(int i=now[root];i<mmp[root].size();i++)
 	{
 		if(flow==0)
 			break;
-		if(i.second!=0&&dep[i.first]==dep[root]+1)
+		if(mmp[root][i].second!=0&&dep[mmp[root][i].first]==dep[root]+1)
 		{
-			int tmp=dfs(i.first,t,min(flow,i.second));
+			int tmp=dfs(mmp[root][i].first,t,min(flow,mmp[root][i].second));
 			anf+=tmp;
 			flow-=tmp;
-			i.second-=tmp;
-			mmp[i.first].push_back(make_pair(root,tmp));
+			mmp[root][i].second-=tmp;
+			mmp[mmp[root][i].first].push_back(make_pair(root,tmp));
+			now[root]=i;
 		}
 	}
 	return anf;
