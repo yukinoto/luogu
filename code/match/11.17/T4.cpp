@@ -9,92 +9,67 @@ class zxs{
 		private:
 		int value,tag;
 		node *lc,*rc;
-		bool ln,rn;
-		void pushtag(int l,int r)
+		unsigned char tb;
+		void ckl()
 		{
-			if(lc==nullptr)
-				return;
-			int mid=(l+r)/2;
-			if(!ln)
+			if(!(tb&1))
 			{
 				lc=new node(*lc);
-				ln=true;
+				lc->tb=0;
+				tb|=1;
 			}
-			if(!rn)
+		}
+		void ckr()
+		{
+			if(!(tb&2))
 			{
 				rc=new node(*rc);
-				rn=true;
+				rc->tb=0;
+				tb|=2;
 			}
-			lc->value+=(mid-l)*tag;
-			lc->tag+=tag;
-			rc->value+=(r-mid)*tag;
-			rc->tag+=tag;
+		}
+		void ck()
+		{
+			ckl(),ckr();
+		}
+		void pushtag(int l,int r)
+		{
+			if(tag==0||lc==nullptr)
+			{
+				tag=0;
+				return;
+			}
+			ck();
+			int mid=(l+r)/2;
+			lc->tag+=tag,rc->tag+=tag;
+			lc->value+=(mid-l)*tag,rc->value+=(r-mid)*tag;
 			tag=0;
 			return;
 		}
 		public:
 		node(int l,int r)
 		{
+			value=tag=0;
 			if(l==r-1)
 			{
 				lc=rc=nullptr;
-				value=tag=0;
-				ln=rn=false;
+				tb=0;
 			}
 			else
 			{
 				int mid=(l+r)/2;
 				lc=new node(l,mid),rc=new node(mid,r);
-				value=tag=0;
-				ln=rn=true;
+				tb=3;
 			}
+			return;
 		}
 		~node()
 		{
-			if(ln)
+			if(tb&1)
 				delete lc;
-			if(rn)
+			if(tb&2)
 				delete rc;
-		}
-		node *add_gen(int l,int r,int left,int right,int x)
-		{
-			if(left>=r||right<=l)
-			{
-				return nullptr;
-			}
-			if(left<=l&&right>=r)
-			{
-				node *ans=new node(*this);
-				ans->value+=(r-l)*x;
-				ans->tag+=x;
-				ans->ln=ans->rn=false;
-				return ans;
-			}
-			int mid=(l+r)/2;
-			node *ans=new node(*this);
-			ans->ln=ans->rn=false;
-			ans->pushtag(l,r);
-			node *pl=nullptr,*pr=nullptr;
-			if(ans->ln)
-				ans->lc->add(l,mid,left,right,x);
-			else
-				pl=ans->lc->add_gen(mid,r,left,right,x);
-			if(ans->rn)
-				ans->rc->add(mid,r,left,right,x);
-			else
-				pr=ans->rc->add_gen(mid,r,left,right,x);
-			if(pl!=nullptr)
-			{
-				ans->lc=pl;
-				ans->ln=true;
-			}
-			if(pr!=nullptr)
-			{
-				ans->rc=pr;
-				ans->rn=true;
-			}
-			ans->value=ans->lc->value+ans->rc->value;
-			return ans;
+			return;
 		}
 		void add(int l,int r,int left,int right,int x)
 		{
@@ -106,12 +81,35 @@ class zxs{
 				tag+=x;
 				return;
 			}
-			int mid=(l+r)/2;
 			pushtag(l,r);
+			int mid=(l+r)/2;
+			ck();
 			lc->add(l,mid,left,right,x);
 			rc->add(mid,r,left,right,x);
 			value=lc->value+rc->value;
 			return;
+		}
+		node *add_gen(int l,int r,int left,int right,int x)
+		{
+			if(left>=r||right<=l)
+				return nullptr;
+			if(left<=l&&right>=r)
+			{
+				node *ans=new node(*this);
+				ans->tb=0;
+				ans->value+=(r-l)*x;
+				ans->tag+=x;
+				return ans;
+			}
+			node *ans=new node(*this);
+			ans->tb=0;
+			ans->pushtag(l,r);
+			int mid=(l+r)/2;
+			ans->ck();
+			ans->lc->add(l,mid,left,right,x);
+			ans->rc->add(mid,r,left,right,x);
+			ans->value=ans->lc->value+ans->rc->value;
+			return ans;
 		}
 		int quest(int l,int r,int left,int right)
 		{
@@ -119,12 +117,13 @@ class zxs{
 				return 0;
 			if(left<=l&&right>=r)
 				return value;
-			int mid=(l+r)/2;
 			pushtag(l,r);
+			int mid=(l+r)/2;
 			return lc->quest(l,mid,left,right)+rc->quest(mid,r,left,right);
 		}
 	};
 	vector<node*>root;
+	vector<node*>wasted;
 	int l,r;
 	public:
 	zxs(int _l,int _r):l(_l),r(_r)
@@ -134,17 +133,20 @@ class zxs{
 	}
 	~zxs()
 	{
-		for_each(root.begin(),root.end(),[](node*pt){delete pt;});
-		return;
-	}
-	void add(int left,int right,int x,int version)
-	{
-		root[version]->add(l,r,left,right,x);
+		for_each(wasted.begin(),wasted.end(),[](node *pt){delete pt;});
+		for_each(root.begin(),root.end(),[](node *pt){delete pt;});
 		return;
 	}
 	void add_gen(int left,int right,int x,int version)
 	{
 		root.push_back(root[version]->add_gen(l,r,left,right,x));
+		return;
+	}
+	void add(int left,int right,int x,int version)
+	{
+		node *ans=root[version]->add_gen(l,r,left,right,x);
+		wasted.push_back(root[version]);
+		root[version]=ans;
 		return;
 	}
 	int quest(int left,int right,int version)
@@ -157,7 +159,7 @@ int main()
 {
 	int n,m;
 	cin>>n>>m;
-	zxs tr(0,n+1);
+	zxs tr(1,300001);
 	int a[n+1];
 	for(int i=1;i<=n;i++)
 	{
@@ -173,18 +175,35 @@ int main()
 			int l,r,c;
 			cin>>l>>r>>c;
 			--l;
-			cout<<tr.quest(c,c+1,r)-tr.quest(c,c+1,l)<<endl;
+			int x=tr.quest(c,c+1,r),
+			y=tr.quest(c,c+1,l);
+			cout<<x-y<<endl;
 		}
 		if(f==2)
 		{
 			int x;
 			cin>>x;
 			tr.add(a[x],a[x]+1,-1,x);
-			tr.add(a[x],a[x]+1,1,x+1);
-			tr.add(a[x+1],a[x+1]+1,-1,x+1);
 			tr.add(a[x+1],a[x+1]+1,1,x);
 			swap(a[x],a[x+1]);
 		}
 	}
 	return 0;
 }
+
+//test
+/*int main()
+{
+	int n;
+	cin>>n;
+	zxs tr(0,n+1);
+	for(int i=1;i<=n;i++)
+	{
+		int x;
+		cin>>x;
+		tr.add_gen(x,x+1,1,i-1);
+	}
+	for(int i=1;i<=n;i++)
+		cout<<tr.quest(i,i+1,n-1)<<endl;
+	return 0;
+}*/
