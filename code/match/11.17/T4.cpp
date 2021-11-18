@@ -157,6 +157,7 @@ class zxs{
 
 int main()
 {
+	ios::sync_with_stdio(false);
 	int n,m;
 	cin>>n>>m;
 	zxs tr(1,300001);
