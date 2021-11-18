@@ -3,7 +3,7 @@ using namespace std;
 
 typedef int Int;
 
-int main()
+int main(int argc,char**argv)
 {
 	Int x,y;
 	cin>>x>>y;
