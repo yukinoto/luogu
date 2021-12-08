@@ -12,8 +12,10 @@ void init(istream&ins)
 	ins>>n;
 	for(int i=0;i<n;i++)
 	{
-		double x,y;
+		long double x,y;
 		ins>>x>>y;
+		if(x>0)	x+=0.005;else	x-=0.005;
+		if(y>0)	y+=0.005;else	y-=0.005;
 		d[i].first=(x)*100,d[i].second=(y)*100;
 	}
 	sort(d,d+n);
@@ -46,7 +48,7 @@ void slov(ostream&ous)
 	}
 	long double ans=0;
 	for(int i=1;i<top;i++)
-		ans+=sqrt(dist(stk[i]-stk[i-1],stk[i]-stk[i-1]));
+		ans+=sqrt((long double)dist(stk[i]-stk[i-1],stk[i]-stk[i-1])/10000);
 	top=0;
 	for(int i=0;i<n;i++)
 	{
@@ -55,8 +57,8 @@ void slov(ostream&ous)
 		stk[top++]=d[i];
 	}
 	for(int i=1;i<top;i++)
-		ans+=sqrt(dist(stk[i]-stk[i-1],stk[i]-stk[i-1]));
-	ous<<fixed<<setprecision(2)<<ans/100<<endl;
+		ans+=sqrt((long double)dist(stk[i]-stk[i-1],stk[i]-stk[i-1])/10000);
+	ous<<fixed<<setprecision(2)<<ans<<endl;
 }
 
 int main()
