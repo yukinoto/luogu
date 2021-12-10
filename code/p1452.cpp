@@ -96,15 +96,21 @@ long long dist(const node&x,const node&y)
 	return (x-y)*(x-y);
 }
 
+long long area(const decltype(tb.begin()) &i,const decltype(tb.begin()) &it)
+{
+	auto nxt=roll_add(i,tb.begin(),tb.end());
+	return abs(dist(*nxt-*i,*it-*i));
+}
+
 long long kk()
 {
 	long long ans=0;
 	auto it=tb.begin();
-	for(auto i:tb)
+	for(auto i=tb.begin();i!=tb.end();++i)
 	{
-		while(dist(*roll_add(it,tb.begin(),tb.end()),i)>=dist(*it,i))
+		while(area(i,it+1)>area(i,it))
 			it=roll_add(it,tb.begin(),tb.end());
-		ans=max(ans,dist(*it,i));
+		ans=max(ans,dist(*i,*it));
 	}
 	return ans;
 }
