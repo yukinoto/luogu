@@ -96,9 +96,18 @@ Complex w(int k,int n)
 vector<Complex> fft(const vector<Complex>&fun,int n)
 {
 	vector<Complex> ans;
-	if(n==1)
+	if(n<=32)
 	{
-		ans.push_back(fun[0]);
+		for(int i=0;i<n;i++)
+		{
+			Complex x(fun[0]),id=w(i,n),nw=id;
+			for(int j=1;j<n;j++)
+			{
+				x+=nw*fun[j];
+				nw=nw*id;
+			}
+			ans.push_back(x);
+		}
 		return ans;
 	}
 	vector<Complex>f1,f2;
@@ -109,7 +118,7 @@ vector<Complex> fft(const vector<Complex>&fun,int n)
 		else
 			f2.push_back(fun[i]);
 	}
-	vector<Complex> a1=fft(f1,n/2),a2=fft(f2,n/2);
+	vector<Complex> a1(move(fft(f1,n/2))),a2(move(fft(f2,n/2)));
 	for(int i=0;i<n/2;i++)
 		ans.push_back(a1[i]+w(i,n)*a2[i]);
 	for(int i=n/2;i<n;i++)
@@ -120,9 +129,18 @@ vector<Complex> fft(const vector<Complex>&fun,int n)
 vector<Complex> _ifft(const vector<Complex>&fun,int n)
 {
 	vector<Complex> ans;
-	if(n==1)
+	if(n<=32)
 	{
-		ans.push_back(fun[0]);
+		for(int i=0;i<n;i++)
+		{
+			Complex x(fun[0]),id=w(-i,n),nw=id;
+			for(int j=1;j<n;j++)
+			{
+				x+=nw*fun[j];
+				nw=nw*id;
+			}
+			ans.push_back(x);
+		}
 		return ans;
 	}
 	vector<Complex>f1,f2;
@@ -133,7 +151,7 @@ vector<Complex> _ifft(const vector<Complex>&fun,int n)
 		else
 			f2.push_back(fun[i]);
 	}
-	vector<Complex> a1=_ifft(f1,n/2),a2=_ifft(f2,n/2);
+	vector<Complex> a1(move(_ifft(f1,n/2))),a2(move(_ifft(f2,n/2)));
 	for(int i=0;i<n/2;i++)
 		ans.push_back((a1[i]+w(-i,n)*a2[i]));
 	for(int i=n/2;i<n;i++)
