@@ -260,7 +260,29 @@ void rbt<T>::SolveDoubleBlack(node *x)
 		}
 		else
 		{
-			
+			if(c->fa->col==BLACK)
+			{
+				if(x->fa->lc==x)
+				{
+					rotate(x->fa->rc,LEFT);
+					rotate(x->fa,RIGHT);
+					x->fa->col=BLACK;
+				}
+				else
+				{
+					rotate(x->fa->lc,RIGHT);
+					rotate(x->fa,LEFT);
+					x->fa->col=BLACK;
+				}
+			}
+			else
+			{
+				if(x->fa->lc==x)
+					rotate(x->fa,RIGHT);
+				else
+					rotate(x->fa,LEFT);
+			}
+			return;
 		}
 	}
 }
