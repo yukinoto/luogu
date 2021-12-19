@@ -342,6 +342,10 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 		return iterator(root);
 	}
 	node* now=find(x);
+	if(now->value==x)
+	{
+		return iterator(now);
+	}
 	if(now->value<x)
 	{
 		now->rc=new node(now,x,RED);
