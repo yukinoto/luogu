@@ -50,6 +50,8 @@ class rbt<T>::iterator{
 		iterator& operator ++();
 		iterator& operator --();
 		const T& operator *();
+		bool operator ==(const iterator&)const;
+		bool operator !=(const iterator&)const;
 		iterator(){;}
 		iterator(node* _pt):pt(_pt){;}
 		friend void rbt<T>::erase(node*);
@@ -297,6 +299,8 @@ void rbt<T>::SolveDoubleBlack(node *x)
 template<typename T>
 rbt<T>::iterator rbt<T>::begin()
 {
+	if(root==nullptr)
+		return iterator(nullptr);
 	node *now=root;
 	while (now->rc!=nullptr)
 	{
@@ -314,6 +318,11 @@ rbt<T>::iterator rbt<T>::end()
 template<typename T>
 rbt<T>::iterator rbt<T>::insert(const T &x)
 {
+	if(root==nullptr)
+	{
+		root=new node(nullptr,x,BLACK);
+		return;
+	}
 	node* now=find(x);
 	if(now->value>x)
 	{
@@ -334,16 +343,26 @@ void rbt<T>::erase(node *x)
 	node *now=x->fa;
 	if(x->lc==nullptr&&x->rc==nullptr)
 	{
+		if(now==nullptr)
+			root=nullptr;
+		else
+			if(x->fa->lc==x)
+				x->fa->lc=nullptr;
+			else
+				x->fa->rc=nullptr;
 		delete x;
 		SolveDoubleBlack(now);
 		return;
 	}
 	if(x->lc==nullptr)
 	{
-		if(x==now->lc)
-			now->lc=x->rc;
+		if(now==nullptr)
+			root=x->rc;
 		else
-			now->rc=x->rc;
+			if(x==now->lc)
+				now->lc=x->rc;
+			else
+				now->rc=x->rc;
 		x->rc->fa=now;
 		x->lc->col=BLACK;
 		x->rc=nullptr;
@@ -352,10 +371,13 @@ void rbt<T>::erase(node *x)
 	}
 	if(x->rc==nullptr)
 	{
-		if(x==now->lc)
-			now->lc=x->lc;
+		if(now==nullptr)
+			root=x->lc;
 		else
-			now->rc=x->lc;
+			if(x==now->lc)
+				now->lc=x->lc;
+			else
+				now->rc=x->lc;
 		x->lc->fa=now;
 		x->lc->col=BLACK;
 		x->lc=nullptr;
@@ -392,3 +414,25 @@ void rbt<T>::erase(const T&x)
 
 #undef RED
 #undef BLACK
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	int n;
+	cin>>n;
+	rbt<int> tr;
+	for(int i=1;i<=n;i++)
+	{
+		int f,x;
+		cin>>f>>x;
+		if(f==1)
+			tr.insert(x);
+		else
+			tr.erase(x);
+		for(auto j:tr)
+			cout<<j<<' ';
+		cout<<endl;
+	}
+}
