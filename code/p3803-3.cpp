@@ -3,18 +3,45 @@
 #include <cmath>
 using namespace std;
 
-const double pi=acos(-1);
-
-complex<double> w(int k,int n){return complex<double>(cos(2*pi*k/n),sin(2*pi*k/n));}
-
-complex<double> p[1048576];
+const long long p=998244353;
+template<typename T>
+T quickpow(T x,long long n)
+{
+	long long a=0;
+	long long cnt=0;
+	while(n!=0)
+	{
+		a<<=1;
+		a|=(n&1);
+		n>>=1;
+		++cnt;
+	}
+	T ans=1;
+	for(;cnt>0;--cnt)
+	{
+		ans=ans*ans%p;
+		if(a&1)
+		{
+			ans=ans*x%p;
+		}
+        a>>=1;
+	}
+	return ans;
+}
+long long mw[998244352/17/7];
+long long w(int k,int n)
+{
+	if(mw[(p-1)/(17*7)/n*k]!=0)
+		return mw[(p-1)/(17*7)/n*k];
+	return mw[(p-1)/(17*7)/n*k]=quickpow(3ll,k*(p-1)/n);
+}
 
 template<typename comp,comp(*w)(int,int)>
 void _fft(comp *f,int n)
 {
 	if(n==1)
 	{
-		f[0]=w(0,n)*f[0];
+		f[0]=w(0,n)*f[0]%p;
 		return;
 	}
 	_fft<comp,w>(f,n>>1),_fft<comp,w>(f+(n>>1),n>>1);
@@ -25,8 +52,8 @@ void _fft(comp *f,int n)
 		tmp2[i]=f[i+(n>>1)];
 	for(int i=0;i<(n>>1);i++)
 	{
-		f[i]=tmp1[i]+tmp2[i]*w(i,n);
-		f[i+(n>>1)]=tmp1[i]-tmp2[i]*w(i,n);
+		f[i]=(tmp1[i]+tmp2[i]*w(i,n))%p;
+		f[i+(n>>1)]=(tmp1[i]-tmp2[i]*w(i,n))%p;
 	}
 	delete[] tmp1;
 	delete[] tmp2;
@@ -38,7 +65,7 @@ void _ifft(comp *f,int n)
 {
 	if(n==1)
 	{
-		f[0]=w(n-0,n)*f[0];
+		f[0]=w(n-0,n)*f[0]%p;
 		return;
 	}
 	_ifft<comp,w>(f,n>>1),_ifft<comp,w>(f+(n>>1),n>>1);
@@ -49,8 +76,8 @@ void _ifft(comp *f,int n)
 		tmp2[i]=f[i+(n>>1)];
 	for(int i=0;i<(n>>1);i++)
 	{
-		f[i]=tmp1[i]+tmp2[i]*w(n-i,n);
-		f[i+(n>>1)]=tmp1[i]-tmp2[i]*w(n-i,n);
+		f[i]=(tmp1[i]+tmp2[i]*w(n-i,n))%p;
+		f[i+(n>>1)]=(tmp1[i]-tmp2[i]*w(n-i,n))%p;
 	}
 	delete[] tmp1;
 	delete[] tmp2;
@@ -104,7 +131,7 @@ comp* ifft(comp*f,int n)
 	_ifft<comp,w>(tmp,1<<t);
 	for(int i=0;i<(1<<t);i++)
 	{
-		tmp[i]/=(1<<t);
+		tmp[i]=quickpow(1ll<<t,p-2)*tmp[i]%p;
 	}
 	return tmp;
 }
@@ -114,36 +141,37 @@ int main()
 	//freopen("p3803.in","r",stdin);
 	int n,m;
 	cin>>n>>m;
-	complex<double>*a=new complex<double>[n+m+1],*b=new complex<double>[n+m+1];
+	long long*a=new long long[n+m+1],*b=new long long[n+m+1];
 	for(int i=0;i<=n;i++)
 	{
 		int x;
 		cin>>x;
-		a[i]=complex<double>(x,0);
+		a[i]=x;
 	}
 	for(int i=0;i<=m;i++)
 	{
 		int x;
 		cin>>x;
-		b[i]=complex<double>(x,0);
+		b[i]=x;
 	}
 	for(int i=n+1;i<=n+m;i++)
 		a[i]=0;
 	for(int i=m+1;i<=n+m;i++)
 		b[i]=0;
-	complex<double>*a1=fft<complex<double>,w>(a,n+m+1),*a2=fft<complex<double>,w>(b,n+m+1);
+	long long*a1=fft<long long,w>(a,n+m+1),*a2=fft<long long,w>(b,n+m+1);
 	int t=0;
 	while((1<<t)<m+n+1) ++t;
 	for(int i=0;i<(1<<t);i++)
 	{
-		a1[i]*=a2[i];
+		a1[i]=a1[i]*a2[i]%p;
 	}
 	delete a2;
-	complex<double>*ans=ifft<complex<double>,w>(a1,(1<<t));
+	long long*ans=ifft<long long,w>(a1,(1<<t));
 	for(int i=0;i<n+m+1;i++)
 	{
-		cout<<int(abs(ans[i])+0.5)<<' ';
+		cout<<(ans[i]+p)%p<<' ';
 	}
+	//cout<<endl<<w(1,4)*w(3,4)%p<<endl;
 	delete[] a1;
 	delete[] ans;
 	delete[] a;
