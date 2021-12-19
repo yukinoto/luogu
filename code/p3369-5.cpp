@@ -1,4 +1,6 @@
 //rbt
+#include <algorithm>
+using std::swap;
 
 #define RED false
 #define BLACK true
@@ -23,6 +25,7 @@ class rbt{
 		void rotate(node *x,bool direct);
 		void SolveDoubleRed(node* x);
 		void SolveDoubleBlack(node* x);
+		void erase(node *x);
 	public:
 		class iterator;
 		rbt();
@@ -47,6 +50,10 @@ class rbt<T>::iterator{
 		iterator& operator ++();
 		iterator& operator --();
 		const T& operator *();
+		iterator(){;}
+		iterator(node* _pt):pt(_pt){;}
+		friend void rbt<T>::erase(node*);
+		friend void rbt<T>::erase(const iterator&);
 };
 
 template<typename T>
@@ -286,6 +293,99 @@ void rbt<T>::SolveDoubleBlack(node *x)
 		}
 	}
 }
+
+template<typename T>
+rbt<T>::iterator rbt<T>::begin()
+{
+	node *now=root;
+	while (now->rc!=nullptr)
+	{
+		now=now->rc;
+	}
+	return iterator(now);
+}
+
+template<typename T>
+rbt<T>::iterator rbt<T>::end()
+{
+	return iterator(nullptr);
+}
+
+template<typename T>
+rbt<T>::iterator rbt<T>::insert(const T &x)
+{
+	node* now=find(x);
+	if(now->value>x)
+	{
+		now->rc=new node(now,x,RED);
+		SolveDoubleRed(now=now->rc);
+	}
+	else
+	{
+		now->lc=new node(now,x,RED);
+		SolveDoubleRed(now=now->lc);
+	}
+	return iterator(now);
+}
+
+template<typename T>
+void rbt<T>::erase(node *x)
+{
+	node *now=x->fa;
+	if(x->lc==nullptr&&x->rc==nullptr)
+	{
+		delete x;
+		SolveDoubleBlack(now);
+		return;
+	}
+	if(x->lc==nullptr)
+	{
+		if(x==now->lc)
+			now->lc=x->rc;
+		else
+			now->rc=x->rc;
+		x->rc->fa=now;
+		x->lc->col=BLACK;
+		x->rc=nullptr;
+		delete x;
+		return;
+	}
+	if(x->rc==nullptr)
+	{
+		if(x==now->lc)
+			now->lc=x->lc;
+		else
+			now->rc=x->lc;
+		x->lc->fa=now;
+		x->lc->col=BLACK;
+		x->lc=nullptr;
+		delete x;
+		return;
+	}
+	iterator it(x);
+	++it;
+	swap(it.pt->value,x->value);
+	erase(it->pt);
+	return;
+}
+
+template<typename T>
+void rbt<T>::erase(const iterator &it)
+{
+	erase(it.pt);
+	return;
+}
+
+template<typename T>
+void rbt<T>::erase(const T&x)
+{
+	node *now=find(x);
+	if(now->value==x)
+		erase(now);
+	return;
+}
+
+//tbd
 
 #undef LEFT
 #undef RIGHT
