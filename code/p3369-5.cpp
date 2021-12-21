@@ -1,4 +1,7 @@
 //rbt
+
+#define DEBUG
+
 #include <algorithm>
 using std::swap;
 
@@ -26,6 +29,10 @@ class rbt{
 		void SolveDoubleRed(node* x);
 		void SolveDoubleBlack(node* x);
 		void erase(node *x);
+#ifdef DEBUG
+		void checkRBT();
+		int checkNODE(node*x);
+#endif
 	public:
 		class iterator;
 		rbt();
@@ -167,6 +174,8 @@ rbt<T>::~rbt()
 template<typename T>
 typename rbt<T>::node* rbt<T>::find(const T&value)
 {
+	if(root==nullptr)
+		return nullptr;
 	node* now=root;
 	while(now->value!=value)
 	{
@@ -232,6 +241,11 @@ void rbt<T>::rotate(node* x,bool direct)
 template<typename T>
 void rbt<T>::SolveDoubleRed(node *x)
 {
+	if(x->fa==nullptr)
+	{
+		x->col=BLACK;
+		return;
+	}
 	auto checkb=[](node *pt){return pt==nullptr||pt->col==BLACK;};
 	if(x->col==BLACK||(checkb(x->fa)&&checkb(x->lc)&&checkb(x->rc)))
 		return;
@@ -239,18 +253,27 @@ void rbt<T>::SolveDoubleRed(node *x)
 	{
 		if(checkb(x->fa->lc==x?x->fa->rc:x->fa->lc))
 		{
-			rotate(x->fa->fa,(x->fa->fa->lc==x->fa)?LEFT:RIGHT);
 			x->fa->col=BLACK;
+			rotate(x->fa->fa,(x->fa->fa->lc==x->fa)?LEFT:RIGHT);
+#ifdef DEBUG
+	if(this->root->col==RED)
+		throw -1;
+#endif
 			if(x->fa->lc==x)
-				x->fa->rc->col=RED;
+				if(x->fa->rc!=nullptr)
+					x->fa->rc->col=RED;
 			else
-				x->fa->lc->col=RED;
+				if(x->fa->rc!=nullptr)
+					x->fa->lc->col=RED;
 			return;
 		}
 		else
 		{
 			x->fa->fa->col=RED;
-			x->fa->fa->lc->col=x->fa->fa->rc->col=BLACK;
+			if(x->fa->fa->lc!=nullptr)
+				x->fa->fa->lc->col=BLACK;
+			if(x->fa->fa->rc!=nullptr)
+				x->fa->fa->rc->col=BLACK;
 			SolveDoubleRed(x->fa->fa);
 			return;
 		}
@@ -261,12 +284,22 @@ template<typename T>
 void rbt<T>::SolveDoubleBlack(node *x)
 {
 	if(x->fa==nullptr)
+	{
+		x->col=BLACK;
 		return;
+	}
+	if((x->fa->lc==x?x->fa->rc:x->fa->lc)==nullptr)
+	{
+		SolveDoubleBlack(x->fa);
+		return;
+	}
 	if((x->fa->lc==x?x->fa->rc:x->fa->lc)->col==RED)
 	{
 		rotate(x->fa,x->fa->lc==x?RIGHT:LEFT);
 		x->fa->col=RED;
 		x->fa->fa->col=BLACK;
+		SolveDoubleBlack(x);
+		return;
 	}
 	if((x->fa->lc==x?x->fa->rc:x->fa->lc)->col==BLACK)
 	{
@@ -282,6 +315,7 @@ void rbt<T>::SolveDoubleBlack(node *x)
 			else
 			{
 				(x->fa->lc==x?x->fa->rc:x->fa->lc)->col=RED;
+				x->fa->col=BLACK;
 				return;
 			}
 		}
@@ -293,13 +327,21 @@ void rbt<T>::SolveDoubleBlack(node *x)
 				{
 					rotate(x->fa->rc,LEFT);
 					rotate(x->fa,RIGHT);
-					x->fa->col=BLACK;
+					x->fa->fa->col=BLACK;
+#ifdef DEBUG
+	if(this->root->col==RED)
+		throw -1;
+#endif
 				}
 				else
 				{
 					rotate(x->fa->lc,RIGHT);
 					rotate(x->fa,LEFT);
-					x->fa->col=BLACK;
+					x->fa->fa->col=BLACK;
+#ifdef DEBUG
+	if(this->root->col==RED)
+		throw -1;
+#endif
 				}
 			}
 			else
@@ -308,6 +350,10 @@ void rbt<T>::SolveDoubleBlack(node *x)
 					rotate(x->fa,RIGHT);
 				else
 					rotate(x->fa,LEFT);
+#ifdef DEBUG
+	if(this->root->col==RED)
+		throw -1;
+#endif
 			}
 			return;
 		}
@@ -366,7 +412,10 @@ void rbt<T>::erase(node *x)
 	if(x->lc==nullptr&&x->rc==nullptr)
 	{
 		if(now==nullptr)
+		{
 			root=nullptr;
+			return;
+		}
 		else
 			if(x->fa->lc==x)
 				x->fa->lc=nullptr;
@@ -386,7 +435,7 @@ void rbt<T>::erase(node *x)
 			else
 				now->rc=x->rc;
 		x->rc->fa=now;
-		x->lc->col=BLACK;
+		x->rc->col=BLACK;
 		x->rc=nullptr;
 		delete x;
 		return;
@@ -424,12 +473,26 @@ template<typename T>
 void rbt<T>::erase(const T&x)
 {
 	node *now=find(x);
+	if(now==nullptr)
+		return;
 	if(now->value==x)
 		erase(now);
 	return;
 }
 
 //tbd
+
+#ifdef DEBUG
+template<typename T>
+void rbt<T>::checkRBT()
+{
+	if(root==nullptr)
+		return;
+	if(root->col==RED)
+		throw -1;
+	checkNODE(root);
+}
+#endif
 
 #undef LEFT
 #undef RIGHT
