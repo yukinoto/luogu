@@ -1,6 +1,7 @@
 //rbt
 
 #define DEBUG
+#define SIZE
 
 #include <algorithm>
 using std::swap;
@@ -17,7 +18,9 @@ class rbt{
 		struct node{
 			node *fa,*lc,*rc;
 			T value;
+#ifdef SIZE
 			size_t size;
+#endif
 			bool col;
 			node();
 			node(node *_fa,const T&_value,bool _col);
@@ -30,8 +33,8 @@ class rbt{
 		void SolveDoubleBlack(node* x);
 		void erase(node *x);
 #ifdef DEBUG
-		void checkRBT();
-		int checkNODE(node*x);
+		void checkRBT()const;
+		size_t checkNODE(node*x)const;
 #endif
 	public:
 		class iterator;
@@ -45,8 +48,10 @@ class rbt{
 		void erase(const iterator&it);
 		iterator lowwer_bound(const T &x);
 		iterator upper_bound(const T &x);
+#ifdef SIZE
 		iterator nth_element(size_t rank);
 		size_t get_rank(const T &x);
+#endif
 };
 
 template<typename T>
@@ -385,11 +390,17 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 	if(root==nullptr)
 	{
 		root=new node(nullptr,x,BLACK);
+#ifdef DEBUG
+		checkRBT();
+#endif
 		return iterator(root);
 	}
 	node* now=find(x);
 	if(now->value==x)
 	{
+#ifdef DEBUG
+		checkRBT();
+#endif
 		return iterator(now);
 	}
 	if(now->value<x)
@@ -402,6 +413,9 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 		now->lc=new node(now,x,RED);
 		SolveDoubleRed(now=now->lc);
 	}
+#ifdef DEBUG
+	checkRBT();
+#endif
 	return iterator(now);
 }
 
@@ -414,6 +428,9 @@ void rbt<T>::erase(node *x)
 		if(now==nullptr)
 		{
 			root=nullptr;
+#ifdef DEBUG
+			checkRBT();
+#endif
 			return;
 		}
 		else
@@ -423,6 +440,9 @@ void rbt<T>::erase(node *x)
 				x->fa->rc=nullptr;
 		delete x;
 		SolveDoubleBlack(now);
+#ifdef DEBUG
+		checkRBT();
+#endif
 		return;
 	}
 	if(x->lc==nullptr)
@@ -438,6 +458,9 @@ void rbt<T>::erase(node *x)
 		x->rc->col=BLACK;
 		x->rc=nullptr;
 		delete x;
+#ifdef DEBUG
+		checkRBT();
+#endif
 		return;
 	}
 	if(x->rc==nullptr)
@@ -453,12 +476,18 @@ void rbt<T>::erase(node *x)
 		x->lc->col=BLACK;
 		x->lc=nullptr;
 		delete x;
+#ifdef DEBUG
+		checkRBT();
+#endif
 		return;
 	}
 	iterator it(x);
 	++it;
 	swap(it.pt->value,x->value);
 	erase(it.pt);
+#ifdef DEBUG
+	checkRBT();
+#endif
 	return;
 }
 
@@ -484,13 +513,41 @@ void rbt<T>::erase(const T&x)
 
 #ifdef DEBUG
 template<typename T>
-void rbt<T>::checkRBT()
+void rbt<T>::checkRBT()const
 {
 	if(root==nullptr)
 		return;
 	if(root->col==RED)
 		throw -1;
 	checkNODE(root);
+	return;
+}
+
+template<typename T>
+size_t rbt<T>::checkNODE(node *x)const
+{
+	size_t black_height=-1;
+	if(x->lc==nullptr&&x->rc==nullptr)
+		return x->col==BLACK?1:0;
+	if(x->lc!=nullptr)
+	{
+		size_t x=checkNODE(x->lc);
+		if(black_height==-1)
+			black_height=x;
+		if(black_height!=x)
+			throw -1;
+	}
+	if(x->rc!=nullptr)
+	{
+		size_t x=checkNODE(x->rc);
+		if(black_height==-1)
+			black_height=x;
+		if(black_height!=x)
+			throw -1;
+	}
+	if(x->col==BLACK)
+		return black_height+1;
+	return black_height;
 }
 #endif
 
