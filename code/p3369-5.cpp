@@ -1,7 +1,16 @@
 //rbt
 
-#define DEBUG
+//#define DEBUG
 #define SIZE
+#define MULTIBLE
+
+#ifdef SIZE
+#ifndef MULTIBLE
+#define NODE_SIZE(X) 1
+#else
+#define NODE_SIZE(X) ((X)->count)
+#endif
+#endif
 
 #include <algorithm>
 using std::swap;
@@ -21,6 +30,9 @@ class rbt{
 #ifdef SIZE
 			size_t size;
 #endif
+#ifdef MUTIBLE
+			size_t count;
+#endif
 			bool col;
 			node();
 			node(node *_fa,const T&_value,bool _col);
@@ -32,6 +44,9 @@ class rbt{
 		void SolveDoubleRed(node* x);
 		void SolveDoubleBlack(node* x);
 		void erase(node *x);
+#ifdef SIZE
+		void pushup(node *x);
+#endif
 #ifdef DEBUG
 		void checkRBT()const;
 		size_t checkNODE(node*x)const;
@@ -144,7 +159,9 @@ template<typename T>
 rbt<T>::node::node()
 {
 	lc=rc=fa=nullptr;
+#ifdef SIZE
 	size=0;
+#endif
 	return;
 }
 
@@ -202,6 +219,9 @@ template<typename T>
 void rbt<T>::rotate(node* x,bool direct)
 {
 	node* fa=x->fa;
+#ifdef SIZE
+	auto f=[](node *pt){return pt==nullptr?0:pt->size;};
+#endif
 	if(direct==LEFT)
 	{
 		node *l=x->lc;
@@ -220,6 +240,10 @@ void rbt<T>::rotate(node* x,bool direct)
 				fa->rc=l;
 		else
 			root=l;
+#ifdef SIZE
+		x->size=f(x->lc)+f(x->rc)+NODE_SIZE(x);
+		l->size=f(l->lc)+f(l->rc)+NODE_SIZE(l);
+#endif
 	}
 	if(direct==RIGHT)
 	{
@@ -239,6 +263,10 @@ void rbt<T>::rotate(node* x,bool direct)
 				fa->lc=r;
 		else
 			root=r;
+#ifdef SIZE
+		x->size=f(x->lc)+f(x->rc)+NODE_SIZE(x);
+		r->size=f(r->lc)+f(r->rc)+NODE_SIZE(r);
+#endif
 	}
 	return;
 }
@@ -256,20 +284,21 @@ void rbt<T>::SolveDoubleRed(node *x)
 		return;
 	if(x->fa->col==RED)
 	{
-		if(checkb(x->fa->lc==x?x->fa->rc:x->fa->lc))
+		if(checkb(x->fa->fa->lc==x->fa?x->fa->fa->rc:x->fa->fa->lc))
 		{
+			if((x->fa->fa->lc==x->fa?1:0)!=(x->fa->lc==x?1:0))
+			{
+				auto tmp=x->fa;
+				rotate(x->fa,x->fa->lc==x?LEFT:RIGHT);
+				x=tmp;
+			}
+			x->fa->fa->col=RED;
 			x->fa->col=BLACK;
 			rotate(x->fa->fa,(x->fa->fa->lc==x->fa)?LEFT:RIGHT);
 #ifdef DEBUG
 	if(this->root->col==RED)
 		throw -1;
 #endif
-			if(x->fa->lc==x)
-				if(x->fa->rc!=nullptr)
-					x->fa->rc->col=RED;
-			else
-				if(x->fa->rc!=nullptr)
-					x->fa->lc->col=RED;
 			return;
 		}
 		else
@@ -326,40 +355,30 @@ void rbt<T>::SolveDoubleBlack(node *x)
 		}
 		else
 		{
-			if(x->fa->col==BLACK)
+			auto c=(x->fa->lc==x?x->fa->rc:x->fa->lc)->lc;
+			if(c==nullptr||c->col==BLACK)
+				c=(x->fa->lc==x?x->fa->rc:x->fa->lc)->rc;
+			if((c->fa->fa->lc==c->fa?1:0)!=(c->fa->lc==c?1:0))
 			{
-				if(x->fa->lc==x)
+				if((c->fa->lc==c?c->fa->rc:c->fa->lc)!=nullptr&&(c->fa->lc==c?c->fa->rc:c->fa->lc)->col==RED)
 				{
-					rotate(x->fa->rc,LEFT);
-					rotate(x->fa,RIGHT);
-					x->fa->fa->col=BLACK;
-#ifdef DEBUG
-	if(this->root->col==RED)
-		throw -1;
-#endif
+					c=(c->fa->lc==c?c->fa->rc:c->fa->lc);
 				}
 				else
 				{
-					rotate(x->fa->lc,RIGHT);
-					rotate(x->fa,LEFT);
-					x->fa->fa->col=BLACK;
-#ifdef DEBUG
-	if(this->root->col==RED)
-		throw -1;
-#endif
+					c->fa->col=RED;
+					c->col=BLACK;
+					rotate(c->fa,(c->fa->lc==c?LEFT:RIGHT));
+					if(c->lc!=nullptr&&c->lc->col==RED)
+						c=c->lc;
+					else
+						c=c->rc;
 				}
 			}
-			else
-			{
-				if(x->fa->lc==x)
-					rotate(x->fa,RIGHT);
-				else
-					rotate(x->fa,LEFT);
-#ifdef DEBUG
-	if(this->root->col==RED)
-		throw -1;
-#endif
-			}
+			auto co=x->fa->col;
+			rotate(x->fa,c->fa==x->fa->lc?LEFT:RIGHT);
+			x->fa->col=c->col=BLACK;
+			x->fa->fa->col=co;
 			return;
 		}
 	}
@@ -393,11 +412,18 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 #ifdef DEBUG
 		checkRBT();
 #endif
+#ifdef SIZE
+		root->size=1;
+#endif
 		return iterator(root);
 	}
 	node* now=find(x);
 	if(now->value==x)
 	{
+#ifdef MULTIBLE
+		now->count++;
+		pushup(now->fa);
+#endif
 #ifdef DEBUG
 		checkRBT();
 #endif
@@ -406,11 +432,19 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 	if(now->value<x)
 	{
 		now->rc=new node(now,x,RED);
+#ifdef SIZE
+		now->rc->size=1;
+		pushup(now);
+#endif
 		SolveDoubleRed(now=now->rc);
 	}
 	else
 	{
 		now->lc=new node(now,x,RED);
+#ifdef SIZE
+		now->lc->size=1;
+		pushup(now);
+#endif
 		SolveDoubleRed(now=now->lc);
 	}
 #ifdef DEBUG
@@ -422,11 +456,20 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 template<typename T>
 void rbt<T>::erase(node *x)
 {
+#ifdef MULTIBLE
+	if(NODE_SIZE(x)>1)
+		x->count--;
+		pushup(x->fa);
+		return;
+#endif
 	node *now=x->fa;
 	if(x->lc==nullptr&&x->rc==nullptr)
 	{
+		if(x->col==BLACK)
+			SolveDoubleBlack(x);
 		if(now==nullptr)
 		{
+			delete root;
 			root=nullptr;
 #ifdef DEBUG
 			checkRBT();
@@ -438,8 +481,11 @@ void rbt<T>::erase(node *x)
 				x->fa->lc=nullptr;
 			else
 				x->fa->rc=nullptr;
+#ifdef SIZE
+		x->size=0;
+		pushup(x->fa);
+#endif
 		delete x;
-		SolveDoubleBlack(now);
 #ifdef DEBUG
 		checkRBT();
 #endif
@@ -455,7 +501,14 @@ void rbt<T>::erase(node *x)
 			else
 				now->rc=x->rc;
 		x->rc->fa=now;
-		x->rc->col=BLACK;
+#ifdef SIZE
+		pushup(x->fa);
+#endif
+		if(x->rc->col==RED)
+			x->rc->col=x->col;
+		else
+			if(x->rc->col==BLACK&&x->col==BLACK)
+				SolveDoubleBlack(x->rc);
 		x->rc=nullptr;
 		delete x;
 #ifdef DEBUG
@@ -473,7 +526,14 @@ void rbt<T>::erase(node *x)
 			else
 				now->rc=x->lc;
 		x->lc->fa=now;
-		x->lc->col=BLACK;
+#ifdef SIZE
+		pushup(x->fa);
+#endif
+		if(x->lc->col==RED)
+			x->lc->col=x->col;
+		else
+			if(x->lc->col==BLACK&&x->col==BLACK)
+				SolveDoubleBlack(x->lc);
 		x->lc=nullptr;
 		delete x;
 #ifdef DEBUG
@@ -526,28 +586,31 @@ void rbt<T>::checkRBT()const
 template<typename T>
 size_t rbt<T>::checkNODE(node *x)const
 {
-	size_t black_height=-1;
-	if(x->lc==nullptr&&x->rc==nullptr)
-		return x->col==BLACK?1:0;
-	if(x->lc!=nullptr)
-	{
-		size_t x=checkNODE(x->lc);
-		if(black_height==-1)
-			black_height=x;
-		if(black_height!=x)
-			throw -1;
-	}
-	if(x->rc!=nullptr)
-	{
-		size_t x=checkNODE(x->rc);
-		if(black_height==-1)
-			black_height=x;
-		if(black_height!=x)
-			throw -1;
-	}
+	if(x==nullptr)
+		return 0;
+	size_t black_height=checkNODE(x->lc);
+	if(black_height!=checkNODE(x->rc))
+		throw -1;
 	if(x->col==BLACK)
 		return black_height+1;
 	return black_height;
+}
+#endif
+
+#ifdef SIZE
+template<typename T>
+void rbt<T>::pushup(node *x)
+{
+	if(x==nullptr)
+		return;
+	auto f=[](node *pt){return pt==nullptr?0:pt->size;};
+	while(x->fa!=nullptr)
+	{
+		x->size=f(x->lc)+f(x->rc)+NODE_SIZE(x);
+		x=x->fa;
+	}
+	x->size=f(x->lc)+f(x->rc)+NODE_SIZE(x);
+	return;
 }
 #endif
 
