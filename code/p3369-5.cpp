@@ -30,7 +30,7 @@ class rbt{
 #ifdef SIZE
 			size_t size;
 #endif
-#ifdef MUTIBLE
+#ifdef MULTIBLE
 			size_t count;
 #endif
 			bool col;
@@ -50,6 +50,9 @@ class rbt{
 #ifdef DEBUG
 		void checkRBT()const;
 		size_t checkNODE(node*x)const;
+#ifdef SIZE
+		size_t checkSIZE(node*x)const;
+#endif
 #endif
 	public:
 		class iterator;
@@ -161,6 +164,9 @@ rbt<T>::node::node()
 	lc=rc=fa=nullptr;
 #ifdef SIZE
 	size=0;
+#endif
+#ifdef MULTIBLE
+	count=0;
 #endif
 	return;
 }
@@ -415,6 +421,9 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 #ifdef SIZE
 		root->size=1;
 #endif
+#ifdef MULTIBLE
+		root->count=1;
+#endif
 		return iterator(root);
 	}
 	node* now=find(x);
@@ -422,7 +431,7 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 	{
 #ifdef MULTIBLE
 		now->count++;
-		pushup(now->fa);
+		pushup(now);
 #endif
 #ifdef DEBUG
 		checkRBT();
@@ -434,6 +443,9 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 		now->rc=new node(now,x,RED);
 #ifdef SIZE
 		now->rc->size=1;
+#ifdef MULTIBLE
+		now->rc->count=1;
+#endif
 		pushup(now);
 #endif
 		SolveDoubleRed(now=now->rc);
@@ -443,6 +455,9 @@ typename rbt<T>::iterator rbt<T>::insert(const T &x)
 		now->lc=new node(now,x,RED);
 #ifdef SIZE
 		now->lc->size=1;
+#ifdef MULTIBLE
+		now->lc->count=1;
+#endif
 		pushup(now);
 #endif
 		SolveDoubleRed(now=now->lc);
@@ -458,9 +473,11 @@ void rbt<T>::erase(node *x)
 {
 #ifdef MULTIBLE
 	if(NODE_SIZE(x)>1)
+	{
 		x->count--;
-		pushup(x->fa);
+		pushup(x);
 		return;
+	}
 #endif
 	node *now=x->fa;
 	if(x->lc==nullptr&&x->rc==nullptr)
@@ -544,6 +561,10 @@ void rbt<T>::erase(node *x)
 	iterator it(x);
 	++it;
 	swap(it.pt->value,x->value);
+#ifdef SIZE
+	swap(it.pt->count,x->count);
+	pushup(it.pt),pushup(x);
+#endif
 	erase(it.pt);
 #ifdef DEBUG
 	checkRBT();
@@ -580,6 +601,9 @@ void rbt<T>::checkRBT()const
 	if(root->col==RED)
 		throw -1;
 	checkNODE(root);
+#ifdef SIZE
+	checkSIZE(root);
+#endif
 	return;
 }
 
@@ -595,7 +619,38 @@ size_t rbt<T>::checkNODE(node *x)const
 		return black_height+1;
 	return black_height;
 }
+
+#ifdef SIZE
+template<typename T>
+size_t rbt<T>::checkSIZE(node *x)const
+{
+	if(x==nullptr)
+		return 0;
+	size_t l=checkSIZE(x->lc),r=checkSIZE(x->rc);
+	if(x->size!=l+r+NODE_SIZE(x))
+		throw -1;
+	return x->size;
+}
 #endif
+#endif
+
+template<typename T>
+typename rbt<T>::iterator rbt<T>::lowwer_bound(const T &x)
+{
+	auto now=iterator(find(x));
+	if(*now<x)
+		++now;
+	return now;
+}
+
+template <typename T>
+typename rbt<T>::iterator rbt<T>::upper_bound(const T &x)
+{
+	auto now=iterator(find(x));
+	if(*now<=x)
+		++now;
+	return now;
+}
 
 #ifdef SIZE
 template<typename T>
@@ -610,7 +665,79 @@ void rbt<T>::pushup(node *x)
 		x=x->fa;
 	}
 	x->size=f(x->lc)+f(x->rc)+NODE_SIZE(x);
+#ifdef DEBUG
+	checkSIZE(root);
+#endif
 	return;
+}
+
+template <typename T>
+typename rbt<T>::iterator rbt<T>::nth_element(size_t rank)
+{
+	rank--;
+	node *pt=this->root;
+	size_t cnt=pt->lc==nullptr?0:pt->lc->size;
+	while(true)
+	{
+		if(cnt<=rank&&cnt+NODE_SIZE(pt)>rank)
+			break;
+		if(cnt<=rank)
+		{
+			cnt+=NODE_SIZE(pt);
+			pt=pt->rc;
+			if(pt->lc!=nullptr)
+				cnt+=pt->lc->size;
+		}
+		else
+		{
+			pt=pt->lc;
+			cnt-=NODE_SIZE(pt);
+			if(pt->rc!=nullptr)
+				cnt-=pt->rc->size;
+		}
+	}
+	return iterator(pt);
+}
+
+template <typename T>
+size_t rbt<T>::get_rank(const T &x)
+{
+	node *pt=root;
+	size_t cnt=pt->lc==nullptr?0:pt->lc->size;
+	while(true)
+	{
+		if(pt->lc==nullptr&&pt->rc==nullptr)
+		{
+			if(pt->value<x)
+				cnt+=NODE_SIZE(pt);
+			return cnt+1;
+		}
+		if(pt->value==x)
+			return cnt+1;
+		if(pt->value>x)
+		{
+			if(pt->lc==nullptr)
+			{
+				return cnt+1;
+			}
+			pt=pt->lc;
+			cnt-=NODE_SIZE(pt);
+			if(pt->rc!=nullptr)
+				cnt-=pt->rc->size;
+		}
+		else
+		{
+			if(pt->rc==nullptr)
+			{
+				return cnt+1;
+			}
+			cnt+=NODE_SIZE(pt);
+			pt=pt->rc;
+			if(pt->lc!=nullptr)
+				cnt+=pt->lc->size;
+		}
+	}
+	throw -1;
 }
 #endif
 
@@ -628,16 +755,28 @@ int main()
 	int n;
 	cin>>n;
 	rbt<int> tr;
+	tr.insert(0x7fffffff),tr.insert(0x80000000);
 	for(int i=1;i<=n;i++)
 	{
 		int f,x;
 		cin>>f>>x;
 		if(f==1)
 			tr.insert(x);
-		else
+		if(f==2)
 			tr.erase(x);
+		if(f==3)
+			cout<<tr.get_rank(x)-1<<endl;
+		if(f==4)
+			cout<<*tr.nth_element(x+1)<<endl;
+		if(f==5)
+			cout<<*--tr.lowwer_bound(x)<<endl;
+		if(f==6)
+			cout<<*tr.upper_bound(x)<<endl;
+#ifdef DEBUG
 		for(auto it=tr.begin();it!=tr.end();++it)
 			cout<<*it<<' ';
 		cout<<endl;
+#endif
 	}
+	return 0;
 }
