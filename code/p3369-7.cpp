@@ -14,11 +14,13 @@ class Splay{
 				size_t size,cnt;
 				node(){;}
 				~node(){delete lc,delete rc;}
-				node(const T&value,node *fa){this->value=value,this->fa=fa;}
+				node(const T&value,node *fa){this->value=value,this->fa=fa;this->lc=this->rc=nullptr;}
 		};
 		node *root;
+		node* find(const T&)const;
 		void rotate(node *,bool);
 		void splay(node *);
+		void update(node *);
 		void pushup(node *);
 		void erase(node *);
 	public:
@@ -34,6 +36,7 @@ class Splay<T>::iterator{
 	private:
 		node *pt;
 	public:
+		iterator(node *x):pt(x){;}
 		iterator& operator ++();
 		iterator& operator --();
 		const T& operator*();
@@ -79,6 +82,24 @@ const T& Splay<T>::iterator::operator*()
 	return *pt;
 }
 
+template<typename T>
+void Splay<T>::update(node *pt)
+{
+	auto gs=[this](node *pt){if(pt==nullptr)return 0;return pt->size;};
+	pt->size=gs(pt->lc)+gs(pt->rc)+pt->cnt;
+	return;
+}
+
+template<typename T>
+void Splay<T>::pushup(node *pt)
+{
+	update(pt);
+	if(pt->fa!=nullptr)
+		pushup(pt->fa);
+	return;
+}
+
+//undone! size not maintained!
 template<typename T>
 void Splay<T>::rotate(node *pt,bool dir)
 {
@@ -132,6 +153,81 @@ void Splay<T>::splay(node *pt)
 			f(pt->fa);
 	}
 	return;
+}
+
+template<typename T>
+typename Splay<T>::node* Splay<T>::find(const T&value)const
+{
+	auto pt=root;
+	while(pt->value!=value)
+	{
+		if(pt->value>value)
+		{
+			if(pt->lc==nullptr)
+				return pt;
+			pt=pt->lc;
+		}
+		else
+		{
+			if(pt->rc==nullptr)
+				return pt;
+			pt=pt->rc;
+		}
+	}
+	return pt;
+}
+
+template<typename T>
+typename Splay<T>::iterator Splay<T>::insert(const T&value)
+{
+	if(root==nullptr)
+	{
+		root=new node(value,nullptr);
+		root->size=root->cnt=1;
+		return iterator(root);
+	}
+	auto pt=find(value);
+	if(pt->value==value)
+	{
+		pt->cnt++;
+		pushup(pt);
+		return iterator(pt);
+	}
+	if(pt->value>value)
+	{
+		pt->lc=new node(value,pt);
+		pt->lc->cnt=pt->lc->size=1;
+		pushup(pt);
+		return iterator(pt->lc);
+	}
+	else
+	{
+		pt->rc=new node(value,pt);
+		pt->rc->cnt=pt->rc->size=1;
+		pushup(pt);
+		return iterator(pt->rc);
+	}
+}
+
+template<typename T>
+void Splay<T>::erase(node *pt)
+{
+	if(pt->cnt>1)
+	{
+		pt->cnt--;
+		pushup(pt);
+		return;
+	}
+	if(pt->lc==nullptr&&pt->rc==nullptr)
+	{
+		if(pt->fa==nullptr)
+			root=nullptr;
+		else
+			(pt->fa->lc==pt?pt->fa->lc:pt->fa->rc)=nullptr;
+		delete pt;
+		return;
+	}
+	//tbd
 }
 
 #undef DEBUG
