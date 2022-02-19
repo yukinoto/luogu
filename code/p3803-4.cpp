@@ -106,6 +106,19 @@ Int* fft(const Int *pt,size_t n,size_t b)
 	return t[b&1];
 }
 
+template<typename Int>
+Int* ifft(const Int *pt,size_t n,size_t b)
+{
+	Int *t=fft(pt,n,b),dv=quickpow<long long>(n,mod-2,mod);
+	for(int i=0;i<(1<<b);++i)
+	{
+		t[i]=t[i]*dv%mod;
+		t[i]=(t[i]+mod)%mod;
+	}
+	reverse(t+1,t+(1<<b));
+	return t;
+}
+
 long long a[2000010],b[2000010];
 
 int main()
@@ -123,14 +136,8 @@ int main()
 	int ren=1<<(bitnum(n+m+1));
 	for(int i=0;i<ren;++i)
 		t1[i]=t1[i]*t2[i]%mod;
-	long long *t=fft(t1,ren,bitnum(n+m+1)),dv=quickpow<long long>(ren,mod-2,mod);
+	long long *t=ifft<long long>(t1,ren,bitnum(n+m+1));
 	delete t1;delete t2;
-	for(int i=0;i<ren;++i)
-	{
-		t[i]=t[i]*dv%mod;
-		t[i]=(t[i]+mod)%mod;
-	}
-	reverse(t+1,t+ren);
 	for(int i=0;i<=m+n;i++)
 		cout<<t[i]<<' ';
 	cout<<endl;
