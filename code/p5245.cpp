@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <algorithm>
 using std::reverse;
-#define MAXN 2200000
+#define MAXN 420000
 namespace NTT{
 	namespace lib{
 		template<typename Int>
