@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <stddef.h>
 #include <algorithm>
 using std::reverse;
@@ -126,6 +127,15 @@ namespace NTT{
 			ploy(size_t n){this->n=n;p=new Int[n];}
 			ploy(Int *pt,size_t n){this->p=pt,this->n=n;}
 			virtual ~ploy(){delete p;}
+			template<typename STL>
+			ploy(const STL &data)
+			{
+				p=new Int[data.size()];
+				n=0;
+				for(auto i=data.begin();i!=data.end();++i)
+					p[n++]=*i;
+				return;
+			}
 #ifdef _GLIBCXX_ISTREAM
 			std::istream& init(size_t n,std::istream& ins)
 			{
@@ -236,23 +246,52 @@ namespace NTT{
 			}
 			void cut(size_t n)
 			{
-				this->n=n;
+				if(this->n>n)
+					this->n=n;
 			}
 	};
 }
 
-typedef NTT::ploy<long long,998244353,3> ploy;
+#include <cctype>
 
+typedef NTT::ploy<long long,998244353,3> ploy;
 using namespace std;
+
+ploy zero(vector<long long>(1,{1}));
+
+ploy quickpow(const ploy &a,int n,int p)
+{
+	ploy ans=zero;
+	for(int i=31;i>=0;i--)
+	{
+		ans*=ans;ans.cut(p);
+		if(n&(1ull<<i))
+		{
+			ans*=a;
+			ans.cut(p);
+		}
+	}
+	return ans;
+}
 
 int main()
 {
 	ios::sync_with_stdio(false);
-	int n,m;
-	cin>>n>>m;
-	ploy x,y;
-	x.init(n+1,cin),y.init(m+1,cin);
-	x*=y;
+	long long n,k;
+	cin>>n;
+	k=0;
+	char c=cin.get();
+	while(isspace(c))	c=cin.get();
+	while(isdigit(c))
+	{
+		k=k*10+c-'0';
+		k%=998244353;
+		c=cin.get();
+	}
+	k%=998244353;
+	ploy x;
+	x.init(n,cin);
+	x=quickpow(x,k,n);
 	x.output(cout);
 	return 0;
 }

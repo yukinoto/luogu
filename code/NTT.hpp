@@ -125,8 +125,17 @@ namespace NTT{
 			ploy(size_t n){this->n=n;p=new Int[n];}
 			ploy(Int *pt,size_t n){this->p=pt,this->n=n;}
 			virtual ~ploy(){delete p;}
+			template<typename STL>
+			ploy(const STL &data)
+			{
+				p=new Int[data.size()];
+				n=0;
+				for(auto i=data.begin();i!=data.end();++i)
+					p[n++]=*i;
+				return;
+			}
 #ifdef _GLIBCXX_ISTREAM
-			void init(size_t n,std::istream& ins)
+			std::istream& init(size_t n,std::istream& ins)
 			{
 				if(p!=nullptr)	delete p;
 				p=new Int[n];
@@ -135,12 +144,20 @@ namespace NTT{
 				{
 					ins>>p[i];
 				}
-				return;
+				return ins;
 			}
-			void init(std::istream& ins)
+			std::istream& init(std::istream& ins)
 			{
 				ins>>this->n;
-				init(n,ins);
+				return init(n,ins);
+			}
+#endif
+#ifdef _GLIBCXX_OSTREAM
+			std::ostream& output(std::ostream& ous)
+			{
+				for(size_t i=0;i<n-1;i++)
+					ous<<p[i]<<' ';
+				return ous<<p[n-1]<<'\n';
 			}
 #endif
 			ploy<Int,mod,org>& operator=(const ploy<Int,mod,org>&x)
@@ -224,6 +241,11 @@ namespace NTT{
 				this->p=lib::ifft<Int,mod,org>(t1,fn,b);
 				this->n=nn;
 				return *this;
+			}
+			void cut(size_t n)
+			{
+				if(this->n>n)
+					this->n=n;
 			}
 	};
 }
