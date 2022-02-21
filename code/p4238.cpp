@@ -1,7 +1,9 @@
+#include <iostream>
+#include <vector>
 #include <stddef.h>
 #include <algorithm>
 using std::reverse;
-#define MAXN 2200000
+#define MAXN 320000
 namespace NTT{
 	namespace lib{
 		template<typename Int>
@@ -99,7 +101,7 @@ namespace NTT{
 					_fft<Int,mod>(t[(sep&1)^1]+i,t[sep&1]+i,sep);
 				}
 			}
-			delete t[(b&1)^1];
+			delete[] t[(b&1)^1];
 			return t[b&1];
 		}
 		template<typename Int,Int mod,Int org>
@@ -117,14 +119,13 @@ namespace NTT{
 	}
 	template<typename Int,Int mod,Int org>//mod x^n
 	class ploy{
-		private:
+		public:
 			Int *p;
 			size_t n;
-		public:
 			ploy(){p=nullptr;}
 			ploy(size_t n){this->n=n;p=new Int[n];}
 			ploy(Int *pt,size_t n){this->p=pt,this->n=n;}
-			virtual ~ploy(){delete p;}
+			virtual ~ploy(){delete[] p;}
 			template<typename STL>
 			ploy(const STL &data)
 			{
@@ -137,7 +138,7 @@ namespace NTT{
 #ifdef _GLIBCXX_ISTREAM
 			std::istream& init(size_t n,std::istream& ins)
 			{
-				if(p!=nullptr)	delete p;
+				if(p!=nullptr)	delete[] p;
 				p=new Int[n];
 				this->n=n;
 				for(size_t i=0;i<n;++i)
@@ -163,7 +164,7 @@ namespace NTT{
 			ploy<Int,mod,org>& operator=(const ploy<Int,mod,org>&x)
 			{
 				this->n=x.n;
-				delete this->p;
+				delete[] this->p;
 				this->p=new Int[x.n];
 				for(size_t i=0;i<x.n;i++)
 					this->p[i]=x.p[i];
@@ -187,7 +188,6 @@ namespace NTT{
 			ploy(ploy<Int,mod,org>&&x)
 			{
 				this->n=x.n;
-				delete this->p;
 				this->p=x.p;
 				x.p=nullptr;
 			}
@@ -206,7 +206,7 @@ namespace NTT{
 					for(size_t i=this->n;i<x.n;i++)
 						pt[i]=x.p[i];
 					this->n=x.n;
-					delete this->p;
+					delete[] this->p;
 					this->p=pt;
 				}
 				return *this;
@@ -226,7 +226,7 @@ namespace NTT{
 					for(size_t i=this->n;i<x.n;i++)
 						pt[i]=x.p[i];
 					this->n=x.n;
-					delete this->p;
+					delete[] this->p;
 					this->p=pt;
 				}
 				return *this;
@@ -237,9 +237,9 @@ namespace NTT{
 				Int *t1=lib::fft<Int,mod,org>(this->p,this->n,b),*t2=lib::fft<Int,mod,org>(x.p,x.n,b);
 				for(size_t i=0;i<fn;i++)
 					t1[i]=t1[i]*t2[i]%mod;
-				delete t2;delete this->p;
+				delete[] t2;delete[] this->p;
 				this->p=lib::ifft<Int,mod,org>(t1,fn,b);
-				delete t1;
+				delete[] t1;
 				this->n=nn;
 				return *this;
 			}
@@ -252,3 +252,46 @@ namespace NTT{
 }
 
 typedef NTT::ploy<long long,998244353,3> ploy;
+using namespace std;
+
+typedef long long Int;
+Int mod=998244353;
+
+Int quickpow(Int x,Int n)
+{
+	if(n==0)
+		return 1;
+	if(n==1)
+		return x;
+	Int ans=quickpow(x,n>>1);
+	ans=ans*ans%mod;
+	if(n&1)
+		ans=ans*x%mod;
+	return ans;
+}
+
+ploy anti(const ploy&x,size_t n)
+{
+	if(n==1)
+		return ploy(vector<Int>(1,{quickpow(x.p[0],mod-2)}));
+	ploy tmp=anti(x,(n+1)>>1);
+	ploy ans=tmp;
+	ans+=ans;
+	tmp*=tmp;
+	tmp*=x;
+	tmp.cut(n);
+	ans-=tmp;
+	ans.cut(n);
+	return ans;
+}
+
+int main()
+{
+	ploy x;
+	x.init(cin);
+	size_t n=x.n;
+	x=anti(x,x.n<<1);
+	x.cut(n);
+	x.output(cout);
+	return 0;
+}
