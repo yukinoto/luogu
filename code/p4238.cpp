@@ -243,10 +243,41 @@ namespace NTT{
 				this->n=nn;
 				return *this;
 			}
-			void cut(size_t n)
+			ploy<Int,mod,org> operator*(const ploy<Int,mod,org>&x)
+			{
+				auto ans=*this;
+				ans*=x;
+				return ans;
+			}
+			ploy<Int,mod,org> operator+(const ploy<Int,mod,org>&x)
+			{
+				auto ans=*this;
+				ans+=x;
+				return ans;
+			}
+			ploy<Int,mod,org> operator-(const ploy<Int,mod,org>&x)
+			{
+				auto ans=*this;
+				ans-=x;
+				return ans;
+			}
+			ploy<Int,mod,org>& operator*=(const Int x)
+			{
+				for(size_t i=0;i<n;i++)
+					p[i]=p[i]*x%mod;
+				return *this;
+			}
+			ploy<Int,mod,org> operator*(const Int x)
+			{
+				auto ans=*this;
+				ans*=x;
+				return ans;
+			}
+			ploy<Int,mod,org>& cut(size_t n)
 			{
 				if(this->n>n)
 					this->n=n;
+				return *this;
 			}
 	};
 }
@@ -270,19 +301,24 @@ Int quickpow(Int x,Int n)
 	return ans;
 }
 
-ploy anti(const ploy&x,size_t n)
+ploy ans,tmp;
+
+void anti(const ploy&x,size_t n)
 {
 	if(n==1)
-		return ploy(vector<Int>(1,{quickpow(x.p[0],mod-2)}));
-	ploy tmp=anti(x,(n+1)>>1);
-	ploy ans=tmp;
+	{
+		ans=ploy(vector<Int>(1,{quickpow(x.p[0],mod-2)}));
+		return;
+	}
+	anti(x,(n+1)>>1);
+	tmp=ans;
 	ans+=ans;
 	tmp*=tmp;
 	tmp*=x;
 	tmp.cut(n);
 	ans-=tmp;
 	ans.cut(n);
-	return ans;
+	return;
 }
 
 int main()
@@ -290,8 +326,8 @@ int main()
 	ploy x;
 	x.init(cin);
 	size_t n=x.n;
-	x=anti(x,x.n<<1);
-	x.cut(n);
-	x.output(cout);
+	anti(x,x.n<<1);
+	ans.cut(n);
+	ans.output(cout);
 	return 0;
 }
