@@ -3,26 +3,26 @@
 #include <stddef.h>
 #include <algorithm>
 using std::reverse;
-#define MAXN 320000
+#define MAXN 620000
+typedef long long Int;
+const Int mod=998244353,org=3;
 namespace NTT{
 	namespace lib{
-		template<typename Int>
-		Int quickpow(Int x,Int n,const Int mod)
+		Int quickpow(Int x,Int n)
 		{
 			if(n==0)
 				return 1;
 			if(n==1)
 				return x;
-			Int ans=quickpow(x,n>>1,mod);
+			Int ans=quickpow(x,n>>1);
 			ans=ans*ans%mod;
 			if(n&1)
 				ans=ans*x%mod;
 			return ans;
 		}
-		template<typename Int>
-		Int revbit(Int x,size_t b)
+		size_t revbit(size_t x,size_t b)
 		{
-			Int ans=0;
+			size_t ans=0;
 			for(int i=0;i<b;i++)
 			{
 				ans=(ans<<1)|(x&1);
@@ -30,8 +30,7 @@ namespace NTT{
 			}
 			return ans;
 		}
-		template<typename Int>
-		size_t bitnum(Int n)
+		size_t bitnum(size_t n)
 		{
 			size_t cnt=0;
 			if(n&(n-1))
@@ -54,13 +53,13 @@ namespace NTT{
 			return cnt;
 		}
 		long long ps[MAXN],md=-1,mn;
-		void pre(size_t n,long long mod,long long org)
+		void pre(size_t n)
 		{
 			if(md==mod&&mn==n)
 				return;
 			ps[0]=1;
 			mn=n;
-			long long x=quickpow<long long>(org,(mod-1)/n,mod);
+			long long x=quickpow(org,(mod-1)/n);
 			for(size_t i=1;i<n;i++)
 				ps[i]=ps[i-1]*x%mod;
 			return;
@@ -69,45 +68,36 @@ namespace NTT{
 		{
 			return ps[k*mn/n];
 		}
-		template<typename Int,Int mod>
-		void _fft(Int * const f,Int *t,const size_t b)
-		{
-			size_t hn=1<<(b-1),n=hn<<1;
-			for(size_t i=0;i<hn;++i)
-			{
-				t[i]=(f[i]+w(i,n)*f[i+hn])%mod;
-				t[i+hn]=(f[i]-w(i,n)*f[i+hn])%mod;
-			}
-			return;
-		}
-		template<typename Int,Int mod,Int org>
 		Int* fft(const Int *pt,size_t n,size_t b)
 		{
 			size_t ren=1<<(b);
-			pre(ren,mod,org);
-			Int *t[2];t[0]=new Int[ren],t[1]=new Int[ren];
+			Int *t=new Int[ren];
 			for(size_t i=0;i<n;++i)
 			{
-				t[0][revbit(i,b)]=pt[i];
+				t[revbit(i,b)]=pt[i];
 			}
 			for(size_t i=n;i<ren;++i)
 			{
-				t[0][revbit(i,b)]=0;
+				t[revbit(i,b)]=0;
 			}
 			for(size_t sep=1;sep<=b;sep++)
 			{
-				for(size_t i=0;i<ren;i+=(1<<sep))
+				size_t jp=(1<<sep),hp=jp>>1;
+				for(size_t i=0;i<ren;i+=jp)
 				{
-					_fft<Int,mod>(t[(sep&1)^1]+i,t[sep&1]+i,sep);
+					for(size_t j=0;j<hp;++j)
+					{
+						Int p=w(j,jp)*t[i+j+hp];
+						t[i+j+hp]=(t[i+j]-p)%mod;
+						t[i+j]=(t[i+j]+p)%mod;
+					}
 				}
 			}
-			delete[] t[(b&1)^1];
-			return t[b&1];
+			return t;
 		}
-		template<typename Int,Int mod,Int org>
 		Int* ifft(const Int *pt,size_t n,size_t b)
 		{
-			Int *t=fft<Int,mod,org>(pt,n,b),dv=quickpow<long long>(n,mod-2,mod);
+			Int *t=fft(pt,n,b),dv=quickpow(n,mod-2);
 			for(int i=0;i<(1<<b);++i)
 			{
 				t[i]=t[i]*dv%mod;
@@ -117,7 +107,6 @@ namespace NTT{
 			return t;
 		}
 	}
-	template<typename Int,Int mod,Int org>//mod x^n
 	class ploy{
 		public:
 			Int *p;
@@ -161,7 +150,7 @@ namespace NTT{
 				return ous<<p[n-1]<<'\n';
 			}
 #endif
-			ploy<Int,mod,org>& operator=(const ploy<Int,mod,org>&x)
+			ploy& operator=(const ploy&x)
 			{
 				this->n=x.n;
 				delete[] this->p;
@@ -170,7 +159,7 @@ namespace NTT{
 					this->p[i]=x.p[i];
 				return *this;
 			}
-			ploy<Int,mod,org>& operator=(ploy<Int,mod,org>&&x)
+			ploy& operator=(ploy&&x)
 			{
 				this->n=x.n;
 				this->p=x.p;
@@ -178,20 +167,20 @@ namespace NTT{
 				x.n=0;
 				return *this;
 			}
-			ploy(const ploy<Int,mod,org>&x)
+			ploy(const ploy&x)
 			{
 				this->n=x.n;
 				this->p=new Int[x.n];
 				for(size_t i=0;i<x.n;i++)
 					this->p[i]=x.p[i];
 			}
-			ploy(ploy<Int,mod,org>&&x)
+			ploy(ploy&&x)
 			{
 				this->n=x.n;
 				this->p=x.p;
 				x.p=nullptr;
 			}
-			ploy<Int,mod,org>& operator +=(const ploy<Int,mod,org> &x)
+			ploy& operator +=(const ploy &x)
 			{
 				if(this->n>=x.n)
 				{
@@ -211,7 +200,7 @@ namespace NTT{
 				}
 				return *this;
 			}
-			ploy<Int,mod,org>& operator -=(const ploy<Int,mod,org> &x)
+			ploy& operator -=(const ploy &x)
 			{
 				if(this->n>=x.n)
 				{
@@ -231,49 +220,49 @@ namespace NTT{
 				}
 				return *this;
 			}
-			ploy<Int,mod,org>& operator *=(const ploy<Int,mod,org> &x)
+			ploy& operator *=(const ploy &x)
 			{
 				size_t nn=this->n+x.n-1,b=lib::bitnum(nn),fn=1<<b;
-				Int *t1=lib::fft<Int,mod,org>(this->p,this->n,b),*t2=lib::fft<Int,mod,org>(x.p,x.n,b);
+				Int *t1=lib::fft(this->p,this->n,b),*t2=lib::fft(x.p,x.n,b);
 				for(size_t i=0;i<fn;i++)
 					t1[i]=t1[i]*t2[i]%mod;
 				delete[] t2;delete[] this->p;
-				this->p=lib::ifft<Int,mod,org>(t1,fn,b);
+				this->p=lib::ifft(t1,fn,b);
 				delete[] t1;
 				this->n=nn;
 				return *this;
 			}
-			ploy<Int,mod,org> operator*(const ploy<Int,mod,org>&x)
+			ploy operator*(const ploy&x)
 			{
 				auto ans=*this;
 				ans*=x;
 				return ans;
 			}
-			ploy<Int,mod,org> operator+(const ploy<Int,mod,org>&x)
+			ploy operator+(const ploy&x)
 			{
 				auto ans=*this;
 				ans+=x;
 				return ans;
 			}
-			ploy<Int,mod,org> operator-(const ploy<Int,mod,org>&x)
+			ploy operator-(const ploy&x)
 			{
 				auto ans=*this;
 				ans-=x;
 				return ans;
 			}
-			ploy<Int,mod,org>& operator*=(const Int x)
+			ploy& operator*=(const Int x)
 			{
 				for(size_t i=0;i<n;i++)
 					p[i]=p[i]*x%mod;
 				return *this;
 			}
-			ploy<Int,mod,org> operator*(const Int x)
+			ploy operator*(const Int x)
 			{
 				auto ans=*this;
 				ans*=x;
 				return ans;
 			}
-			ploy<Int,mod,org>& cut(size_t n)
+			ploy& cut(size_t n)
 			{
 				if(this->n>n)
 					this->n=n;
@@ -282,11 +271,8 @@ namespace NTT{
 	};
 }
 
-typedef NTT::ploy<long long,998244353,3> ploy;
+using NTT::ploy;
 using namespace std;
-
-typedef long long Int;
-Int mod=998244353;
 
 Int quickpow(Int x,Int n)
 {
@@ -314,7 +300,9 @@ void anti(const ploy&x,size_t n)
 	tmp=ans;
 	ans+=ans;
 	tmp*=tmp;
-	tmp*=x;
+	ploy t=x;
+	t.cut(n);
+	tmp*=t;
 	tmp.cut(n);
 	ans-=tmp;
 	ans.cut(n);
@@ -323,6 +311,8 @@ void anti(const ploy&x,size_t n)
 
 int main()
 {
+	ios::sync_with_stdio(false);
+	NTT::lib::pre(1<<NTT::lib::bitnum(MAXN>>1));
 	ploy x;
 	x.init(cin);
 	size_t n=x.n;
