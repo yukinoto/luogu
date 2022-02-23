@@ -309,6 +309,26 @@ void anti(const ploy&x,size_t n)
 	return;
 }
 
+void j(ploy&x)
+{
+	for(size_t i=x.n-1;i>0;--i)
+	{
+		x.p[i]=quickpow(i,mod-2)*x.p[i-1]%mod;
+	}
+	x.p[0]=0;
+	return;
+}
+
+void d(ploy&x)
+{
+	for(size_t i=0;i<x.n-1;++i)
+	{
+		x.p[i]=x.p[i+1]*(i+1)%mod;
+	}
+	x.p[x.n-1]=0;
+	return;
+}
+
 int main()
 {
 	ios::sync_with_stdio(false);
@@ -316,13 +336,13 @@ int main()
 	ploy x;
 	x.init(cin);
 	size_t n=x.n;
-	x.cut(n-1);
+	x.cut(n);
 	anti(x,x.n<<1);
+	d(x);
+	ans.cut(n-1);
+	ans*=x;
 	ans.cut(n);
-	cout<<"0 ";
-	for(int i=0;i<n-1;i++)
-	{
-		cout<<ans.p[i]*(i+1)%mod<<' ';
-	}
+	j(ans);
+	ans.output(cout);
 	return 0;
 }
