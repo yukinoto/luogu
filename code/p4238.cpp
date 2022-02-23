@@ -316,8 +316,13 @@ int main()
 	ploy x;
 	x.init(cin);
 	size_t n=x.n;
+	x.cut(n-1);
 	anti(x,x.n<<1);
 	ans.cut(n);
-	ans.output(cout);
+	cout<<"0 ";
+	for(int i=0;i<n-1;i++)
+	{
+		cout<<ans.p[i]*(i+1)%mod<<' ';
+	}
 	return 0;
 }
