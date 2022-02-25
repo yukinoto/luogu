@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <string>
+#include <utility>
+#include <map>
 using namespace std;
 
 int null;
@@ -10,18 +13,14 @@ class pig;
 class cardpool;
 
 class card{
-	private:
+	protected:
 		char type;
 	public:
-		void init(istream& ins)
-		{
-			ins>>type;
-			return;
-		}
 		char gettype()
 		{
 			return type;
 		}
+		friend card* initcard();
 		virtual bool put(pig* from,pig* target,int &res)=0;
 };
 
@@ -38,8 +37,10 @@ class D:public card{
 		bool put(pig* from,pig* target,int &res);
 };
 
+card* initcard();
+
 class pig{
-	private:
+	protected:
 		vector<card*> cards;
 		int blood,type,ifjp;
 	public:
@@ -62,6 +63,28 @@ class pig{
 };
 
 class MP_P:public pig{
+	protected:
+		map<pig*,bool>iflik;
+	public:
+		void init();
+		void record(const vector<pig*>&);
+		void run();
+		bool ifAT(pig* target);
+		bool ifLO(pig* target);
+		void bleed();
+};
+
+class ZP_P:public pig{
+	private:
+	public:
+		void init();
+		void run();
+		bool ifAT(pig* target);
+		bool ifLO(pig* target);
+		void bleed();
+};
+
+class FP_P:public pig{
 	private:
 	public:
 		void init();
@@ -139,4 +162,78 @@ bool pig::rct_K()
 			return true;
 		}
 	return false;
+}
+
+card* initcard()
+{
+	char cache=cin.get();
+	while(isspace(cache))
+		cache=cin.get();
+	if(cache=='P')
+	{
+		card* pt=new P;
+		pt->type='P';
+		return pt;
+	}
+	if(cache=='K')
+	{
+		card* pt=new K;
+		pt->type='K';
+		return pt;
+	}
+	if(cache=='D')
+	{
+		card* pt=new D;
+		pt->type='D';
+		return pt;
+	}
+}
+
+void MP_P::init()
+{
+	for(int i=0;i<4;++i)
+	{
+		this->cards.push_back(initcard());
+	}
+	this->blood=MAXBLO;
+	this->type=MP;
+	this->ifjp=true;
+	return;
+}
+
+void MP_P::record(const vector<pig*>&x)
+{
+	for(auto i:x)
+	{
+		iflik.insert(make_pair(i,false));
+	}
+	return;
+}
+
+void ZP_P::init()
+{
+	for(int i=0;i<4;++i)
+	{
+		this->cards.push_back(initcard());
+	}
+	this->blood=MAXBLO;
+	this->type=ZP;
+	this->ifjp=false;
+	return;
+}
+
+void FP_P::init()
+{
+	for(int i=0;i<4;++i)
+	{
+		this->cards.push_back(initcard());
+	}
+	this->blood=MAXBLO;
+	this->type=FP;
+	this->ifjp=false;
+	return;
+}
+
+void MP_P::run()
+{
 }
