@@ -99,13 +99,11 @@ class leftistheap<Int>::node* leftistheap<Int>::merge(class leftistheap<Int>::no
 		std::swap(x,y);
 	x->rc=merge(x->rc,y);
 	if(x->lc==nullptr||(x->rc!=nullptr&&(x->lc->dist<x->rc->dist)))
-	{
 		std::swap(x->lc,x->rc);
-		if(x->rc!=nullptr)
-			x->dist=x->rc->dist+1;
-		else
-			x->dist=0;
-	}
+	if(x->rc!=nullptr)
+		x->dist=x->rc->dist+1;
+	else
+		x->dist=0;
 	return x;
 }
 
