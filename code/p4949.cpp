@@ -30,8 +30,8 @@ class xds{
 			if(pt->lc==nullptr)
 				return;
 			size_t mid=(left+right)/2;
-			lc->tag+=pt->tag,rc->tag+=pt->tag;
-			lc->value+=pt->tag*(mid-left),rc->value+=pt->tag*(right-mid);
+			pt->lc->tag+=pt->tag,pt->rc->tag+=pt->tag;
+			pt->lc->value+=pt->tag*(mid-left),pt->rc->value+=pt->tag*(right-mid);
 			pt->tag=0;
 			return;
 		}
