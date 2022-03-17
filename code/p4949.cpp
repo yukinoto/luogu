@@ -208,4 +208,59 @@ class tree{
 			trs->add(py->rnk+1,px->rnk+1,value);
 			return;
 		}
+		friend pair<int,int> fnd_edge(vector<pair<int,int>>*lik,int n,tree& tr);
 };
+
+pair<int,int> fnd_edge(vector<pair<int,int>>*lik,int n,tree& tr)
+{
+	for(int i=1;i<=n;i++)
+		for(auto j:lik[i])
+			if(tr.mp[i]->fa!=tr.mp[j.first]&&tr.mp[j.first]->fa!=tr.mp[i])
+				return make_pair(i,j.first);
+	throw -1;
+}
+
+int n,m;
+vector<pair<int,int>> lik[100007];
+
+int main()
+{
+	cin>>n>>m;
+	map<int,pair<int,int>>edges;
+	for(int i=0;i<n;i++)
+	{
+		int x,y,z;
+		cin>>x>>y>>z;
+		edges.insert(make_pair(i+1,make_pair(x,y)));
+		lik[x].emplace_back(y,z);
+		lik[y].emplace_back(x,z);
+	}
+	tree tr(lik,n);
+	auto edge=fnd_edge(lik,n,tr);
+	int edgl=lower_bound(lik[edge.first].begin(),lik[edge.first].end(),make_pair(edge.second,-114514))->second;
+	for(int i=0;i<m;i++)
+	{
+		int op,x,y;
+		cin>>op>>x>>y;
+		if(op==1)
+		{
+			if(edges[x]==edge)
+			{
+				edgl=y;
+			}
+			else
+			{
+				int cache=tr.quest(edges[x].first,edges[x].second);
+				tr.add(edges[x].first,edges[x].second,y-cache);
+			}
+		}
+		if(op==2)
+		{
+			int ans=tr.quest(x,y);
+			ans=max(ans,tr.quest(x,edge.first)+edgl+tr.quest(edge.second,y));
+			ans=max(ans,tr.quest(x,edge.second)+edgl+tr.quest(edge.first,y));
+			cout<<ans<<'\n';
+		}
+	}
+	return 0;
+}
