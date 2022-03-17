@@ -6,6 +6,8 @@
 #include <algorithm>
 using namespace std;
 
+typedef long long Int;
+
 template<typename Int>
 class xds{
 	private:
@@ -111,7 +113,7 @@ class tree{
 	private:
 		class node{
 			public:
-				int siz,rnk,dep;
+				Int siz,rnk,dep;
 				node *top;
 				node *fa;
 				vector<node*>sons;
@@ -121,10 +123,10 @@ class tree{
 					return;
 				}
 		};
-		xds<int> *trs;
+		xds<Int> *trs;
 		node *root;
-		map<int,node*>mp;
-		node* build(vector<pair<int,int>>*lik,int n,int nw,bool *tkn)
+		map<Int,node*>mp;
+		node* build(vector<pair<Int,Int>>*lik,Int n,Int nw,bool *tkn)
 		{
 			node* pt=new node;
 			pt->siz=1;
@@ -143,7 +145,7 @@ class tree{
 			}
 			return pt;
 		}
-		int cnt;
+		Int cnt;
 		void dfs(node* rt,node *top)
 		{
 			rt->dep=rt->fa->dep+1;
@@ -168,26 +170,27 @@ class tree{
 			return;
 		}
 	public:
-		tree(vector<pair<int,int>>*lik,int n)
+		tree(vector<pair<Int,Int>>*lik,Int n)
 		{
 			cnt=0;
-			trs=new xds<int>(0,n+1);
+			trs=new xds<Int>(0,n+1);
 			bool *tkn=new bool[n+1];
 			memset(tkn,false,sizeof(bool)*(n+1));
+			tkn[1]=true;
 			root=build(lik,n,1,tkn);
 			root->rnk=0,root->fa=root->top=root,root->dep=-1;
 			delete[] tkn;
 			dfs(root,root);
 		}
-		int quest(int x,int y)
+		Int quest(Int x,Int y)
 		{
 			node *px=mp[x],*py=mp[y];
-			int ans=0;
+			Int ans=0;
 			while(px->top!=py->top)
 			{
 				if(px->top->dep<py->top->dep)
 					swap(px,py);
-				ans+=trs->quest(px->top->rnk+1,px->rnk+1);
+				ans+=trs->quest(px->top->rnk,px->rnk+1);
 				px=px->top->fa;
 			}
 			if(px->dep<py->dep)
@@ -195,14 +198,14 @@ class tree{
 			ans+=trs->quest(py->rnk+1,px->rnk+1);
 			return ans;
 		}
-		void add(int x,int y,int value)
+		void add(Int x,Int y,Int value)
 		{
 			node *px=mp[x],*py=mp[y];
 			while(px->top!=py->top)
 			{
 				if(px->top->dep<py->top->dep)
 					swap(px,py);
-				trs->add(px->top->rnk+1,px->rnk+1,value);
+				trs->add(px->top->rnk,px->rnk+1,value);
 				px=px->top->fa;
 			}
 			if(px->dep<py->dep)
@@ -210,10 +213,10 @@ class tree{
 			trs->add(py->rnk+1,px->rnk+1,value);
 			return;
 		}
-		friend pair<int,int> fnd_edge(vector<pair<int,int>>*lik,int n,tree& tr);
+		friend pair<Int,Int> fnd_edge(vector<pair<Int,Int>>*lik,Int n,tree& tr);
 };
 
-pair<int,int> fnd_edge(vector<pair<int,int>>*lik,int n,tree& tr)
+pair<Int,Int> fnd_edge(vector<pair<Int,Int>>*lik,Int n,tree& tr)
 {
 	for(int i=1;i<=n;i++)
 		for(auto j:lik[i])
@@ -223,15 +226,15 @@ pair<int,int> fnd_edge(vector<pair<int,int>>*lik,int n,tree& tr)
 }
 
 int n,m;
-vector<pair<int,int>> lik[100007];
+vector<pair<Int,Int>> lik[100007];
 
 int main()
 {
 	cin>>n>>m;
-	map<int,pair<int,int>>edges;
+	map<Int,pair<Int,Int>>edges;
 	for(int i=0;i<n;i++)
 	{
-		int x,y,z;
+		Int x,y,z;
 		cin>>x>>y>>z;
 		edges.insert(make_pair(i+1,make_pair(x,y)));
 		lik[x].emplace_back(y,z);
@@ -239,28 +242,28 @@ int main()
 	}
 	tree tr(lik,n);
 	auto edge=fnd_edge(lik,n,tr);
-	int edgl=lower_bound(lik[edge.first].begin(),lik[edge.first].end(),make_pair(edge.second,-114514))->second;
+	Int edgl=lower_bound(lik[edge.first].begin(),lik[edge.first].end(),make_pair(edge.second,-114514ll))->second;
 	for(int i=0;i<m;i++)
 	{
-		int op,x,y;
+		Int op,x,y;
 		cin>>op>>x>>y;
 		if(op==1)
 		{
-			if(edges[x]==edge)
+			if(edges[x]==edge||(edges[x].first==edge.second&&edges[x].second==edge.first))
 			{
 				edgl=y;
 			}
 			else
 			{
-				int cache=tr.quest(edges[x].first,edges[x].second);
+				Int cache=tr.quest(edges[x].first,edges[x].second);
 				tr.add(edges[x].first,edges[x].second,y-cache);
 			}
 		}
 		if(op==2)
 		{
-			int ans=tr.quest(x,y);
-			ans=max(ans,tr.quest(x,edge.first)+edgl+tr.quest(edge.second,y));
-			ans=max(ans,tr.quest(x,edge.second)+edgl+tr.quest(edge.first,y));
+			Int ans=tr.quest(x,y);
+			ans=min(ans,tr.quest(x,edge.first)+edgl+tr.quest(edge.second,y));
+			ans=min(ans,tr.quest(x,edge.second)+edgl+tr.quest(edge.first,y));
 			cout<<ans<<'\n';
 		}
 	}
