@@ -138,6 +138,7 @@ class tree{
 					pt->sons.push_back(ss);
 					ss->rnk=i.second;
 					pt->siz+=ss->siz;
+					ss->fa=pt;
 				}
 			}
 			return pt;
@@ -157,8 +158,9 @@ class tree{
 				if((*i)->siz>(*it)->siz)
 					it=i;
 			}
-			rt->sons.push_back(*it);
+			auto cache=*it;
 			rt->sons.erase(it);
+			rt->sons.push_back(cache);
 			auto j=rt->sons.rbegin();
 			dfs(*j,top);
 			for(++j;j!=rt->sons.rend();++j)
