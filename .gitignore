@@ -5,3 +5,4 @@
 *.tsk
 *tmp/
 *.sh
+tmp.*
