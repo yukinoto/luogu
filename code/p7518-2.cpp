@@ -86,6 +86,8 @@ namespace real_tree{
 		if(depth[y]>depth[x])
 			swap(x,y);
 		x=jmp(x,depth[x]-depth[y]);
+		if(x==y)
+			return x;
 		for(int i=15;i>=0;i--)
 		{
 			if(gf(x,i)!=gf(y,i))
