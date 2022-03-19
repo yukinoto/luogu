@@ -214,7 +214,7 @@ namespace real_tree{
 	void init()
 	{
 		memset(fa,-1,sizeof(fa));
-		sp=new stlt<int>(0,n+1);atexit(ex);
+		sp=new stlt<int>(0,c+1);atexit(ex);
 		fa[1][0]=1;
 		v[1]=sp->basic();
 		build(1);
