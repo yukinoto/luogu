@@ -11,7 +11,7 @@ class stlt{
 	private:
 		class node{
 			public:
-				Int value,tag;
+				Int value;
 				node *lc,*rc;
 				bool up_to_date;
 				virtual ~node()
@@ -29,16 +29,12 @@ class stlt{
 		{
 			if(pt->lc==nullptr)
 				return;
-			int mid=(left+right)/2;
 			if(!pt->up_to_date)
 			{
 				pt->up_to_date=true;
 				pt->lc=new node(*pt->lc),pt->rc=new node(*pt->rc);
 				pt->lc->up_to_date=pt->rc->up_to_date=false;
 			}
-			pt->lc->value+=pt->tag*(mid-left),pt->rc->value+=pt->tag*(right-mid);
-			pt->lc->tag+=pt->tag,pt->rc->tag+=pt->tag;
-			pt->tag=0;
 		}
 		node* build(int left,int right,Int* a)
 		{
@@ -46,13 +42,13 @@ class stlt{
 			if(left==right-1)
 			{
 				pt->value=a[left],pt->lc=pt->rc=nullptr;
-				pt->tag=0,pt->up_to_date=true;
+				pt->up_to_date=true;
 			}
 			else
 			{
 				int mid=(left+right)/2;
 				pt->lc=build(left,mid,a),pt->rc=build(mid,right,a);
-				pt->value=pt->lc->value+pt->rc->value,pt->tag=0;
+				pt->value=pt->lc->value+pt->rc->value;
 				pt->up_to_date=true;
 			}
 			return pt;
@@ -62,7 +58,7 @@ class stlt{
 			node* pt=new node;
 			if(left==right-1)
 			{
-				pt->value=pt->tag=0;
+				pt->value=0;
 				pt->lc=pt->rc=nullptr;
 				pt->up_to_date=true;
 			}
@@ -70,7 +66,7 @@ class stlt{
 			{
 				int mid=(left+right)/2;
 				pt->lc=build(left,mid),pt->rc=build(mid,right);
-				pt->value=pt->tag=0;
+				pt->value=0;
 				pt->up_to_date=true;
 			}
 			return pt;
@@ -81,25 +77,8 @@ class stlt{
 				return 0;
 			if(left>=l&&right<=r)
 				return pt->value;
-			pushtag(pt,left,right);
 			int mid=(left+right)/2;
 			return quest(pt->lc,left,mid,l,r)+quest(pt->rc,mid,right,l,r);
-		}
-		void add(node* pt,int left,int right,int l,int r,Int x)
-		{
-			if(left>=r||right<=l)
-				return;
-			if(left>=l&&right<=r)
-			{
-				pt->value+=(right-left)*x;
-				pt->tag+=x;pt->up_to_date=false;
-				return;
-			}
-			pushtag(pt,left,right);
-			int mid=(left+right)/2;
-			add(pt->lc,left,mid,l,r,x),add(pt->rc,mid,right,l,r,x);
-			pt->value=pt->lc->value+pt->rc->value;
-			return;
 		}
 		void set(node* pt,int left,int right,int p,Int x)
 		{
@@ -107,13 +86,12 @@ class stlt{
 				return;
 			if(left==right-1)
 			{
-				pt->value=x,pt->tag=0;
+				pt->value=x;
 				return;
 			}
 			pushtag(pt,left,right);
 			int mid=(left+right)/2;
 			set(pt->lc,left,mid,p,x),set(pt->rc,mid,right,p,x);
-			pt->value=pt->lc->value+pt->rc->value;
 			return;
 		}
 	public:
@@ -131,21 +109,9 @@ class stlt{
 			roots.push_back(build(left,right,x));
 			return;
 		}
-		version add(version v,int left,int right,Int x)
-		{
-			node* pt=new node(*v);
-			pt->up_to_date=false;
-			roots.push_back(pt);
-			add(pt,ll,rl,left,right,x);
-			return pt;
-		}
 		Int quest(version v,int left,int right)
 		{
-			node* pt=new node(*v);
-			pt->up_to_date=false;
-			Int ans=quest(pt,ll,rl,left,right);
-			delete pt;
-			return ans;
+			return quest(v,ll,rl,left,right);
 		}
 		version set(version v,int p,Int x)
 		{
